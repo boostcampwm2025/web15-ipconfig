@@ -1,0 +1,23 @@
+{
+  "name": "web15-ipconfig",
+  "version": "1.0.0",
+  "description": "MBTI I__P들의 개발 인생 초기 설정",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boostcampwm2025/web15-ipconfig.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/boostcampwm2025/web15-ipconfig/issues"
+  },
+  "homepage": "https://github.com/boostcampwm2025/web15-ipconfig#readme"
+}
