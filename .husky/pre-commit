@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# ============================================
+# lint-staged 실행 (staged 파일만 lint + format)
+# ============================================
+
+echo ""
+echo "🔍 Pre-commit: lint-staged 실행 중..."
+echo "   - ESLint로 코드 검사 및 자동 수정"
+echo "   - Prettier로 포맷팅"
+echo ""
+
+npx lint-staged
+
+RESULT=$?
+
+if [ $RESULT -eq 0 ]; then
+  echo ""
+  echo "✅ Pre-commit 검사 통과! 커밋을 진행합니다."
+  echo ""
+else
+  echo ""
+  echo "❌ Pre-commit 검사 실패! 위 에러를 수정 후 다시 커밋하세요."
+  echo ""
+fi
+
+exit $RESULT

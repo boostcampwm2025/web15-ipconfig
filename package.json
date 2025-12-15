@@ -2,32 +2,53 @@
   "name": "web15-ipconfig",
   "version": "1.0.0",
   "description": "MBTI I__P들의 개발 인생 초기 설정",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run start",
+    "dev:fe": "npm run dev -w frontend",
+    "dev:be": "npm run start:dev -w backend",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css}\"",
-    "lint": "npm run lint:front && npm run lint:back"
+    "lint": "npm run lint:front && npm run lint:back",
+    "lint:front": "npm run lint -w frontend",
+    "lint:back": "npm run lint -w backend",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/boostcampwm2025/web15-ipconfig.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/boostcampwm2025/web15-ipconfig/issues"
   },
   "homepage": "https://github.com/boostcampwm2025/web15-ipconfig#readme",
   "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2"
   },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx}": [
+      "eslint --fix --config frontend/eslint.config.js",
+      "prettier --write"
+    ],
+    "backend/**/*.ts": [
+      "eslint --fix --config backend/eslint.config.mjs",
+      "prettier --write"
+    ],
+    "*.{js,json,css}": [
+      "prettier --write"
+    ]
+  },
   "engines": {
-    "node": "24.11.1",
+    "node": "v24.12.0",
     "npm": "11.6.2"
   }
 }

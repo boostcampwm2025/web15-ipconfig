@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# ============================================
+# 1. main 브랜치 직접 push 방지
+# ============================================
+current_branch=$(git symbolic-ref --short HEAD)
+
+if [ "$current_branch" = "main" ]; then
+  echo "❌ main 브랜치에 직접 push할 수 없습니다!"
+  echo "💡 PR을 통해 merge해주세요."
+  exit 1
+fi
+
+# ============================================
+# 2. console.log 검사
+# ============================================
+echo "🔍 console.log 검사 중..."
+
+# stdin으로 전달된 push 정보를 읽어서 push 범위 확인
+while read local_ref local_sha remote_ref remote_sha; do
+  # 새 브랜치 push인 경우 (remote_sha가 0으로만 구성)
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    # origin/main이 존재하면 그것과 비교, 아니면 전체 커밋 검사
+    if git rev-parse --verify origin/main >/dev/null 2>&1; then
+      range="origin/main..$local_sha"
+    else
+      range="$local_sha"
+    fi
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  # 변경된 파일에서 console.log 검사 (주석과 문자열 제외)
+  files=$(git diff --name-only $range -- '*.ts' '*.tsx' '*.js' '*.jsx' 2>/dev/null || true)
+
+  if [ -n "$files" ]; then
+    for file in $files; do
+      if [ -f "$file" ]; then
+        # 실제 코드에서 console.log 검사 (주석 라인 제외)
+        if grep -n "console\.log" "$file" 2>/dev/null | grep -v "^\s*//" | grep -v "^\s*\*" | grep -q "console\.log"; then
+          echo "❌ console.log가 포함된 파일이 있습니다: $file"
+          grep -n "console\.log" "$file" | grep -v "^\s*//" | grep -v "^\s*\*" | head -5
+          echo ""
+          echo "💡 console.log를 제거한 후 다시 push해주세요."
+          exit 1
+        fi
+      fi
+    done
+  fi
+done
+
+# ============================================
+# 3. Lint 검사
+# ============================================
+echo "🔍 Lint 검사 중..."
+npm run lint
+
+if [ $? -ne 0 ]; then
+  echo "❌ Lint 오류가 있습니다. 수정 후 다시 push해주세요."
+  exit 1
+fi
+
+echo "✅ 모든 검사 통과! Push를 진행합니다."

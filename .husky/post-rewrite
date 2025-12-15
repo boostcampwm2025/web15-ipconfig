@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# rebase 또는 amend 후 package.json 변경 감지
+
+# $1은 rebase인지 amend인지 구분
+case "$1" in
+  rebase)
+    changed_files=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
+    if echo "$changed_files" | grep -qE "package(-lock)?\.json"; then
+      echo "📦 package.json 변경 감지! npm install 실행 중..."
+      npm install
+    fi
+    ;;
+esac
