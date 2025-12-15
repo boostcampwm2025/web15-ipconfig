@@ -1,0 +1,39 @@
+name: CalVer Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate CalVer
+        id: calver
+        run: |
+          # 1. 한국 시간(KST) 설정
+          DATE=$(TZ='Asia/Seoul' date +'%Y.%m.%d')
+
+          # 2. 버전 조합: v날짜.GitHub실행번호 (예: v2025.12.15.42)
+          # run_number는 워크플로우가 실행될 때마다 고유하게 증가하는 숫자입니다.
+          VERSION="v$DATE.${{ github.run_number }}"
+
+          echo "Generated Version: $VERSION"
+
+          # 3. 다음 스텝에서 참조할 수 있도록 output에 저장
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Release & Tag
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.calver.outputs.version }} # 생성된 버전
+          name: Release ${{ steps.calver.outputs.version }} # 릴리즈 제목
+          generate_release_notes: true # 자동 릴리즈 노트 생성
+          make_latest: true

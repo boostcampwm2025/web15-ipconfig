@@ -1,0 +1,29 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - renovate-bot
+      - dependabot
+  categories:
+    - title: 🚀 New Features (새로운 기능)
+      labels:
+        - feature
+        - feat
+        - enhancement
+    - title: 🐛 Bug Fixes (버그 수정)
+      labels:
+        - fix
+        - bug
+        - hotfix
+    - title: ⚡ Performance (성능 개선)
+      labels:
+        - perf
+        - performance
+    - title: 🧰 Maintenance (유지보수 및 리팩토링)
+      labels:
+        - chore
+        - refactor
+        - style
+        - docs
+        - ci
