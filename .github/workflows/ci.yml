@@ -8,6 +8,7 @@ on:
 
 env:
   NODE_VERSION: '24.12.0'
+  HUSKY: 0
 
 jobs:
   # -----------------------------------------------------------------
@@ -31,7 +32,7 @@ jobs:
           cache-dependency-path: ./frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -64,7 +65,7 @@ jobs:
           cache-dependency-path: ./backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Lint
         run: npm run lint
