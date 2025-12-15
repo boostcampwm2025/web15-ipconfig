@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# 커밋 컨벤션 강제 적용
+npx --no -- commitlint --edit $1
