@@ -1,12 +1,10 @@
 #!/bin/sh
 
-# package.json 변경 감지 시 자동 npm install 실행
-
-# 변경된 파일 목록 추출 (병합 이전 HEAD와 병합 이후 HEAD 비교)
+# package.json 변경 감지 시 자동 npm install
 changed_files=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
 
-# package.json 또는 package-lock.json이 포함되어 있는지 정규식으로 확인
 if echo "$changed_files" | grep -qE "package(-lock)?\.json"; then
   echo "📦 package.json 변경 감지! npm install 실행 중..."
   npm install
+  echo "✅ 의존성 설치 완료!"
 fi
