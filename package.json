@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
+    "dev:backend": "cd backend && npm run start",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css}\"",
     "lint": "npm run lint:front && npm run lint:back"
   },
