@@ -8,22 +8,14 @@ changelog:
   categories:
     - title: 🚀 New Features (새로운 기능)
       labels:
-        - feature
-        - feat
-        - enhancement
+        - ✨ feat
     - title: 🐛 Bug Fixes (버그 수정)
       labels:
-        - fix
-        - bug
-        - hotfix
-    - title: ⚡ Performance (성능 개선)
-      labels:
-        - perf
-        - performance
+        - 🐛 fix
     - title: 🧰 Maintenance (유지보수 및 리팩토링)
       labels:
-        - chore
-        - refactor
-        - style
-        - docs
-        - ci
+        - ⚙️ chore
+        - ♻️ refactor
+        - 🎀 style
+        - 📝 docs
+        - 🧪 test
