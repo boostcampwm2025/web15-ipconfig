@@ -50,5 +50,8 @@
   "engines": {
     "node": "v24.12.0",
     "npm": "11.6.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.53.3"
   }
 }
