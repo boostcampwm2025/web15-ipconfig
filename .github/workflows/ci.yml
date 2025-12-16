@@ -1,0 +1,71 @@
+name: CI Pipeline (Test & Build Check)
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+env:
+  NODE_VERSION: '24.12.0'
+  HUSKY: 0
+
+jobs:
+  # -----------------------------------------------------------------
+  # JOB 1: 프론트엔드 (React) CI
+  # -----------------------------------------------------------------
+  frontend-ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ./frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        # 테스트 코드가 생기면 --passWithNoTests 옵션을 지워주세요
+        run: npm test -- --passWithNoTests
+
+  # -----------------------------------------------------------------
+  # JOB 2: 백엔드 (NestJS) CI
+  # -----------------------------------------------------------------
+  backend-ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ./backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
