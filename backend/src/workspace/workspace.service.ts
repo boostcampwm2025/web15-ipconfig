@@ -8,7 +8,7 @@ import { LeaveUserDTO } from './dto/left-user.dto';
 export class WorkspaceService {
   private readonly rooms: Map<string, JoindedUserDTO[]> = new Map();
 
-  getRoomIdByUserId(userId: string): string {
+  public getRoomIdByUserId(userId: string): string {
     for (const [roomId, roomUsers] of this.rooms.entries()) {
       if (roomUsers.some((user) => user.id === userId)) {
         return roomId;
@@ -18,8 +18,19 @@ export class WorkspaceService {
     throw new NotFoundException('방을 찾을 수 없습니다.');
   }
 
+  public getRoomUsersByRoomId(roomId: string): JoindedUserDTO[] {
+    const room = this.rooms.get(roomId);
+    if (!room) {
+      throw new NotFoundException('방을 찾을 수 없습니다.');
+    }
+    return room;
+  }
+
   // 유저 입장
-  joinUser(payload: JoinUserDTO): { roomId: string; user: JoindedUserDTO } {
+  public joinUser(payload: JoinUserDTO): {
+    roomId: string;
+    user: JoindedUserDTO;
+  } {
     const roomId = payload.projectId;
 
     // 방이 없을 시 새로 방 하나 만들기
@@ -41,7 +52,7 @@ export class WorkspaceService {
   }
 
   // 유저 퇴장
-  leaveUser(payload: LeaveUserDTO): { roomId: string; userId: string } {
+  public leaveUser(payload: LeaveUserDTO): { roomId: string; userId: string } {
     const roomId = payload.projectId;
     const userId = payload.userId;
 
