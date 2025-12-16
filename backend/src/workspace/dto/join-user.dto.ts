@@ -28,6 +28,12 @@ export class User {
 }
 
 export class JoinUserDTO extends User {
+  @ApiProperty({
+    description: '프로젝트 ID',
+    example: 'p1',
+    required: true,
+  })
+  @IsString()
   projectId: string;
 }
 

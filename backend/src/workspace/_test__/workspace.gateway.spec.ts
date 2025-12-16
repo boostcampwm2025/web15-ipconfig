@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WorkspaceGateway } from './workspace.gateway';
+import { WorkspaceGateway } from '../workspace.gateway';
 
 describe('WorkspaceGateway', () => {
   let gateway: WorkspaceGateway;
