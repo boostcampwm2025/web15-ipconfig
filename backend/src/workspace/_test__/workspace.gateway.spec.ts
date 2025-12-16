@@ -64,6 +64,7 @@ describe('WorkspaceGateway', () => {
     });
 
     it('user:join 이벤트 발생 시 일련의 과정을 거친 후 user:joined, user:status 이벤트 발생', async () => {
+      // GIVEN
       const payload: JoinUserDTO = {
         projectId: 'p1',
         user: {
@@ -73,8 +74,10 @@ describe('WorkspaceGateway', () => {
         },
       };
 
+      // WHEN
       await gateway.handleUserJoin(payload, clientMock as Socket);
 
+      // THEN
       expect(serverMock.emit).toHaveBeenCalledWith('user:joined', payload.user);
       expect(serverMock.emit).toHaveBeenCalledWith('user:status', {
         status: 'ONLINE',
@@ -82,6 +85,7 @@ describe('WorkspaceGateway', () => {
     });
 
     it('user:join 이벤트 발생 시 client가 방에 들어가는지', async () => {
+      // GIVEN
       const payload: JoinUserDTO = {
         projectId: 'p1',
         user: {
@@ -91,12 +95,15 @@ describe('WorkspaceGateway', () => {
         },
       };
 
+      // WHEN
       await gateway.handleUserJoin(payload, clientMock as Socket);
 
+      // THEN
       expect(clientMock.join).toHaveBeenCalledWith('p1');
     });
 
     it('user:join 이벤트 발생 시 workspaceService의 joinUser 메서드가 호출되는지', async () => {
+      // GIVEN
       const payload: JoinUserDTO = {
         projectId: 'p1',
         user: {
@@ -106,8 +113,10 @@ describe('WorkspaceGateway', () => {
         },
       };
 
+      // WHEN
       await gateway.handleUserJoin(payload, clientMock as Socket);
 
+      // THEN
       expect(workspaceServiceMock.joinUser).toHaveBeenCalledWith(payload);
     });
   });
@@ -125,13 +134,16 @@ describe('WorkspaceGateway', () => {
     });
 
     it('user:leave 이벤트 발생 시 일련의 과정을 거친 후 user:left, user:status 이벤트 발생', async () => {
+      // GIVEN
       const payload: LeaveUserDTO = {
         projectId: 'p1',
         userId: 'u1',
       };
 
+      // WHEN
       await gateway.handleUserLeave(payload, clientMock as Socket);
 
+      // THEN
       expect(serverMock.emit).toHaveBeenCalledWith('user:left', payload.userId);
       expect(serverMock.emit).toHaveBeenCalledWith('user:status', {
         status: 'OFFLINE',
@@ -139,24 +151,30 @@ describe('WorkspaceGateway', () => {
     });
 
     it('user:leave 이벤트 발생 시 client가 방에서 나가는지', async () => {
+      // GIVEN
       const payload: LeaveUserDTO = {
         projectId: 'p1',
         userId: 'u1',
       };
 
+      // WHEN
       await gateway.handleUserLeave(payload, clientMock as Socket);
 
+      // THEN
       expect(clientMock.leave).toHaveBeenCalledWith('p1');
     });
 
     it('user:leave 이벤트 발생 시 workspaceService의 leaveUser 메서드가 호출되는지', async () => {
+      // GIVEN
       const payload: LeaveUserDTO = {
         projectId: 'p1',
         userId: 'u1',
       };
 
+      // WHEN
       await gateway.handleUserLeave(payload, clientMock as Socket);
 
+      // THEN
       expect(workspaceServiceMock.leaveUser).toHaveBeenCalledWith(payload);
     });
   });
@@ -168,6 +186,7 @@ describe('WorkspaceGateway', () => {
     });
 
     it('cursor:move 이벤트 발생 시 cursor:moved 이벤트 발생', () => {
+      // GIVEN
       const payload: MoveCursorDTO = {
         userId: 'u1',
         moveData: {
@@ -176,12 +195,16 @@ describe('WorkspaceGateway', () => {
         },
       };
 
+      // WHEN
       gateway.handleCursorMove(payload, clientMock as Socket);
+
+      // THEN
       expect(serverMock.emit).toHaveBeenCalledWith('cursor:moved', payload);
       expect(serverMock.to).toHaveBeenCalledWith('p1');
     });
 
     it('cursor:move 이벤트 발생 시 workspaceService의 getRoomIdByUserId 메서드가 호출되는지', () => {
+      // GIVEN
       const payload: MoveCursorDTO = {
         userId: 'u1',
         moveData: {
@@ -190,7 +213,10 @@ describe('WorkspaceGateway', () => {
         },
       };
 
+      // WHEN
       gateway.handleCursorMove(payload, clientMock as Socket);
+
+      // THEN
       expect(workspaceServiceMock.getRoomIdByUserId).toHaveBeenCalledWith(
         payload.userId,
       );
