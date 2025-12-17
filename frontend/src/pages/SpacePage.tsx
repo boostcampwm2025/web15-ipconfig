@@ -29,7 +29,7 @@ interface WidgetData {
   id: string;
   type: WidgetType;
   position: WidgetPosition;
-  content?: any; // For note text or specific widget state
+  content: string;
 }
 
 interface User {
@@ -134,10 +134,6 @@ const CanvasPage = () => {
     setWidgets(widgets.filter((w) => w.id !== id));
   };
 
-  const updateWidgetContent = (id: string, content: any) => {
-    setWidgets(widgets.map((w) => (w.id === id ? { ...w, content } : w)));
-  };
-
   // Drag Logic
   const handleMouseDown = (
     e: React.MouseEvent,
@@ -233,7 +229,7 @@ ${techs.length ? techs : '| None | - | - |'}
       {/* 1. Header */}
       <header className="z-50 flex h-16 shrink-0 items-center justify-between border-b border-gray-700 bg-gray-800 px-6 shadow-lg">
         <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-blue-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
             15
           </div>
           <div>
@@ -428,7 +424,7 @@ ${techs.length ? techs : '| None | - | - |'}
         {/* User Hover Card Popover */}
         {hoveredUser && (
           <div
-            className="animate-slide-in pointer-events-none fixed z-[100] w-64 rounded-xl border border-gray-600 bg-gray-800 p-4 shadow-2xl"
+            className="animate-slide-in pointer-events-none fixed z-100 w-64 rounded-xl border border-gray-600 bg-gray-800 p-4 shadow-2xl"
             style={{
               top: hoverPosition.top,
               left: hoverPosition.left,
@@ -494,7 +490,7 @@ ${techs.length ? techs : '| None | - | - |'}
 
       {/* Export Modal */}
       {isExportModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <div className="animate-scale-in flex max-h-[85vh] w-full max-w-3xl flex-col rounded-xl border border-gray-700 bg-gray-800 shadow-2xl">
             <div className="flex items-center justify-between rounded-t-xl border-b border-gray-700 bg-gray-900 p-5">
               <div className="flex items-center gap-3">
