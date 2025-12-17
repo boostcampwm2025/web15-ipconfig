@@ -1,5 +1,7 @@
 import { LuLayers, LuTrash2 } from 'react-icons/lu';
 import SearchBar from './SearchBar';
+import TechLabel from './TeckLabel';
+import { TECH_STACKS } from '../constant/techStackInfo';
 
 export default function TechStackModal() {
   return (
@@ -10,7 +12,11 @@ export default function TechStackModal() {
         onRemove={() => {}}
       />
       <SearchBar />
-      <div className="grid grid-cols-4 gap-3"></div>
+      <div className="flex flex-wrap gap-2">
+        {TECH_STACKS.map((te) => (
+          <TechLabel key={te.name} techName={te.name} />
+        ))}
+      </div>
     </div>
   );
 }
