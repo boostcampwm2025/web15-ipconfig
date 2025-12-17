@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router';
-import SpacePage from './pages/SpacePage';
+import WorkSpacePage from './pages/WorkSpacePage';
 
 function App() {
   return (
     <Routes>
-      <Route path="/space" element={<SpacePage />} />
+      <Route path="/workspace" element={<WorkSpacePage />} />
     </Routes>
   );
 }

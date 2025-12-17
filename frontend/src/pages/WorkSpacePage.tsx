@@ -107,7 +107,7 @@ const TECH_OPTIONS = [
 
 // --- Components ---
 
-const CanvasPage = () => {
+function WorkSpacePage() {
   // Global State
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
   const [techStack, setTechStack] = useState<Set<string>>(new Set(['React']));
@@ -553,7 +553,7 @@ ${techs.length ? techs : '| None | - | - |'}
       )}
     </div>
   );
-};
+}
 
 // --- Sub Components ---
 
@@ -653,4 +653,4 @@ const WidgetHeader = ({ title, icon, onRemove }: WidgetHeaderProps) => (
   </div>
 );
 
-export default CanvasPage;
+export default WorkSpacePage;
