@@ -97,7 +97,7 @@ const TechIcon = ({ name }: { name: string }) => {
 
 export default function TechLabel({ techName }: { techName: string }) {
   return (
-    <div className="mb-4 flex cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-2 py-1 select-none hover:bg-gray-700">
+    <div className="mb-4 flex cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-2 py-1 select-none hover:border-blue-500 hover:bg-gray-700">
       <TechIcon name={techName} />
       <span className="text-sm font-medium text-gray-300">{techName}</span>
     </div>
