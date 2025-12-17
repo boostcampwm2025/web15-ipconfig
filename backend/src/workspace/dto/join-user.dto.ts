@@ -29,12 +29,12 @@ export class User {
 
 export class JoinUserDTO {
   @ApiProperty({
-    description: '프로젝트 ID',
-    example: 'p1',
+    description: '워크스페이스 ID',
+    example: 'w1',
     required: true,
   })
   @IsString()
-  projectId: string;
+  workspaceId: string;
 
   @ApiProperty({
     description: '유저 정보',

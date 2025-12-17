@@ -22,7 +22,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
   constructor(private readonly workspaceService: WorkspaceService) {}
 
   handleDisconnect(client: Socket) {
-    const result = this.workspaceService.handleDisconnect(client.id);
+    const result = this.workspaceService.handleDisconnect(client);
     if (!result) {
       return;
     }
@@ -68,11 +68,12 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
   // 커서 부분
   @SubscribeMessage('cursor:move')
   handleCursorMove(
+    @ConnectedSocket() client: Socket,
     @MessageBody()
     payload: MoveCursorDTO,
   ) {
-    // 유저가 속한 방을 알기 위한 조회
-    const roomId = this.workspaceService.getRoomIdByUserId(payload.userId);
+    const roomId = (client.data as { roomId?: string })?.roomId;
+    if (!roomId) return;
 
     // 서비스에서 처리하지 않고 바로 반환
     this.server.to(roomId).emit('cursor:moved', payload);

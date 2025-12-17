@@ -1,65 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JoindedUserDTO, JoinUserDTO } from './dto/join-user.dto';
 import { LeaveUserDTO } from './dto/left-user.dto';
 import { Socket } from 'socket.io';
 
 @Injectable()
 export class WorkspaceService {
-  private readonly rooms: Map<string, JoindedUserDTO[]> = new Map();
-  // socketId -> { roomId, userId } 매핑(disconnect 고려)
-  private readonly socketToUser: Map<
-    string,
-    { roomId: string; userId: string }
-  > = new Map();
-
   public handleDisconnect(
-    socketId: string,
+    client: Socket,
   ): { roomId: string; userId: string } | null {
-    const mapped = this.socketToUser.get(socketId);
-    if (!mapped) return null;
+    const data = client.data as { roomId?: string; userId?: string };
+    const { roomId, userId } = data;
 
-    const { roomId, userId } = mapped;
-    const room = this.rooms.get(roomId);
+    client.data = {};
 
-    // 방이 없거나 유저가 이미 제거된 상태면 매핑만 정리하고 종료
-    if (!room) {
-      this.socketToUser.delete(socketId);
-      return null;
-    }
-
-    const idx = room.findIndex((user) => user.id === userId);
-    this.socketToUser.delete(socketId);
-    // 유저가 방에 없으면 매핑만 정리하고 종료
-    if (idx === -1) {
-      return null;
-    }
-
-    // 유저가 방에 있으면 제거
-    room.splice(idx, 1);
-
-    if (room.length === 0) {
-      this.rooms.delete(roomId);
-    }
-
+    if (!roomId || !userId) return null;
     return { roomId, userId };
-  }
-
-  public getRoomIdByUserId(userId: string): string {
-    for (const [roomId, roomUsers] of this.rooms.entries()) {
-      if (roomUsers.some((user) => user.id === userId)) {
-        return roomId;
-      }
-    }
-
-    throw new NotFoundException('방을 찾을 수 없습니다.');
-  }
-
-  public getRoomUsersByRoomId(roomId: string): JoindedUserDTO[] {
-    const room = this.rooms.get(roomId);
-    if (!room) {
-      throw new NotFoundException('방을 찾을 수 없습니다.');
-    }
-    return room;
   }
 
   // 유저 입장
@@ -70,14 +25,7 @@ export class WorkspaceService {
     roomId: string;
     user: JoindedUserDTO;
   } {
-    const roomId = payload.projectId;
-
-    // 방이 없을 시 새로 방 하나 만들기
-    if (!this.rooms.has(roomId)) {
-      this.rooms.set(roomId, []);
-    }
-
-    const room = this.rooms.get(roomId)!;
+    const roomId = payload.workspaceId;
 
     const user: JoindedUserDTO = {
       id: payload.user.id,
@@ -85,9 +33,11 @@ export class WorkspaceService {
       color: payload.user.color,
     };
 
-    room.push(user);
-
-    this.socketToUser.set(client.id, { roomId, userId: user.id });
+    // 소켓 자체에 데이터 저장하기
+    client.data = {
+      roomId,
+      userId: user.id,
+    };
 
     return { roomId, user };
   }
@@ -97,27 +47,10 @@ export class WorkspaceService {
     payload: LeaveUserDTO,
     client: Socket,
   ): { roomId: string; userId: string } {
-    const roomId = payload.projectId;
+    const roomId = payload.workspaceId;
     const userId = payload.userId;
 
-    this.socketToUser.delete(client.id);
-
-    const room = this.rooms.get(roomId);
-    if (!room) {
-      throw new NotFoundException('방을 찾을 수 없습니다.');
-    }
-
-    // 유저 제거
-    const user = room.find((user) => user.id === userId);
-    if (!user) {
-      throw new NotFoundException('유저를 찾을 수 없습니다.');
-    }
-    room.splice(room.indexOf(user), 1);
-
-    // 방이 비면 정리
-    if (room.length === 0) {
-      this.rooms.delete(roomId);
-    }
+    client.data = {};
 
     return { roomId, userId };
   }
