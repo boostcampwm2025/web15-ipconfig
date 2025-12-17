@@ -6,7 +6,11 @@ import { useState } from 'react';
 import useDebounce from '../hooks/useDebounce';
 import NoContents from './NoContents';
 
-export default function TechStackModal() {
+export default function TechStackModal({
+  onModalClose,
+}: {
+  onModalClose: () => void;
+}) {
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 300);
   return (
@@ -14,7 +18,7 @@ export default function TechStackModal() {
       <WidgetHeader
         title="Tech Stack"
         icon={<LuLayers className="text-purple-400" size={18} />}
-        onRemove={() => {}}
+        onRemove={onModalClose}
       />
       <SearchBar search={search} setSearch={setSearch} />
       <div className="flex flex-wrap gap-2 overflow-y-auto">
@@ -44,7 +48,7 @@ const WidgetHeader = ({ title, icon, onRemove }: WidgetHeaderProps) => (
     <button
       onMouseDown={(e) => e.stopPropagation()}
       onClick={onRemove}
-      className="text-gray-500 transition-colors hover:text-red-400"
+      className="text-gray-500 transition-colors hover:cursor-pointer hover:text-blue-400"
     >
       <LuTrash2 size={16} />
     </button>
