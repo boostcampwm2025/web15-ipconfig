@@ -3,9 +3,11 @@ import SearchBar from './SearchBar';
 import TechLabel from './TeckLabel';
 import { TECH_STACKS } from '../constant/techStackInfo';
 import { useState } from 'react';
+import useDebounce from '../hooks/useDebounce';
 
 export default function TechStackModal() {
   const [search, setSearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search, 300);
   return (
     <div className="w-[400px] cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
       <WidgetHeader
@@ -16,7 +18,7 @@ export default function TechStackModal() {
       <SearchBar search={search} setSearch={setSearch} />
       <div className="flex flex-wrap gap-2">
         {TECH_STACKS.filter((te) =>
-          te.name.toLowerCase().includes(search.toLowerCase()),
+          te.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
         ).map((te) => (
           <TechLabel key={te.name} techName={te.name} />
         ))}
