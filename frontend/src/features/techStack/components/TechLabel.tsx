@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { getTechIconUrl } from '../utils/getTechIconUrl';
 
 const TechIcon = ({ name }: { name: string }) => {
@@ -24,7 +24,7 @@ const TechIcon = ({ name }: { name: string }) => {
   );
 };
 
-export default function TechLabel({ techName }: { techName: string }) {
+function TechLabel({ techName }: { techName: string }) {
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('techName', techName);
   };
@@ -40,3 +40,5 @@ export default function TechLabel({ techName }: { techName: string }) {
     </div>
   );
 }
+
+export default memo(TechLabel);

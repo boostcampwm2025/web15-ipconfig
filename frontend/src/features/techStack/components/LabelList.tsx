@@ -1,18 +1,25 @@
+import { memo, useMemo } from 'react';
 import { TECH_STACKS } from '../constant/techStackInfo';
 import NoContents from './NoContents';
-import TechLabel from './TeckLabel';
+import TechLabel from './TechLabel';
 
-export default function LabelList({ keyword }: { keyword: string }) {
+function LabelList({ keyword }: { keyword: string }) {
+  const filteredStacks = useMemo(() => {
+    const lower = keyword.toLowerCase();
+    return TECH_STACKS.filter((te) => te.name.toLowerCase().includes(lower));
+  }, [keyword]);
+
+  if (filteredStacks.length === 0) {
+    return <NoContents />;
+  }
+
   return (
     <div className="flex flex-wrap gap-2 overflow-y-auto">
-      {TECH_STACKS.filter((te) =>
-        te.name.toLowerCase().includes(keyword.toLowerCase()),
-      ).map((te) => (
+      {filteredStacks.map((te) => (
         <TechLabel key={te.name} techName={te.name} />
       ))}
-      {TECH_STACKS.filter((te) =>
-        te.name.toLowerCase().includes(keyword.toLowerCase()),
-      ).length === 0 && <NoContents />}
     </div>
   );
 }
+
+export default memo(LabelList);

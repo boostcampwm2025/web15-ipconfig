@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   LuShare2,
   LuFileText,
@@ -196,6 +196,11 @@ const CanvasPage = () => {
     setHoveredUser(user);
   };
 
+  // Tech Stack Modal Handler
+  const handleModalClose = useCallback(() => {
+    setIsTechStackModalOpen(false);
+  }, []);
+
   // Markdown Generation
   const generateMarkdown = () => {
     const techs = Array.from(techStack)
@@ -311,7 +316,6 @@ ${techs.length ? techs : '| None | - | - |'}
               height: '2000px',
             }}
           />
-
           {/* Widgets Rendering */}
           {widgets.map((widget) => (
             <div
@@ -493,7 +497,7 @@ ${techs.length ? techs : '| None | - | - |'}
           </div>
         </div>
         {isTechStackModalOpen && (
-          <TechStackModal onModalClose={() => setIsTechStackModalOpen(false)} />
+          <TechStackModal onModalClose={handleModalClose} />
         )}
       </div>
 
@@ -607,6 +611,7 @@ interface TechWidgetProps {
   selected: Set<string>;
   onToggle: (techId: string) => void;
 }
+
 const TechWidget = ({ onRemove, selected, onToggle }: TechWidgetProps) => (
   <div className="relative w-[400px] cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
     <WidgetHeader
