@@ -12,7 +12,7 @@ describe('MarkdownService', () => {
     service = module.get<MarkdownService>(MarkdownService);
   });
 
-  it('should be defined', () => {
+  it('마크다운 서비스 생성', () => {
     expect(service).toBeDefined();
   });
 });

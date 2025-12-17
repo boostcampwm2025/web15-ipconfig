@@ -10,6 +10,7 @@ export class TeamStyle {
 export class TechStack {
   name: string;
   version: string;
+  // 선택된 거만 기록하기 때문에 이건 필요 없지 않을까?
   status: string;
 }
 
