@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import React, { useMemo, useRef, useState } from 'react';
 
 import {
   LuShare2,
@@ -20,6 +19,7 @@ import {
 
 import Cursor from '../components/ui/cursor';
 import { getRandomColor } from '../utils/getRandomColor';
+import { useSocket } from '../hooks/useSocket';
 
 // --- Types ---
 
@@ -141,7 +141,6 @@ function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<
     Record<string, RemoteCursor>
   >({});
-  const socketRef = useRef<Socket | null>(null);
 
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   // 나중에 워크 스페이스를 지정해서 들어갈 수 있도록 해야 할 것 같습니다
@@ -159,112 +158,11 @@ function WorkSpacePage() {
   );
 
   // ----- WebSocket 초기화 & 이벤트 바인딩 -----
-  useEffect(() => {
-    const socket = io('http://localhost:3000', {
-      transports: ['websocket'],
-    });
-    socketRef.current = socket;
-
-    socket.emit('user:join', {
-      workspaceId,
-      user: {
-        id: currentUser.id,
-        nickname: currentUser.nickname,
-        color: currentUser.color,
-        backgroundColor: currentUser.backgroundColor,
-      },
-    });
-
-    // 같은 workspace에 있는 전체 유저 + 커서 목록 수신
-    socket.on(
-      'user:joined',
-      (payload: {
-        allUsers: {
-          id: string;
-          nickname: string;
-          color: string;
-          backgroundColor: string;
-        }[];
-        cursors: {
-          userId: string;
-          workspaceId: string;
-          x: number;
-          y: number;
-        }[];
-      }) => {
-        setRemoteCursors((prev) => {
-          const next = { ...prev };
-
-          const cursorMap = new Map(
-            payload.cursors.map((cursor) => [cursor.userId, cursor]),
-          );
-
-          payload.allUsers.forEach((user) => {
-            const existing = next[user.id];
-            const cursor = cursorMap.get(user.id);
-
-            next[user.id] = {
-              userId: user.id,
-              nickname: user.nickname,
-              color: user.color,
-              backgroundColor: user.backgroundColor,
-              x: cursor?.x ?? existing?.x ?? 100,
-              y: cursor?.y ?? existing?.y ?? 100,
-            };
-          });
-
-          return next;
-        });
-      },
-    );
-
-    socket.on('user:left', (userId: string) => {
-      setRemoteCursors((prev) => {
-        const next = { ...prev };
-        delete next[userId];
-        return next;
-      });
-    });
-
-    socket.on(
-      'cursor:moved',
-      (payload: { userId: string; moveData: { x: number; y: number } }) => {
-        const { userId, moveData } = payload;
-
-        setRemoteCursors((prev) => {
-          const existing = prev[userId];
-          if (!existing) {
-            // 아직 join 이벤트를 못 받은 유저라면 기본값으로 생성
-            // 사실 이 부분은 정상 처리 시 user:joined에서 처리가 되야 하는 부분이긴 합니다. 나중에 모든 유저를 받아오는 로직이 추가되면 수정할게요.
-            return {
-              ...prev,
-              [userId]: {
-                userId,
-                nickname: '임시 유저',
-                color: '#3b82f6',
-                backgroundColor: '#3b82f6',
-                x: moveData.x,
-                y: moveData.y,
-              },
-            };
-          }
-          return {
-            ...prev,
-            [userId]: {
-              ...existing,
-              x: moveData.x,
-              y: moveData.y,
-            },
-          };
-        });
-      },
-    );
-
-    return () => {
-      socket.emit('user:leave', { workspaceId, userId: currentUser.id });
-      socket.disconnect();
-    };
-  }, [currentUser, workspaceId]);
+  const { emitCursorMove } = useSocket({
+    workspaceId,
+    currentUser,
+    setRemoteCursors,
+  });
 
   // --- Handlers ---
 
@@ -321,22 +219,13 @@ function WorkSpacePage() {
     if (now - lastEmitRef.current < throttleMs) return;
     lastEmitRef.current = now;
 
-    const socket = socketRef.current;
-    if (!socket) return;
-
     const canvasRect = canvasRef.current?.getBoundingClientRect();
     if (!canvasRect) return;
 
     const relativeX = e.clientX - canvasRect.left;
     const relativeY = e.clientY - canvasRect.top;
 
-    socket.emit('cursor:move', {
-      userId: currentUser.id,
-      moveData: {
-        x: relativeX,
-        y: relativeY,
-      },
-    });
+    emitCursorMove(relativeX, relativeY);
   };
 
   const handleMouseUp = () => {
@@ -512,7 +401,7 @@ ${techs.length ? techs : '| None | - | - |'}
           {Object.values(remoteCursors).map((cursor) => (
             <div
               key={cursor.userId}
-              className="pointer-events-none absolute z-[100]"
+              className="pointer-events-none absolute z-100"
               style={{
                 left: cursor.x,
                 top: cursor.y,
