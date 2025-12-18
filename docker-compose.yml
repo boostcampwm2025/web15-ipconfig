@@ -1,0 +1,37 @@
+services:
+  # Frontend Service (React)
+  frontend:
+    container_name: teamConfig-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173' # Host:Container
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # 프론트엔드도 동일한 문제를 방지하기 위해 추가 권장
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+    networks:
+      - web-os-network
+
+  # Backend Service (Node.js)
+  backend:
+    container_name: teamConfig-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules # <--- [핵심 수정] 이미지 내부의 node_modules를 보존합니다.
+    networks:
+      - web-os-network
+
+networks:
+  web-os-network:
+    driver: bridge

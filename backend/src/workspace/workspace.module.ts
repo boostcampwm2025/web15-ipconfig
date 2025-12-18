@@ -4,5 +4,6 @@ import { WorkspaceGateway } from './workspace.gateway';
 
 @Module({
   providers: [WorkspaceService, WorkspaceGateway],
+  exports: [WorkspaceService],
 })
 export class WorkspaceModule {}
