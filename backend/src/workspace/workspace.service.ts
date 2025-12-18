@@ -33,11 +33,12 @@ export class WorkspaceService {
     socketId: string,
   ): {
     roomId: string;
-    user: JoindedUserDTO;
+    user: User;
+    otherUsers: User[];
   } {
     const roomId = payload.workspaceId;
 
-    const user: JoindedUserDTO = {
+    const user: User = {
       id: payload.user.id,
       nickname: payload.user.nickname,
       color: payload.user.color,
@@ -49,7 +50,7 @@ export class WorkspaceService {
       user,
     });
 
-    return { roomId, user };
+    return { roomId, user, otherUsers: this.getOtherUsers(user.id) };
   }
 
   public leaveUser(
@@ -67,10 +68,17 @@ export class WorkspaceService {
     return { roomId, userId: user.id };
   }
 
+  // 모든 유저 반환
+  public getOtherUsers(userId: string): User[] {
+    return Array.from(this.userSessions.values())
+      .map((session) => session.user)
+      .filter((user) => user.id !== userId);
+  }
+
   // 소켓 Id로 유저 정보 조회
   public getUserBySocketId(socketId: string): {
     roomId: string;
-    user: JoindedUserDTO;
+    user: User;
   } | null {
     const session = this.userSessions.get(socketId);
     if (!session) {
@@ -84,7 +92,7 @@ export class WorkspaceService {
   }
 
   // 방 Id로 유저 정보 조회
-  public getUsersByRoomId(roomId: string): JoindedUserDTO[] {
+  public getUsersByRoomId(roomId: string): User[] {
     return Array.from(this.userSessions.values())
       .filter((session) => session.roomId === roomId)
       .map((session) => session.user);

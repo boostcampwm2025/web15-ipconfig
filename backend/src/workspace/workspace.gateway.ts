@@ -5,6 +5,7 @@ import {
   ConnectedSocket,
   WebSocketServer,
   OnGatewayDisconnect,
+  OnGatewayConnection,
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
@@ -39,12 +40,20 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     this.server.to(roomId).emit('user:left', userId);
   }
 
+  /* 
+  워크 스페이스 처음 접속 시 정보를 전달해줘야 함
+  1. 위젯 데이터
+  2. 유저 관련 정보
+  */
   @SubscribeMessage('user:join')
   async handleUserJoin(
     @MessageBody() payload: JoinUserDTO,
     @ConnectedSocket() client: Socket,
   ) {
-    const { roomId, user } = this.workspaceService.joinUser(payload, client.id);
+    const { roomId, user, otherUsers } = this.workspaceService.joinUser(
+      payload,
+      client.id,
+    );
 
     await client.join(roomId);
 
@@ -52,7 +61,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       userId: user.id,
       status: UserStatus.ONLINE,
     });
-    this.server.to(roomId).emit('user:joined', user);
+    this.server.to(roomId).emit('user:joined', { user, otherUsers });
   }
 
   @SubscribeMessage('user:leave')
