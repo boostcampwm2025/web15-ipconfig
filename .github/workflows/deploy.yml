@@ -1,0 +1,110 @@
+name: Deploy with Docker Compose
+
+on:
+  push:
+    branches:
+      - chore/40-deploy
+
+env:
+  NODE_VERSION: '24.12.0'
+  FRONTEND_IMAGE: web15-ipconfig-frontend:latest
+  BACKEND_IMAGE: web15-ipconfig-backend:latest
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend Image
+        run: |
+          docker build -t ${{ env.BACKEND_IMAGE }} \
+            --target backend-prod \
+            -f dockerfile.prod .
+
+      - name: Build Frontend Image
+        run: |
+          docker build -t ${{ env.FRONTEND_IMAGE }} \
+            --target frontend-prod \
+            -f dockerfile.prod .
+
+      - name: Log in to NCP Container Registry
+        run: |
+          echo "${{ secrets.NCP_SECRET_KEY }}" | docker login \
+            -u "${{ secrets.NCP_ACCESS_KEY }}" \
+            --password-stdin ${{ secrets.NCP_REGISTRY_ENDPOINT }}
+
+      - name: Tag Backend Image
+        run: |
+          docker tag ${{ env.BACKEND_IMAGE }} \
+            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
+
+      - name: Tag Frontend Image
+        run: |
+          docker tag ${{ env.FRONTEND_IMAGE }} \
+            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+
+      - name: Push Backend Image
+        run: |
+          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
+
+      - name: Push Frontend Image
+        run: |
+          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+
+  deploy_to_server:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.prod.yml to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.NCLOUD_HOST }}
+          username: ${{ secrets.NCLOUD_USER }}
+          key: ${{ secrets.NCLOUD_SSH_KEY }}
+          source: 'docker-compose.prod.yml'
+          target: '~/app/'
+
+      - name: SSH & Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.NCLOUD_HOST }}
+          username: ${{ secrets.NCLOUD_USER }}
+          key: ${{ secrets.NCLOUD_SSH_KEY }}
+          script: |
+            set -e
+            mkdir -p ~/app
+            cd ~/app
+
+            # 환경 변수 파일 생성
+            echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
+
+            # NCP Container Registry 로그인
+            echo "${{ secrets.NCP_SECRET_KEY }}" | docker login \
+              -u "${{ secrets.NCP_ACCESS_KEY }}" \
+              --password-stdin ${{ secrets.NCP_REGISTRY_ENDPOINT }}
+
+            # 이미지 pull
+            docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
+            docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+
+            # 환경 변수 설정
+            export NCP_REGISTRY_ENDPOINT=${{ secrets.NCP_REGISTRY_ENDPOINT }}
+            export BACKEND_IMAGE=${{ env.BACKEND_IMAGE }}
+            export FRONTEND_IMAGE=${{ env.FRONTEND_IMAGE }}
+
+            # 기존 컨테이너 중지 및 제거
+            docker-compose -f docker-compose.prod.yml down || true
+
+            # 새 컨테이너 시작
+            docker-compose -f docker-compose.prod.yml up -d
+
+            # 컨테이너 상태 확인
+            docker-compose -f docker-compose.prod.yml ps

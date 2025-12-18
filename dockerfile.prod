@@ -1,0 +1,63 @@
+FROM node:24.12.0-alpine AS base
+WORKDIR /app
+
+# Root package.json 복사
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
+
+#############################
+# 1. 프론트엔드 빌드 단계
+#############################
+FROM base AS frontend-build
+WORKDIR /app
+
+# 프론트엔드 소스 복사
+COPY frontend ./frontend
+
+WORKDIR /app/frontend
+RUN npm ci
+RUN npm run build
+
+#############################
+# 2. 프론트엔드 nginx 배포 이미지
+#############################
+FROM nginx:alpine AS frontend-prod
+
+# Vite 빌드 결과를 nginx 정적 루트로 복사
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
+
+# nginx 설정 파일 복사
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+#############################
+# 3. 백엔드 빌드 단계
+#############################
+FROM base AS backend-build
+WORKDIR /app
+
+# 백엔드 소스 복사
+COPY backend ./backend
+
+WORKDIR /app/backend
+RUN npm ci
+RUN npm run build
+
+#############################
+# 4. 백엔드 런타임 이미지
+#############################
+FROM node:24.12.0-alpine AS backend-prod
+WORKDIR /app
+
+# 빌드 결과만 복사
+COPY --from=backend-build /app/backend/dist ./dist
+
+# 백엔드 패키지 의존성만 설치 (prod 전용)
+COPY backend/package*.json ./
+RUN npm ci --omit=dev
+
+EXPOSE 3000
+CMD ["node", "dist/main.js"]
