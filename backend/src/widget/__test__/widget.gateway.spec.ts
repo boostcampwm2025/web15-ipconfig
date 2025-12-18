@@ -5,20 +5,26 @@ import { CreateWidgetDto } from '../dto/create-widget.dto';
 import { UpdateWidgetDto } from '../dto/update-widget.dto';
 import { WidgetType, TechStackContentDto } from '../dto/widget-content.dto';
 import { Server, Socket } from 'socket.io';
+import { WorkspaceService } from '../../workspace/workspace.service';
 
 type MockWidgetService = {
   [P in keyof IWidgetService]: jest.Mock;
 };
 
+type MockWorkspaceService = {
+  getUserBySocketId: jest.Mock;
+};
 type MockServer = Partial<Record<keyof Server, jest.Mock>>;
 
 describe('WidgetGateway', () => {
   let gateway: WidgetGateway;
   let serviceMock: MockWidgetService;
+  let workspaceServiceMock: MockWorkspaceService;
   let serverMock: MockServer;
   let clientMock: Partial<Socket>;
 
   const roomId = 'room-1';
+  const socketId = 's1';
 
   beforeEach(async () => {
     serviceMock = {
@@ -29,13 +35,18 @@ describe('WidgetGateway', () => {
       findOne: jest.fn(),
     };
 
+    workspaceServiceMock = {
+      getUserBySocketId: jest.fn(),
+    };
+
     serverMock = {
       emit: jest.fn(),
       to: jest.fn().mockReturnThis(),
     };
 
     clientMock = {
-      data: { roomId },
+      id: socketId,
+      emit: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -44,6 +55,10 @@ describe('WidgetGateway', () => {
         {
           provide: WIDGET_SERVICE,
           useValue: serviceMock,
+        },
+        {
+          provide: WorkspaceService,
+          useValue: workspaceServiceMock,
         },
       ],
     }).compile();
@@ -74,14 +89,19 @@ describe('WidgetGateway', () => {
           } as TechStackContentDto,
         },
       };
+
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.create.mockResolvedValue(createDto);
 
       // when: create 핸들러가 실행되면
       await gateway.create(createDto, clientMock as Socket);
 
       // then: 서비스의 create 메서드가 호출되고, 서버 전체에 "widget:created" 이벤트가 전송되어야 한다
-      expect(serviceMock.create).toHaveBeenCalledWith(roomId, createDto); // roomId 전달 확인
-      expect(serverMock.to).toHaveBeenCalledWith(roomId); // Room 타겟팅 확인
+      expect(workspaceServiceMock.getUserBySocketId).toHaveBeenCalledWith(
+        socketId,
+      );
+      expect(serviceMock.create).toHaveBeenCalledWith(roomId, createDto);
+      expect(serverMock.to).toHaveBeenCalledWith(roomId);
       expect(serverMock.emit).toHaveBeenCalledWith('widget:created', createDto);
     });
   });
@@ -91,6 +111,7 @@ describe('WidgetGateway', () => {
       // given: 클라이언트로부터 수정 요청 데이터가 왔을 때
       const updateDto: UpdateWidgetDto = { widgetId: 'w-1', data: { x: 100 } };
       const updatedWidget = { widgetId: 'w-1', data: { x: 100, y: 0 } };
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.update.mockResolvedValue(updatedWidget);
 
       // when: update 핸들러가 실행되면
@@ -111,6 +132,7 @@ describe('WidgetGateway', () => {
       // given: 클라이언트로부터 삭제할 위젯 ID가 왔을 때
       const widgetId = 'w-1';
       const result = { widgetId };
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.remove.mockResolvedValue(result);
 
       // when: remove 핸들러가 실행되면

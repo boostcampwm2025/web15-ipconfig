@@ -11,11 +11,7 @@ import type { IWidgetService } from './widget.interface';
 import { WIDGET_SERVICE } from './widget.interface';
 import { CreateWidgetDto } from './dto/create-widget.dto';
 import { UpdateWidgetDto } from './dto/update-widget.dto';
-
-interface SocketData {
-  roomId?: string;
-  userId?: string;
-}
+import { WorkspaceService } from '../workspace/workspace.service';
 
 @WebSocketGateway({ namespace: 'workspace', cors: { origin: '*' } })
 export class WidgetGateway {
@@ -25,17 +21,18 @@ export class WidgetGateway {
   constructor(
     @Inject(WIDGET_SERVICE)
     private readonly widgetService: IWidgetService,
+    private readonly workspaceService: WorkspaceService,
   ) {}
 
   private getRoomId(client: Socket): string | null {
-    const data = client.data as SocketData;
-    const roomId = data.roomId;
+    const userInfo = this.workspaceService.getUserBySocketId(client.id);
 
-    if (!roomId) {
-      client.emit('error', 'Room ID not found. Please join a room first.');
+    if (!userInfo) {
+      client.emit('error', 'User not found in workspace. Please join first.');
       return null;
     }
-    return roomId;
+
+    return userInfo.roomId;
   }
 
   @SubscribeMessage('widget:create')
