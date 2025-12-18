@@ -3,7 +3,7 @@ name: Deploy with Docker Compose
 on:
   push:
     branches:
-      - chore/40-deploy
+      - main
 
 env:
   NODE_VERSION: '24.12.0'
