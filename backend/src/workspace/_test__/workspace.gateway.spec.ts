@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 
 import { WorkspaceGateway } from '../workspace.gateway';
 import { WorkspaceService } from '../workspace.service';
+import { CursorService } from '../../cursor/cursor.service';
 import { JoinUserDTO } from '../dto/join-user.dto';
 import { LeaveUserDTO } from '../dto/left-user.dto';
 import { MoveCursorDTO } from '../dto/move-cursor.dto';
@@ -12,6 +13,7 @@ describe('WorkspaceGateway', () => {
   let serverMock: Partial<Server>;
   let clientMock: Partial<Socket>;
   let workspaceServiceMock: Partial<WorkspaceService>;
+  let cursorServiceMock: Partial<CursorService>;
 
   beforeEach(async () => {
     serverMock = {
@@ -29,11 +31,19 @@ describe('WorkspaceGateway', () => {
       handleDisconnect: jest.fn(),
       getUserBySocketId: jest.fn(),
     };
+    cursorServiceMock = {
+      setCursor: jest.fn(),
+      updateCursor: jest.fn(),
+      removeCursor: jest.fn(),
+      getCursorsByWorkspace: jest.fn().mockReturnValue([]),
+      hasCursor: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WorkspaceGateway,
         { provide: WorkspaceService, useValue: workspaceServiceMock },
+        { provide: CursorService, useValue: cursorServiceMock },
       ],
     }).compile();
 
@@ -53,8 +63,8 @@ describe('WorkspaceGateway', () => {
       serverMock.to = jest.fn().mockReturnValue(serverMock as Server);
       clientMock = {
         id: 's1',
-        join: jest.fn(),
-        leave: jest.fn(),
+        join: jest.fn().mockResolvedValue(undefined),
+        leave: jest.fn().mockResolvedValue(undefined),
       } as Partial<Socket>;
     });
 
@@ -83,6 +93,7 @@ describe('WorkspaceGateway', () => {
 
       // THEN
       expect(workspaceServiceMock.handleDisconnect).toHaveBeenCalledWith('s1');
+      expect(cursorServiceMock.removeCursor).toHaveBeenCalledWith('w1', 'u1');
       expect(serverMock.to).toHaveBeenCalledWith('w1');
       expect(serverMock.emit).toHaveBeenCalledWith('user:status', {
         userId: 'u1',
@@ -100,14 +111,23 @@ describe('WorkspaceGateway', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
+          backgroundColor: '#ffffff',
         },
+        allUsers: [
+          {
+            id: 'u1',
+            nickname: 'user1',
+            color: '#000000',
+            backgroundColor: '#ffffff',
+          },
+        ],
       });
 
       serverMock.to = jest.fn().mockReturnValue(serverMock as Server);
       clientMock = {
         id: 's1',
-        join: jest.fn(),
-        leave: jest.fn(),
+        join: jest.fn().mockResolvedValue(undefined),
+        leave: jest.fn().mockResolvedValue(undefined),
       } as Partial<Socket>;
     });
 
@@ -119,6 +139,7 @@ describe('WorkspaceGateway', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
+          backgroundColor: '#ffffff',
         },
       };
 
@@ -127,8 +148,22 @@ describe('WorkspaceGateway', () => {
 
       // THEN
       expect(workspaceServiceMock.joinUser).toHaveBeenCalledWith(payload, 's1');
+      expect(cursorServiceMock.setCursor).toHaveBeenCalled();
+      expect(cursorServiceMock.getCursorsByWorkspace).toHaveBeenCalledWith(
+        'w1',
+      );
       expect(clientMock.join).toHaveBeenCalledWith('w1');
-      expect(serverMock.emit).toHaveBeenCalledWith('user:joined', payload.user);
+      expect(serverMock.emit).toHaveBeenCalledWith('user:joined', {
+        allUsers: [
+          {
+            id: 'u1',
+            nickname: 'user1',
+            color: '#000000',
+            backgroundColor: '#ffffff',
+          },
+        ],
+        cursors: [],
+      });
       expect(serverMock.emit).toHaveBeenCalledWith('user:status', {
         userId: 'u1',
         status: 'ONLINE',
@@ -143,6 +178,7 @@ describe('WorkspaceGateway', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
+          backgroundColor: '#ffffff',
         },
       };
 
@@ -161,6 +197,7 @@ describe('WorkspaceGateway', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
+          backgroundColor: '#ffffff',
         },
       };
 
@@ -182,8 +219,8 @@ describe('WorkspaceGateway', () => {
       serverMock.to = jest.fn().mockReturnValue(serverMock as Server);
       clientMock = {
         id: 's1',
-        join: jest.fn(),
-        leave: jest.fn(),
+        join: jest.fn().mockResolvedValue(undefined),
+        leave: jest.fn().mockResolvedValue(undefined),
       } as unknown as Partial<Socket>;
     });
 
@@ -199,6 +236,7 @@ describe('WorkspaceGateway', () => {
 
       // THEN
       expect(workspaceServiceMock.leaveUser).toHaveBeenCalledWith('s1');
+      expect(cursorServiceMock.removeCursor).toHaveBeenCalledWith('w1', 'u1');
       expect(clientMock.leave).toHaveBeenCalledWith('w1');
       expect(serverMock.emit).toHaveBeenCalledWith('user:left', payload.userId);
       expect(serverMock.emit).toHaveBeenCalledWith('user:status', {
@@ -241,8 +279,8 @@ describe('WorkspaceGateway', () => {
       serverMock.to = jest.fn().mockReturnValue(serverMock as Server);
       clientMock = {
         id: 's1',
-        join: jest.fn(),
-        leave: jest.fn(),
+        join: jest.fn().mockResolvedValue(undefined),
+        leave: jest.fn().mockResolvedValue(undefined),
       } as unknown as Partial<Socket>;
     });
 
@@ -266,6 +304,12 @@ describe('WorkspaceGateway', () => {
 
       // THEN
       expect(workspaceServiceMock.getUserBySocketId).toHaveBeenCalledWith('s1');
+      expect(cursorServiceMock.updateCursor).toHaveBeenCalledWith({
+        workspaceId: 'w1',
+        userId: 'u1',
+        x: 100,
+        y: 100,
+      });
       expect(serverMock.emit).toHaveBeenCalledWith('cursor:moved', payload);
       expect(serverMock.to).toHaveBeenCalledWith('w1');
     });
@@ -287,6 +331,7 @@ describe('WorkspaceGateway', () => {
 
       // THEN
       expect(workspaceServiceMock.getUserBySocketId).toHaveBeenCalledWith('s1');
+      expect(cursorServiceMock.updateCursor).not.toHaveBeenCalled();
       expect(serverMock.to).not.toHaveBeenCalled();
       expect(serverMock.emit).not.toHaveBeenCalledWith('cursor:moved', payload);
     });

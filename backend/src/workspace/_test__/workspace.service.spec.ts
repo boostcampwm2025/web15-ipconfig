@@ -23,7 +23,12 @@ describe('WorkspaceService', () => {
       // GIVEN
       const payload: JoinUserDTO = {
         workspaceId: 'w1',
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const socketId = 's1';
 
@@ -34,6 +39,7 @@ describe('WorkspaceService', () => {
       expect(result).toEqual({
         roomId: 'w1',
         user: payload.user,
+        allUsers: [payload.user],
       });
 
       // Map에 저장되었는지 확인
@@ -50,7 +56,12 @@ describe('WorkspaceService', () => {
       // GIVEN
       const payload: JoinUserDTO = {
         workspaceId: 'w1',
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const socketId = 's1';
       service.joinUser(payload, socketId);
@@ -94,7 +105,12 @@ describe('WorkspaceService', () => {
       // GIVEN
       const payload: JoinUserDTO = {
         workspaceId: 'w1',
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const socketId = 's1';
       service.joinUser(payload, socketId);
@@ -116,7 +132,12 @@ describe('WorkspaceService', () => {
       // GIVEN
       const payload: JoinUserDTO = {
         workspaceId: 'w1',
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const socketId = 's1';
       service.joinUser(payload, socketId);
@@ -149,11 +170,21 @@ describe('WorkspaceService', () => {
       const roomId = 'w1';
       const payload1: JoinUserDTO = {
         workspaceId: roomId,
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const payload2: JoinUserDTO = {
         workspaceId: roomId,
-        user: { id: 'u2', nickname: 'user2', color: '#FF0000' },
+        user: {
+          id: 'u2',
+          nickname: 'user2',
+          color: '#FF0000',
+          backgroundColor: '#ffffff',
+        },
       };
       service.joinUser(payload1, 's1');
       service.joinUser(payload2, 's2');
@@ -171,11 +202,21 @@ describe('WorkspaceService', () => {
       // GIVEN
       const payload1: JoinUserDTO = {
         workspaceId: 'w1',
-        user: { id: 'u1', nickname: 'user1', color: '#000000' },
+        user: {
+          id: 'u1',
+          nickname: 'user1',
+          color: '#000000',
+          backgroundColor: '#ffffff',
+        },
       };
       const payload2: JoinUserDTO = {
         workspaceId: 'w2',
-        user: { id: 'u2', nickname: 'user2', color: '#FF0000' },
+        user: {
+          id: 'u2',
+          nickname: 'user2',
+          color: '#FF0000',
+          backgroundColor: '#ffffff',
+        },
       };
       service.joinUser(payload1, 's1');
       service.joinUser(payload2, 's2');
