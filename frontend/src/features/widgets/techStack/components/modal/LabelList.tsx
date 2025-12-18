@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
-import { TECH_STACKS } from '../constant/techStackInfo';
 import NoContents from './NoContents';
+import { TECH_STACKS } from '../../constant/techStackInfo';
 import TechLabel from './TechLabel';
 
 function LabelList({ keyword }: { keyword: string }) {

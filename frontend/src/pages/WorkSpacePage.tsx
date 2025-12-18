@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   LuShare2,
   LuFileText,
@@ -15,7 +15,7 @@ import {
   LuZoomOut,
   LuGithub,
 } from 'react-icons/lu';
-import TechStackModal from '../features/techStack/components/TechStackModal';
+import TechStackModal from '../features/widgets/techStack/components/modal/TechStackModal';
 
 // --- Types ---
 
@@ -30,7 +30,7 @@ interface WidgetData {
   id: string;
   type: WidgetType;
   position: WidgetPosition;
-  content?: any; // For note text or specific widget state
+  content: string;
 }
 
 interface User {
@@ -108,7 +108,7 @@ const TECH_OPTIONS = [
 
 // --- Components ---
 
-const CanvasPage = () => {
+function WorkSpacePage() {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(true);
   // Global State
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
@@ -136,9 +136,10 @@ const CanvasPage = () => {
     setWidgets(widgets.filter((w) => w.id !== id));
   };
 
-  const updateWidgetContent = (id: string, content: any) => {
-    setWidgets(widgets.map((w) => (w.id === id ? { ...w, content } : w)));
-  };
+  // Tech Stack Modal Handler
+  const handleModalClose = useCallback(() => {
+    setIsTechStackModalOpen(false);
+  }, []);
 
   // Drag Logic
   const handleMouseDown = (
@@ -196,11 +197,6 @@ const CanvasPage = () => {
     setHoveredUser(user);
   };
 
-  // Tech Stack Modal Handler
-  const handleModalClose = useCallback(() => {
-    setIsTechStackModalOpen(false);
-  }, []);
-
   // Markdown Generation
   const generateMarkdown = () => {
     const techs = Array.from(techStack)
@@ -240,7 +236,7 @@ ${techs.length ? techs : '| None | - | - |'}
       {/* 1. Header */}
       <header className="z-50 flex h-16 shrink-0 items-center justify-between border-b border-gray-700 bg-gray-800 px-6 shadow-lg">
         <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-blue-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
             15
           </div>
           <div>
@@ -316,6 +312,7 @@ ${techs.length ? techs : '| None | - | - |'}
               height: '2000px',
             }}
           />
+
           {/* Widgets Rendering */}
           {widgets.map((widget) => (
             <div
@@ -434,7 +431,7 @@ ${techs.length ? techs : '| None | - | - |'}
         {/* User Hover Card Popover */}
         {hoveredUser && (
           <div
-            className="animate-slide-in pointer-events-none fixed z-[100] w-64 rounded-xl border border-gray-600 bg-gray-800 p-4 shadow-2xl"
+            className="animate-slide-in pointer-events-none fixed z-100 w-64 rounded-xl border border-gray-600 bg-gray-800 p-4 shadow-2xl"
             style={{
               top: hoverPosition.top,
               left: hoverPosition.left,
@@ -503,7 +500,7 @@ ${techs.length ? techs : '| None | - | - |'}
 
       {/* Export Modal */}
       {isExportModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <div className="animate-scale-in flex max-h-[85vh] w-full max-w-3xl flex-col rounded-xl border border-gray-700 bg-gray-800 shadow-2xl">
             <div className="flex items-center justify-between rounded-t-xl border-b border-gray-700 bg-gray-900 p-5">
               <div className="flex items-center gap-3">
@@ -566,7 +563,7 @@ ${techs.length ? techs : '| None | - | - |'}
       )}
     </div>
   );
-};
+}
 
 // --- Sub Components ---
 
@@ -611,9 +608,8 @@ interface TechWidgetProps {
   selected: Set<string>;
   onToggle: (techId: string) => void;
 }
-
 const TechWidget = ({ onRemove, selected, onToggle }: TechWidgetProps) => (
-  <div className="relative w-[400px] cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
+  <div className="w-[400px] cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
     <WidgetHeader
       title="Tech Stack"
       icon={<LuLayers className="text-purple-400" size={18} />}
@@ -667,4 +663,4 @@ const WidgetHeader = ({ title, icon, onRemove }: WidgetHeaderProps) => (
   </div>
 );
 
-export default CanvasPage;
+export default WorkSpacePage;

@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { getTechIconUrl } from '../utils/getTechIconUrl';
+import { getTechIconUrl } from '../../utils/getTechIconUrl';
 
 const TechIcon = ({ name }: { name: string }) => {
   const [error, setError] = useState(false);

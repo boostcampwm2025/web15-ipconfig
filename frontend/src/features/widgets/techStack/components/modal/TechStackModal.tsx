@@ -1,9 +1,9 @@
 import { LuLayers } from 'react-icons/lu';
 import SearchBar from './SearchBar';
 import { useState, memo } from 'react';
-import useDebounce from '../hooks/useDebounce';
 import ModalHeader from './ModalHeader';
 import LabelList from './LabelList';
+import useDebounce from '../../hooks/useDebounce';
 
 const HEADER_ICON = <LuLayers className="text-purple-400" size={18} />;
 
