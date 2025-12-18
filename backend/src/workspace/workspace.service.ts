@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JoindedUserDTO, JoinUserDTO } from './dto/join-user.dto';
+import { JoinUserDTO } from './dto/join-user.dto';
 import { User } from './dto/join-user.dto';
 
 // 유저 정보는 저장해야 함
@@ -34,7 +34,6 @@ export class WorkspaceService {
   ): {
     roomId: string;
     user: User;
-    otherUsers: User[];
   } {
     const roomId = payload.workspaceId;
 
@@ -50,7 +49,7 @@ export class WorkspaceService {
       user,
     });
 
-    return { roomId, user, otherUsers: this.getOtherUsers(user.id) };
+    return { roomId, user };
   }
 
   public leaveUser(
@@ -66,13 +65,6 @@ export class WorkspaceService {
     this.userSessions.delete(socketId);
 
     return { roomId, userId: user.id };
-  }
-
-  // 모든 유저 반환
-  public getOtherUsers(userId: string): User[] {
-    return Array.from(this.userSessions.values())
-      .map((session) => session.user)
-      .filter((user) => user.id !== userId);
   }
 
   // 소켓 Id로 유저 정보 조회

@@ -50,10 +50,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     @MessageBody() payload: JoinUserDTO,
     @ConnectedSocket() client: Socket,
   ) {
-    const { roomId, user, otherUsers } = this.workspaceService.joinUser(
-      payload,
-      client.id,
-    );
+    const { roomId, user } = this.workspaceService.joinUser(payload, client.id);
 
     await client.join(roomId);
 
@@ -61,7 +58,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       userId: user.id,
       status: UserStatus.ONLINE,
     });
-    this.server.to(roomId).emit('user:joined', { user, otherUsers });
+    this.server.to(roomId).emit('user:joined', user);
   }
 
   @SubscribeMessage('user:leave')

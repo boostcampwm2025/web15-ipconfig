@@ -51,14 +51,7 @@ export class JoinUserDTO {
   2. 유저 관련 정보
   */
 export class JoindedUserDTO {
-  @ApiProperty({
-    description: '워크스페이스 ID',
-    example: 'w1',
-    required: true,
-  })
-  @IsString()
-  workspaceId: string;
-
+  // AllUsers 안에 포함되어 있긴 할텐데, 명확하게 나타내기 위해 따로 보내기
   @ApiProperty({
     description: '유저 정보',
     type: User,
@@ -67,13 +60,5 @@ export class JoindedUserDTO {
   @IsObject()
   user: User;
 
-  @ApiProperty({
-    description: '다른 유저 정보',
-    type: [User],
-    required: true,
-  })
-  @IsArray()
-  otherUsers: User[];
-
-  // TODO: 위젯 정보 넣기
+  // TODO: 위젯 정보, 유저 정보 넣기
 }
