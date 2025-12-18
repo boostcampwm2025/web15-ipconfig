@@ -175,31 +175,42 @@ function WorkSpacePage() {
       },
     });
 
-    // 같은 workspace에 있는 전체 유저 목록 수신
+    // 같은 workspace에 있는 전체 유저 + 커서 목록 수신
     socket.on(
       'user:joined',
-      (
+      (payload: {
         allUsers: {
           id: string;
           nickname: string;
           color: string;
           backgroundColor: string;
-        }[],
-      ) => {
+        }[];
+        cursors: {
+          userId: string;
+          workspaceId: string;
+          x: number;
+          y: number;
+        }[];
+      }) => {
         setRemoteCursors((prev) => {
           const next = { ...prev };
 
-          allUsers.forEach((user) => {
-            if (!next[user.id]) {
-              next[user.id] = {
-                userId: user.id,
-                nickname: user.nickname,
-                color: user.color,
-                backgroundColor: user.backgroundColor,
-                x: 100,
-                y: 100,
-              };
-            }
+          const cursorMap = new Map(
+            payload.cursors.map((cursor) => [cursor.userId, cursor]),
+          );
+
+          payload.allUsers.forEach((user) => {
+            const existing = next[user.id];
+            const cursor = cursorMap.get(user.id);
+
+            next[user.id] = {
+              userId: user.id,
+              nickname: user.nickname,
+              color: user.color,
+              backgroundColor: user.backgroundColor,
+              x: cursor?.x ?? existing?.x ?? 100,
+              y: cursor?.y ?? existing?.y ?? 100,
+            };
           });
 
           return next;
@@ -313,7 +324,6 @@ function WorkSpacePage() {
     const socket = socketRef.current;
     if (!socket) return;
 
-    // 캔버스 영역 기준 좌표 계산 (좌/상단 사이드바, 헤더 padding 등 제외)
     const canvasRect = canvasRef.current?.getBoundingClientRect();
     if (!canvasRect) return;
 
