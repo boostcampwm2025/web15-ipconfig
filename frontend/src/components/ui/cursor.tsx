@@ -3,11 +3,12 @@ import { LuMousePointer2 } from 'react-icons/lu';
 interface CursorProps {
   nickname: string;
   color: string;
+  backgroundColor: string;
   x: number;
   y: number;
 }
 
-function Cursor({ nickname, color, x, y }: CursorProps) {
+function Cursor({ nickname, color, backgroundColor, x, y }: CursorProps) {
   const renderColor = color ? color : '#000000';
 
   return (
@@ -17,6 +18,7 @@ function Cursor({ nickname, color, x, y }: CursorProps) {
           className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]"
           style={{
             color: renderColor,
+            background: backgroundColor,
             x: x,
             y: y,
           }}

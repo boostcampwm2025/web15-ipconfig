@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import Cursor from '../components/ui/cursor';
 
 import {
   LuShare2,
@@ -18,6 +17,9 @@ import {
   LuZoomOut,
   LuGithub,
 } from 'react-icons/lu';
+
+import Cursor from '../components/ui/cursor';
+import { getRandomColor } from '../utils/getRandomColor';
 
 // --- Types ---
 
@@ -51,6 +53,7 @@ interface RemoteCursor {
   userId: string;
   nickname: string;
   color: string;
+  backgroundColor: string;
   x: number;
   y: number;
 }
@@ -149,7 +152,8 @@ function WorkSpacePage() {
     () => ({
       id: crypto.randomUUID(),
       nickname: `임시 유저 ${crypto.getRandomValues(new Uint16Array(1))}`,
-      color: '#22c55e',
+      color: getRandomColor(),
+      backgroundColor: getRandomColor(),
     }),
     [],
   );
@@ -179,6 +183,7 @@ function WorkSpacePage() {
           userId: user.id,
           nickname: user.nickname,
           color: user.color,
+          backgroundColor: user.backgroundColor,
           x: 100,
           y: 100,
         },
@@ -209,6 +214,7 @@ function WorkSpacePage() {
                 userId,
                 nickname: '임시 유저',
                 color: '#3b82f6',
+                backgroundColor: '#3b82f6',
                 x: moveData.x,
                 y: moveData.y,
               },
@@ -488,6 +494,7 @@ ${techs.length ? techs : '| None | - | - |'}
               <Cursor
                 nickname={cursor.nickname}
                 color={cursor.color}
+                backgroundColor={cursor.backgroundColor}
                 x={cursor.x}
                 y={cursor.y}
               />
