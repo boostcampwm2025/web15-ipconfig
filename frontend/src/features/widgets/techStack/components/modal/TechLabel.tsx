@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import { getTechIconUrl } from '../../utils/getTechIconUrl';
+import { Badge } from '@/components/ui/badge';
 
 const TechIcon = ({ name }: { name: string }) => {
   const [error, setError] = useState(false);
@@ -8,9 +9,9 @@ const TechIcon = ({ name }: { name: string }) => {
   if (error) {
     // 이미지가 없으면 텍스트(첫 글자)로 보여줌
     return (
-      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 font-bold text-gray-600">
+      <Badge className="h-5 w-5 rounded-full bg-gray-200 font-bold text-gray-600">
         {name.substring(0, 1)}
-      </div>
+      </Badge>
     );
   }
 
@@ -30,14 +31,15 @@ function TechLabel({ techName }: { techName: string }) {
   };
 
   return (
-    <div
-      className="hover:border-main mb-4 flex cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-2 py-1 select-none hover:bg-gray-700"
+    <Badge
+      variant="outline"
+      className="hover:border-main mb-2 cursor-pointer gap-2 rounded-lg border-gray-700 px-2 py-1 select-none hover:bg-gray-700"
       draggable={true}
       onDragStart={handleDragStart}
     >
       <TechIcon name={techName} />
       <span className="text-sm font-medium text-gray-300">{techName}</span>
-    </div>
+    </Badge>
   );
 }
 
