@@ -16,9 +16,6 @@ jobs:
   # -----------------------------------------------------------------
   frontend-ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
 
     steps:
       - name: Checkout code
@@ -29,26 +26,22 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: ./frontend/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
+      - name: Install dependencies (Root)
         run: npm ci --ignore-scripts
 
-      - name: Lint
-        run: npm run lint
+      - name: Lint (Frontend)
+        run: npm run lint -w frontend
 
-      - name: Run tests
-        # 테스트 코드가 생기면 --passWithNoTests 옵션을 지워주세요
-        run: npm test -- --passWithNoTests
+      - name: Run tests (Frontend)
+        run: npm test -w frontend -- --passWithNoTests
 
   # -----------------------------------------------------------------
   # JOB 2: 백엔드 (NestJS) CI
   # -----------------------------------------------------------------
   backend-ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
 
     steps:
       - name: Checkout code
@@ -59,13 +52,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: ./backend/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
+      - name: Install dependencies (Root)
         run: npm ci --ignore-scripts
 
-      - name: Lint
-        run: npm run lint
+      - name: Lint (Backend)
+        run: npm run lint -w backend
 
-      - name: Run tests
-        run: npm run test
+      - name: Run tests (Backend)
+        run: npm run test -w backend
