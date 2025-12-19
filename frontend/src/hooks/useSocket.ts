@@ -40,7 +40,7 @@ export const useSocket = ({
         ? window.location.origin
         : 'http://localhost:3000';
 
-    const socket = io(socketUrl, {
+    const socket = io(`${socketUrl}/workspace`, {
       transports: ['websocket'],
     });
     socketRef.current = socket;
