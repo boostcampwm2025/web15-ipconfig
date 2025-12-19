@@ -1,11 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
   LuShare2,
   LuFileText,
   LuMousePointer2,
   LuLayers,
   LuGamepad2,
-  LuTrash2,
   LuX,
   LuCopy,
   LuCheck,
@@ -15,113 +14,23 @@ import {
   LuZoomOut,
   LuGithub,
 } from 'react-icons/lu';
-import TechStackModal from '../features/widgets/techStack/components/modal/TechStackModal';
 
-import Cursor from '../components/ui/cursor';
-import { getRandomColor } from '../utils/getRandomColor';
-import { useSocket } from '../hooks/useSocket';
+import TechStackWidget from '@/features/widgets/techStack/components/TechStackWidget';
+import type { WidgetData } from '@/common/types/widgetData';
+import type { User } from '@/common/types/user';
+import { INITIAL_USERS } from '@/common/mocks/users';
+import TechStackModal from '@/features/widgets/techStack/components/modal/TechStackModal';
+
+import CursorWithName from '@/common/components/cursorWithName';
+import { getRandomColor } from '@/utils/getRandomColor';
+import { useSocket } from '@/common/hooks/useSocket';
+import type { Cursor } from '@/common/types/cursor';
 
 // --- Types ---
 
-type WidgetType = 'tech';
+// --- Components ---s
 
-interface WidgetPosition {
-  x: number;
-  y: number;
-}
-
-interface WidgetData {
-  id: string;
-  type: WidgetType;
-  position: WidgetPosition;
-  content: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  role: string;
-  color: string; // Tailwind color class (e.g. 'bg-purple-500') 또는 HEX
-  textColor: string; // e.g. 'text-purple-500'
-  style: string;
-  time: string;
-  status: string;
-  activity: number[]; // Array for graph height
-}
-
-interface RemoteCursor {
-  userId: string;
-  nickname: string;
-  color: string;
-  backgroundColor: string;
-  x: number;
-  y: number;
-}
-
-// --- Mock Data ---
-
-const INITIAL_USERS: User[] = [
-  {
-    id: 'u1',
-    name: 'as-zini',
-    role: 'Frontend',
-    color: 'bg-purple-500',
-    textColor: 'text-purple-500',
-    style: 'Morning Person',
-    time: '10 AM - 6 PM',
-    status: '준비중',
-    activity: [30, 80, 40, 20, 90],
-  },
-  {
-    id: 'u2',
-    name: 'Grit03',
-    role: 'Backend',
-    color: 'bg-teal-500',
-    textColor: 'text-teal-500',
-    style: 'Night Owl',
-    time: '2 PM - 10 PM',
-    status: '준비중',
-    activity: [10, 20, 90, 80, 60],
-  },
-  {
-    id: 'u3',
-    name: 'davidpro08',
-    role: 'PM',
-    color: 'bg-pink-500',
-    textColor: 'text-pink-500',
-    style: 'Flexible',
-    time: '9 AM - 6 PM',
-    status: '준비완료',
-    activity: [50, 50, 50, 50, 50],
-  },
-  {
-    id: 'u4',
-    name: 'snailw',
-    role: 'PM',
-    color: 'bg-green-500',
-    textColor: 'text-pink-500',
-    style: 'Flexible',
-    time: '9 AM - 6 PM',
-    status: '준비완료',
-    activity: [50, 50, 50, 50, 50],
-  },
-];
-
-// Updated to use Official Icons (Simple Icons CDN)
-const TECH_OPTIONS = [
-  { id: 'React', url: 'https://cdn.simpleicons.org/react/61DAFB' },
-  { id: 'Vue', url: 'https://cdn.simpleicons.org/vuedotjs/4FC08D' },
-  { id: 'Next', url: 'https://cdn.simpleicons.org/nextdotjs/ffffff' },
-  { id: 'Node', url: 'https://cdn.simpleicons.org/nodedotjs/339933' },
-  { id: 'Nest', url: 'https://cdn.simpleicons.org/nestjs/E0234E' },
-  { id: 'Java' },
-  { id: 'Python', url: 'https://cdn.simpleicons.org/python/3776AB' },
-  { id: 'AWS' },
-];
-
-// --- Components ---
-
-function WorkSpacePage() {
+const CanvasPage = () => {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(true);
   // Global State
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
@@ -137,11 +46,39 @@ function WorkSpacePage() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // 캔버스 영역(ref) - 커서 좌표를 사이드바/헤더를 제외한 영역 기준으로 계산하기 위함
-  const canvasRef = useRef<HTMLDivElement | null>(null);
+  const mainWorkspaceRef = useRef<HTMLElement | null>(null);
+  const [mainWorkspaceSize, setMainWorkspaceSize] = useState({
+    width: 0,
+    height: 0,
+  });
 
-  const [remoteCursors, setRemoteCursors] = useState<
-    Record<string, RemoteCursor>
-  >({});
+  useEffect(() => {
+    if (mainWorkspaceRef.current) {
+      setMainWorkspaceSize({
+        width: mainWorkspaceRef.current.clientWidth,
+        height: mainWorkspaceRef.current.clientHeight,
+      });
+    }
+  }, []);
+
+  // Tech Stack Widget Position
+  const [techStackPosition, setTechStackPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  useEffect(() => {
+    if (mainWorkspaceRef.current) {
+      setTechStackPosition({
+        x: mainWorkspaceRef.current.clientWidth / 2 - 200,
+        y: mainWorkspaceRef.current.clientHeight / 2 - 100,
+      });
+    }
+  }, []);
+
+  const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
+    {},
+  );
 
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   // 나중에 워크 스페이스를 지정해서 들어갈 수 있도록 해야 할 것 같습니다
@@ -176,18 +113,6 @@ function WorkSpacePage() {
   });
 
   // --- Handlers ---
-
-  const addWidget = (type: WidgetType) => {
-    const id = Date.now().toString();
-    const x = Math.random() * 400 + 100;
-    const y = Math.random() * 200 + 100;
-    setWidgets([...widgets, { id, type, position: { x, y }, content: '' }]);
-  };
-
-  const removeWidget = (id: string) => {
-    setWidgets(widgets.filter((w) => w.id !== id));
-  };
-
   // Tech Stack Modal Handler
   const handleModalClose = useCallback(() => {
     setIsTechStackModalOpen(false);
@@ -235,25 +160,17 @@ function WorkSpacePage() {
     if (now - lastEmitRef.current < throttleMs) return;
     lastEmitRef.current = now;
 
-    const canvasRect = canvasRef.current?.getBoundingClientRect();
-    if (!canvasRect) return;
+    const mainWorkspaceRect = mainWorkspaceRef.current?.getBoundingClientRect();
+    if (!mainWorkspaceRect) return;
 
-    const relativeX = e.clientX - canvasRect.left;
-    const relativeY = e.clientY - canvasRect.top;
+    const relativeX = e.clientX - mainWorkspaceRect.left;
+    const relativeY = e.clientY - mainWorkspaceRect.top;
 
     emitCursorMove(relativeX, relativeY);
   };
 
   const handleMouseUp = () => {
     setDraggingId(null);
-  };
-
-  // Tech Stack Logic
-  const toggleTech = (techId: string) => {
-    const newStack = new Set(techStack);
-    if (newStack.has(techId)) newStack.delete(techId);
-    else newStack.add(techId);
-    setTechStack(newStack);
   };
 
   // User Hover Logic
@@ -353,11 +270,7 @@ ${techs.length ? techs : '| None | - | - |'}
 
             <div className="h-px w-8 bg-gray-700" />
 
-            <ToolButton
-              icon={<LuLayers size={20} />}
-              label="기술 스택"
-              onClick={() => addWidget('tech')}
-            />
+            <ToolButton icon={<LuLayers size={20} />} label="기술 스택" />
 
             <div className="h-px w-8 bg-gray-700" />
 
@@ -371,7 +284,7 @@ ${techs.length ? techs : '| None | - | - |'}
 
         {/* 3. Canvas Area */}
         <main
-          ref={canvasRef}
+          ref={mainWorkspaceRef}
           className="scrollbar-hide relative flex-1 cursor-grab overflow-auto bg-gray-900 active:cursor-grabbing"
         >
           {/* Background Pattern */}
@@ -385,34 +298,16 @@ ${techs.length ? techs : '| None | - | - |'}
             }}
           />
 
-          {/* Widgets Rendering */}
-          {widgets.map((widget) => (
-            <div
-              key={widget.id}
-              className="animate-pop-in absolute rounded-xl shadow-2xl"
-              style={{
-                left: widget.position.x,
-                top: widget.position.y,
-                zIndex: draggingId === widget.id ? 50 : 10,
-              }}
-              onMouseDown={(e) =>
-                handleMouseDown(
-                  e,
-                  widget.id,
-                  widget.position.x,
-                  widget.position.y,
-                )
-              }
-            >
-              {widget.type === 'tech' && (
-                <TechWidget
-                  onRemove={() => removeWidget(widget.id)}
-                  selected={techStack}
-                  onToggle={toggleTech}
-                />
-              )}
-            </div>
-          ))}
+          {techStackPosition.x !== 0 && techStackPosition.y !== 0 && (
+            <TechStackWidget
+              id="tech-stack"
+              position={techStackPosition}
+              width={mainWorkspaceSize.width / 2 - 200}
+              type="tech"
+              content="Tech Stack"
+            />
+          )}
+
           {/* Remote Cursors Rendering */}
           {Object.values(remoteCursors).map((cursor) => (
             <div
@@ -423,7 +318,7 @@ ${techs.length ? techs : '| None | - | - |'}
                 top: cursor.y,
               }}
             >
-              <Cursor
+              <CursorWithName
                 nickname={cursor.nickname}
                 color={cursor.color}
                 backgroundColor={cursor.backgroundColor}
@@ -654,7 +549,7 @@ ${techs.length ? techs : '| None | - | - |'}
       )}
     </div>
   );
-}
+};
 
 // --- Sub Components ---
 
@@ -693,65 +588,4 @@ const ToolButton = ({
   </div>
 );
 
-// 2. Tech Widget
-interface TechWidgetProps {
-  onRemove: () => void;
-  selected: Set<string>;
-  onToggle: (techId: string) => void;
-}
-const TechWidget = ({ onRemove, selected, onToggle }: TechWidgetProps) => (
-  <div className="w-[400px] cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
-    <WidgetHeader
-      title="Tech Stack"
-      icon={<LuLayers className="text-purple-400" size={18} />}
-      onRemove={onRemove}
-    />
-    <div className="grid grid-cols-4 gap-3">
-      {TECH_OPTIONS.map((tech) => (
-        <button
-          key={tech.id}
-          onMouseDown={(e) => e.stopPropagation()}
-          onClick={() => onToggle(tech.id)}
-          className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-lg border transition-all ${
-            selected.has(tech.id)
-              ? 'border-blue-500 bg-gray-700 ring-1 ring-blue-500'
-              : 'border-gray-600 bg-gray-800 hover:border-blue-400 hover:bg-gray-700'
-          } `}
-        >
-          {tech.url && (
-            <img src={tech.url} alt={tech.id} className="mb-1 h-6 w-6" />
-          )}
-          <span
-            className={`text-[10px] ${
-              selected.has(tech.id) ? 'text-blue-300' : 'text-gray-400'
-            }`}
-          >
-            {tech.id}
-          </span>
-        </button>
-      ))}
-    </div>
-  </div>
-);
-
-interface WidgetHeaderProps {
-  title: string;
-  icon: React.ReactNode;
-  onRemove: () => void;
-}
-const WidgetHeader = ({ title, icon, onRemove }: WidgetHeaderProps) => (
-  <div className="mb-4 flex items-center justify-between border-b border-gray-700 pb-2 select-none">
-    <h4 className="flex items-center gap-2 font-bold text-white">
-      {icon} {title}
-    </h4>
-    <button
-      onMouseDown={(e) => e.stopPropagation()}
-      onClick={onRemove}
-      className="text-gray-500 transition-colors hover:text-red-400"
-    >
-      <LuTrash2 size={16} />
-    </button>
-  </div>
-);
-
-export default WorkSpacePage;
+export default CanvasPage;

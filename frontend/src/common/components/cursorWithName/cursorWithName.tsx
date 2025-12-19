@@ -8,7 +8,13 @@ interface CursorProps {
   y: number;
 }
 
-function Cursor({ nickname, color, backgroundColor, x, y }: CursorProps) {
+function CursorWithName({
+  nickname,
+  color,
+  backgroundColor,
+  x,
+  y,
+}: CursorProps) {
   const renderColor = color ? color : '#000000';
 
   return (
@@ -31,4 +37,4 @@ function Cursor({ nickname, color, backgroundColor, x, y }: CursorProps) {
   );
 }
 
-export default Cursor;
+export default CursorWithName;

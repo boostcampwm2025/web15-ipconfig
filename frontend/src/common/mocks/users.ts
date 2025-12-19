@@ -1,0 +1,48 @@
+import type { User } from '@/common/types/user';
+
+export const INITIAL_USERS: User[] = [
+  {
+    id: 'u1',
+    name: 'as-zini',
+    role: 'Frontend',
+    color: 'bg-purple-500',
+    textColor: 'text-purple-500',
+    style: 'Morning Person',
+    time: '10 AM - 6 PM',
+    status: '준비중',
+    activity: [30, 80, 40, 20, 90],
+  },
+  {
+    id: 'u2',
+    name: 'Grit03',
+    role: 'Backend',
+    color: 'bg-teal-500',
+    textColor: 'text-teal-500',
+    style: 'Night Owl',
+    time: '2 PM - 10 PM',
+    status: '준비중',
+    activity: [10, 20, 90, 80, 60],
+  },
+  {
+    id: 'u3',
+    name: 'davidpro08',
+    role: 'PM',
+    color: 'bg-pink-500',
+    textColor: 'text-pink-500',
+    style: 'Flexible',
+    time: '9 AM - 6 PM',
+    status: '준비완료',
+    activity: [50, 50, 50, 50, 50],
+  },
+  {
+    id: 'u4',
+    name: 'snailw',
+    role: 'PM',
+    color: 'bg-green-500',
+    textColor: 'text-pink-500',
+    style: 'Flexible',
+    time: '9 AM - 6 PM',
+    status: '준비완료',
+    activity: [50, 50, 50, 50, 50],
+  },
+];
