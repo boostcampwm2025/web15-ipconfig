@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { WidgetModule } from './widget/widget.module';
+import { MarkdownModule } from './markdown/markdown.module';
 
 @Module({
-  imports: [WorkspaceModule, WidgetModule],
+  imports: [WorkspaceModule, WidgetModule, MarkdownModule],
   controllers: [AppController],
   providers: [AppService],
 })
