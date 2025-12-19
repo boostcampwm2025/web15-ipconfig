@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const isProduction = process.env.NODE_ENV === 'production';
-  const allowedOrigins = isProduction ? [] : '*';
+  const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
 
   app.enableCors({
     origin: allowedOrigins,
