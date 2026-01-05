@@ -43,7 +43,7 @@ async function bootstrap() {
   // AsyncAPI 설정
   const asyncApiOptions = new AsyncApiDocumentBuilder()
     .setTitle('WebSocket API Docs')
-    .setDescription('피그마st 위젯 편집기 실시간 이벤트 명세서')
+    .setDescription('Web15 IPConfig API description')
     .setVersion('1.0')
     .addTag('Web15 IPConfig')
     .build();
