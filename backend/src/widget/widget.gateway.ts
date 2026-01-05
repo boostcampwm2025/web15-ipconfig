@@ -113,7 +113,7 @@ export class WidgetGateway {
     channel: 'widget:delete',
     summary: '위젯 삭제',
     description:
-      '특정 위젯을 삭제할 때 서버로 보내는 이벤트입니다. widgetId를 포함합니다.',
+      '특정 위젯을 삭제할 때 서버로 보내는 이벤트입니다. widgetId를 포함합니다. /* 현재는 DTO로 받지 않고 단일 widgetId로 받고 있어서 나오지 않음 */',
     message: {
       payload: Object,
     },
