@@ -48,8 +48,6 @@ export class MarkdownService {
       content.selectedItems.forEach((item) => {
         lines.push(`| ${item} | vLatest |`);
       });
-    } else {
-      lines.push('| - | - |');
     }
 
     lines.push('');
