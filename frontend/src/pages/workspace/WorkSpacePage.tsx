@@ -46,6 +46,7 @@ function WorkSpacePage() {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
+    handleZoomButton,
     isPanning,
     draggingWidgetId,
   } = useCanvas();
@@ -158,7 +159,7 @@ function WorkSpacePage() {
           <UserHoverCard user={hoveredUser} position={hoverPosition} />
         )}
 
-        <ZoomControls />
+        <ZoomControls handleZoomButton={handleZoomButton} camera={camera} />
 
         {isTechStackModalOpen && (
           <TechStackModal onModalClose={handleModalClose} />
