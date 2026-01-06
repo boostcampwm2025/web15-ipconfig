@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MarkdownService } from './markdown.service';
 import { MarkdownController } from './markdown.controller';
+import { MarkdownService } from './markdown.service';
+import { WidgetModule } from '../widget/widget.module';
 
 @Module({
+  imports: [WidgetModule],
   controllers: [MarkdownController],
   providers: [MarkdownService],
 })
