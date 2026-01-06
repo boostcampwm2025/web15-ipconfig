@@ -88,20 +88,25 @@ function WorkSpacePage() {
   // 커서 이동 스로틀링을 위한 ref
   const lastEmitRef = useRef<number>(0);
 
+  // WorkSpacePage.tsx
+
   const handleCanvasPointerMove = (e: React.PointerEvent) => {
-    // 캔버스/위젯 이동 로직 실행 (useCanvas)
     handlePointerMove(e);
 
-    // 소켓으로 내 커서 위치 전송 (스로틀링 적용)
     const now = performance.now();
     const throttleMs = 30;
     if (now - lastEmitRef.current < throttleMs) return;
     lastEmitRef.current = now;
 
-    // Screen 좌표 -> World 좌표로 변환
-    // 캔버스 컴포넌트가 World 좌표 기준으로 렌더링하기 때문에, 데이터도 World 기준으로 보냄
-    const worldX = (e.clientX - camera.x) / camera.z;
-    const worldY = (e.clientY - camera.y) / camera.z;
+    if (!containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+
+    const canvasX = e.clientX - rect.left;
+    const canvasY = e.clientY - rect.top;
+
+    const worldX = (canvasX - camera.x) / camera.z;
+    const worldY = (canvasY - camera.y) / camera.z;
 
     emitCursorMove(worldX, worldY);
   };
