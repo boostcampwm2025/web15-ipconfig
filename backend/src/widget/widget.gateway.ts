@@ -11,6 +11,7 @@ import type { IWidgetService } from './widget.interface';
 import { WIDGET_SERVICE } from './widget.interface';
 import { CreateWidgetDto } from './dto/create-widget.dto';
 import { UpdateWidgetDto } from './dto/update-widget.dto';
+import { UpdateWidgetLayoutDto } from './dto/update-widget-layout.dto';
 import { WorkspaceService } from '../workspace/workspace.service';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -57,6 +58,26 @@ export class WidgetGateway {
     return widget;
   }
 
+  // 레이아웃 변경 (이동, 크기 조절 등)
+  @SubscribeMessage('widget:move')
+  async move(
+    @MessageBody() updateLayoutDto: UpdateWidgetLayoutDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const roomId = this.getRoomId(client);
+    if (!roomId) return;
+
+    const updatedWidget = await this.widgetService.updateLayout(
+      roomId,
+      updateLayoutDto,
+    );
+
+    client.to(roomId).emit('widget:moved', updatedWidget);
+
+    return updatedWidget;
+  }
+
+  // 콘텐츠 변경 (내용 수정)
   @SubscribeMessage('widget:update')
   async update(
     @MessageBody() updateWidgetDto: UpdateWidgetDto,

@@ -1,19 +1,11 @@
-import {
-  ApiExtraModels,
-  ApiProperty,
-  PartialType,
-  OmitType,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import {
   IsString,
   ValidateNested,
   IsObject,
   IsOptional,
-  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { WidgetData } from './create-widget.dto';
 import {
   BaseContentDto,
   PartialGroundRuleContentDto,
@@ -22,29 +14,14 @@ import {
   WidgetType,
 } from './widget-content.dto';
 
-class PartialWidgetDataWithoutContent extends PartialType(
-  OmitType(WidgetData, ['content'] as const),
-) {}
-
 @ApiExtraModels(
   PartialTechStackContentDto,
   PartialPostItContentDto,
   PartialGroundRuleContentDto,
 )
-class UpdateWidgetData extends PartialWidgetDataWithoutContent {
-  @ApiProperty({ description: 'X 좌표', required: false })
-  @IsOptional()
-  @IsNumber()
-  readonly x?: number;
-
-  @ApiProperty({ description: 'Y 좌표', required: false })
-  @IsOptional()
-  @IsNumber()
-  readonly y?: number;
-
+class UpdateWidgetContentData {
   @ApiProperty({
     description: '수정할 콘텐츠 데이터 (부분 수정 가능, widgetType 필수)',
-    required: false,
     oneOf: [
       { $ref: getSchemaPath(PartialTechStackContentDto) },
       { $ref: getSchemaPath(PartialPostItContentDto) },
@@ -65,7 +42,7 @@ class UpdateWidgetData extends PartialWidgetDataWithoutContent {
       ],
     },
   })
-  readonly content?:
+  readonly content:
     | PartialTechStackContentDto
     | PartialPostItContentDto
     | PartialGroundRuleContentDto;
@@ -76,8 +53,8 @@ export class UpdateWidgetDto {
   @IsString()
   readonly widgetId: string;
 
-  @ApiProperty({ description: '수정할 데이터 (변경된 필드만 보냄)' })
+  @ApiProperty({ description: '수정할 콘텐츠 데이터' })
   @ValidateNested()
-  @Type(() => UpdateWidgetData)
-  readonly data: UpdateWidgetData;
+  @Type(() => UpdateWidgetContentData)
+  readonly data: UpdateWidgetContentData;
 }
