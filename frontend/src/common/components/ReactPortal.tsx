@@ -5,8 +5,10 @@ type ReactPortalProps = {
   parent?: HTMLElement;
 } & PropsWithChildren;
 
+const defaultRoot = document.getElementById('root') as HTMLElement;
+
 export default function ReactPortal({
-  parent = document.body,
+  parent = defaultRoot,
   children,
 }: ReactPortalProps) {
   return parent && createPortal(children, parent);
