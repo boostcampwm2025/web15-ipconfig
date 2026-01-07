@@ -28,14 +28,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      - name: Install dependencies (Root)
-        run: npm ci --ignore-scripts
+      - name: Install dependencies
+        run: npm ci
 
       - name: Lint (Frontend)
         run: npm run lint -w frontend
 
       - name: Run tests (Frontend)
         run: npm test -w frontend -- --passWithNoTests
+
+      - name: Build Check (Frontend)
+        run: npm run build -w frontend
 
   # -----------------------------------------------------------------
   # JOB 2: 백엔드 (NestJS) CI
@@ -54,11 +57,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      - name: Install dependencies (Root)
-        run: npm ci --ignore-scripts
+      - name: Install dependencies
+        run: npm ci
 
       - name: Lint (Backend)
         run: npm run lint -w backend
 
       - name: Run tests (Backend)
         run: npm run test -w backend
+
+      - name: Build Check (Backend)
+        run: npm run build -w backend

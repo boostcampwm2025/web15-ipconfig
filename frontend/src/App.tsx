@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router';
-import WorkSpacePage from './pages/WorkSpacePage';
+import WorkSpacePage from './pages/workspace/WorkSpacePage';
 
 function App() {
   return (

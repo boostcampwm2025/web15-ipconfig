@@ -1,8 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { CursorService } from './cursor.service';
+import { CursorGateway } from './cursor.gateway';
+import { WorkspaceModule } from '../workspace/workspace.module';
 
 @Module({
-  providers: [CursorService],
+  imports: [forwardRef(() => WorkspaceModule)],
+  providers: [CursorService, CursorGateway],
   exports: [CursorService],
 })
 export class CursorModule {}
