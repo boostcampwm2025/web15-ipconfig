@@ -1,6 +1,6 @@
+import ToolButton from './ToolButton';
 import { LuMousePointer2 } from 'react-icons/lu';
 import { LuLayers } from 'react-icons/lu';
-import ToolButton from './ToolButton';
 
 function ToolBar() {
   return (

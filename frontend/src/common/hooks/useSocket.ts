@@ -41,7 +41,7 @@ export const useSocket = ({
         : 'http://localhost:3000';
 
     const socket = io(`${socketUrl}/workspace`, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],
     });
     socketRef.current = socket;
 

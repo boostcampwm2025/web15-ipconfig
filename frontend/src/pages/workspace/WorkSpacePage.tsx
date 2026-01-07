@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import type { WidgetData } from '@/common/types/widgetData';
 import type { User } from '@/common/types/user';
@@ -17,12 +11,12 @@ import ToolBar from '@/pages/workspace/components/toolbar/ToolBar';
 import type { Cursor } from '@/common/types/cursor';
 
 // Page-specific components
+import WorkspaceHeader from './components/WorkspaceHeader';
 import RightSidebar from './components/infoPanel/InfoPanel';
 import UserHoverCard from './components/UserHoverCard';
 import ZoomControls from './components/ZoomControls';
 import ExportModal from './components/ExportModal';
 import useCanvas from '@/features/canvas/hooks/useCanvas';
-import WorkspaceHeader from './components/WorkspaceHeader';
 
 function WorkSpacePage() {
   const mainWorkspaceRef = useRef<HTMLDivElement>(null);
