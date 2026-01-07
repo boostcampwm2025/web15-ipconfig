@@ -4,13 +4,11 @@ import {
   MessageBody,
   ConnectedSocket,
   WebSocketServer,
-  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AsyncApiPub, AsyncApiSub } from 'nestjs-asyncapi';
 import { WorkspaceService } from '../workspace/workspace.service';
 import { MoveCursorDTO } from './dto/move-cursor.dto';
-import { CursorService } from '../cursor/cursor.service';
 import { UpdateCursorDTO } from '../cursor/dto/update-cursor.dto';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -23,25 +21,11 @@ const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
     credentials: true,
   },
 })
-export class CursorGateway implements OnGatewayDisconnect {
+export class CursorGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly workspaceService: WorkspaceService,
-    private readonly cursorService: CursorService,
-  ) {}
-
-  handleDisconnect(client: Socket) {
-    const result = this.workspaceService.handleDisconnect(client.id);
-    if (!result) {
-      return;
-    }
-    const { roomId, userId } = result;
-
-    // 커서 정보 정리
-    this.cursorService.removeCursor(roomId, userId);
-  }
+  constructor(private readonly workspaceService: WorkspaceService) {}
 
   @AsyncApiSub({
     channel: 'cursor:move',
@@ -73,14 +57,14 @@ export class CursorGateway implements OnGatewayDisconnect {
 
     const { roomId } = userInfo;
 
-    this.cursorService.updateCursor({
+    const cursorData: UpdateCursorDTO = {
       workspaceId: roomId,
       userId: payload.userId,
       x: payload.moveData.x,
       y: payload.moveData.y,
-    } as UpdateCursorDTO);
+    };
 
     // 동일 room에 브로드캐스트
-    this.server.to(roomId).emit('cursor:moved', payload);
+    this.server.to(roomId).emit('cursor:moved', cursorData);
   }
 }
