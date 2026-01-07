@@ -158,7 +158,7 @@ export class WidgetGateway {
     channel: 'widget:move',
     summary: '위젯 레이아웃 변경',
     description:
-      '클라이언트에서 위젯의 위치 또는 크기를 변경할 때 서버로 보내는 이벤트입니다.',
+      '클라이언트에서 위젯의 위치 또는 크기를 변경할 때 서버로 보내는 이벤트입니다. (Lock 소유자만 가능)',
     message: {
       payload: UpdateWidgetLayoutDto,
     },
@@ -178,7 +178,18 @@ export class WidgetGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const roomId = this.getRoomId(client);
-    if (!roomId) return;
+    const userId = this.getUserId(client);
+    if (!roomId || !userId) return;
+
+    const owner = await this.widgetService.getLockOwner(
+      roomId,
+      updateLayoutDto.widgetId,
+    );
+
+    // 락이 없거나, 다른 사람이 점유중일 시 무시
+    if (owner !== userId) {
+      return;
+    }
 
     const updatedWidget = await this.widgetService.updateLayout(
       roomId,
