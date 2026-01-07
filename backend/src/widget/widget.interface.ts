@@ -25,6 +25,12 @@ export interface IWidgetService {
   remove(workspaceId: string, widgetId: string): Promise<{ widgetId: string }>;
 
   lock(workspaceId: string, widgetId: string, userId: string): Promise<boolean>;
+
+  unlock(
+    workspaceId: string,
+    widgetId: string,
+    userId: string,
+  ): Promise<boolean>;
 }
 
 export const WIDGET_SERVICE = 'WIDGET_SERVICE';
