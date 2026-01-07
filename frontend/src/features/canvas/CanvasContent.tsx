@@ -3,6 +3,7 @@ import TechStackWidget from '@/features/widgets/techStack/components/TechStackWi
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
 import CursorWithName from '@/common/components/cursorWithName';
+import type { WidgetData } from '@/common/types/widgetData';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -12,6 +13,7 @@ interface CanvasContainerProps {
   handlePointerUp: () => void;
   isPanning: boolean;
   remoteCursor: Record<string, Cursor>;
+  widgets: WidgetData[];
 }
 
 function CanvasContent({
@@ -22,12 +24,8 @@ function CanvasContent({
   handlePointerUp,
   isPanning,
   remoteCursor,
+  widgets,
 }: CanvasContainerProps) {
-  const [techStackPosition, setTechStackPosition] = useState({
-    x: 500,
-    y: 500,
-  });
-
   return (
     <div
       ref={containerRef}
@@ -58,13 +56,23 @@ function CanvasContent({
         className="relative will-change-transform"
       >
         {/* 위젯 렌더링 */}
-        <TechStackWidget
-          id="tech-stack"
-          position={techStackPosition}
-          width={200}
-          type="tech"
-          content="Tech Stack"
-        />
+        {/* 위젯 렌더링 */}
+        {widgets.map((widget) => {
+          if (widget.type === 'tech') {
+            return (
+              <TechStackWidget
+                key={widget.id}
+                id={widget.id}
+                position={widget.position}
+                width={widget.width}
+                height={widget.height}
+                type={widget.type}
+                content={widget.content}
+              />
+            );
+          }
+          return null;
+        })}
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
           <div
