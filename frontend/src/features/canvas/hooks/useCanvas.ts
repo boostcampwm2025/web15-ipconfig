@@ -25,6 +25,26 @@ export default function useCanvas() {
     });
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+
+    const zoomSensitivity = 0.001;
+    const zoomDelta = -e.deltaY * zoomSensitivity;
+
+    const newZoom = Math.min(Math.max(camera.scale + zoomDelta, 0.1), 5);
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const newX = mouseX - (mouseX - camera.x) * (newZoom / camera.scale);
+    const newY = mouseY - (mouseY - camera.y) * (newZoom / camera.scale);
+    setCamera({ x: newX, y: newY, scale: newZoom });
+  };
+
   const handlePointerDown = (e: React.PointerEvent) => {
     setIsPanning(true);
     lastMousePos.current = { x: e.clientX, y: e.clientY };
@@ -65,6 +85,7 @@ export default function useCanvas() {
   return {
     camera,
     handleZoomButton,
+    handleWheel,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,

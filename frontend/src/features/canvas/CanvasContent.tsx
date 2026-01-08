@@ -10,6 +10,7 @@ interface CanvasContainerProps {
   handlePointerDown: (e: React.PointerEvent) => void;
   handlePointerMove: (e: React.PointerEvent) => void;
   handlePointerUp: () => void;
+  handleWheel: (e: React.WheelEvent) => void;
   isPanning: boolean;
   remoteCursor: Record<string, Cursor>;
 }
@@ -20,6 +21,7 @@ function CanvasContent({
   handlePointerDown,
   handlePointerMove,
   handlePointerUp,
+  handleWheel,
   isPanning,
   remoteCursor,
 }: CanvasContainerProps) {
@@ -36,6 +38,7 @@ function CanvasContent({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
+      onWheel={handleWheel}
     >
       {/* 배경 패턴 */}
       <div
