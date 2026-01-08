@@ -108,3 +108,6 @@ jobs:
 
             # 컨테이너 상태 확인
             docker-compose -f docker-compose.prod.yml ps
+
+            # 사용하지 않는 예전 이미지 삭제
+            docker image prune -a -f
