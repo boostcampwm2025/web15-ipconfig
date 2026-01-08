@@ -1,5 +1,5 @@
 import type { Camera } from '@/common/types/camera';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ZOOM_CONFIG } from '../constants/zoom';
 
 export default function useCanvas() {
@@ -36,19 +36,22 @@ export default function useCanvas() {
     zoomTo(delta, centerX, centerY);
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
+  const handleWheel = (e: WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const container = containerRef.current;
-    if (!container) return;
+      const container = containerRef.current;
+      if (!container) return;
 
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-    const zoomDelta = -e.deltaY * ZOOM_CONFIG.WHEEL_SENSITIVITY;
+      const zoomDelta = -e.deltaY * ZOOM_CONFIG.WHEEL_SENSITIVITY;
 
-    zoomTo(zoomDelta, mouseX, mouseY);
+      zoomTo(zoomDelta, mouseX, mouseY);
+    }
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -88,10 +91,20 @@ export default function useCanvas() {
     return { x: worldX, y: worldY };
   };
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
+
   return {
     camera,
     handleZoomButton,
-    handleWheel,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
