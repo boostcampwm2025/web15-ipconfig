@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 
 import type { WidgetData } from '@/common/types/widgetData';
 import type { User } from '@/common/types/user';
