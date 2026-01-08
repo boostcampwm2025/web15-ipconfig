@@ -3,7 +3,7 @@ name: Deploy with Docker Compose
 on:
   push:
     branches:
-      - fix/delete-legacy-image
+      - main
 
 env:
   NODE_VERSION: '24.12.0'
