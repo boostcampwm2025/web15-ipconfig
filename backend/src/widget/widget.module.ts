@@ -13,5 +13,6 @@ import { WorkspaceModule } from '../workspace/workspace.module';
       useClass: WidgetMemoryService, // 나중에 WidgetRedisService로 교체 가능
     },
   ],
+  exports: [WIDGET_SERVICE],
 })
 export class WidgetModule {}
