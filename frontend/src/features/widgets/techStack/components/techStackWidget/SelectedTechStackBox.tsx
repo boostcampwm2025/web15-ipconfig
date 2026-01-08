@@ -1,0 +1,50 @@
+import { LuPlus } from 'react-icons/lu';
+import SelectedTechItem from './SelectedTechItem';
+import type { Dispatch, SetStateAction } from 'react';
+import { useDroppable } from '@dnd-kit/core';
+import { cn } from '@/common/lib/utils';
+
+function SelectedTechStackBox({
+  selectedTechStacks,
+  setSelectedTechStacks,
+  setIsTechStackModalOpen,
+}: {
+  selectedTechStacks: string[];
+  setSelectedTechStacks: Dispatch<SetStateAction<string[]>>;
+  setIsTechStackModalOpen: (isOpen: boolean) => void;
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'techStackWidget',
+  });
+
+  const handleRemoveTech = (techName: string) => {
+    setSelectedTechStacks((prev) => prev.filter((t) => t !== techName));
+  };
+
+  return (
+    <main
+      ref={setNodeRef}
+      className={cn(
+        'grid min-h-30 grid-cols-4 gap-3 rounded-lg border-2 border-dashed p-2 transition-colors',
+        isOver ? 'border-primary bg-primary/10' : 'bg-transparent',
+      )}
+    >
+      {selectedTechStacks.map((tech) => (
+        <SelectedTechItem
+          key={tech}
+          name={tech}
+          onRemove={() => handleRemoveTech(tech)}
+        />
+      ))}
+      <button
+        className="hover:border-primary flex h-25 w-25 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-600 bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70"
+        onClick={() => setIsTechStackModalOpen(true)}
+      >
+        <LuPlus size={20} />
+        <span>추가하기</span>
+      </button>
+    </main>
+  );
+}
+
+export default SelectedTechStackBox;
