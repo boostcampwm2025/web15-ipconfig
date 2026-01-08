@@ -1,8 +1,8 @@
+import CursorWithName from '@/common/components/CursorWithName';
 import type { Cursor } from '@/common/types/cursor';
-import TechStackWidget from '@/features/widgets/techStack/components/TechStackWidget';
+import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
-import CursorWithName from '@/common/components/cursorWithName';
 
 interface CanvasContainerProps {
   camera: Camera;

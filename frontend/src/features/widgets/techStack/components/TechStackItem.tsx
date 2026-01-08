@@ -1,0 +1,45 @@
+import { memo, useState } from 'react';
+import { getTechIconUrl } from '@/features/widgets/techStack/utils/getTechIconUrl';
+import { Badge } from '@/common/components/shadcn/badge';
+
+interface TechIconProps {
+  name: string;
+}
+
+function TechIcon({ name }: TechIconProps) {
+  const [error, setError] = useState(false);
+  const iconUrl = getTechIconUrl(name);
+
+  if (error) {
+    return (
+      <Badge className="h-5 w-5 rounded-full bg-gray-200 font-bold text-gray-600">
+        {name.substring(0, 1)}
+      </Badge>
+    );
+  }
+
+  return (
+    <img
+      src={iconUrl}
+      alt={name}
+      className="h-5 w-5 object-contain"
+      onError={() => setError(true)}
+    />
+  );
+}
+
+export function TechStackItem({ techName }: { techName: string }) {
+  return (
+    <Badge
+      variant="outline"
+      className="hover:border-primary flex h-25 w-25 flex-col items-center justify-center gap-2 rounded-lg border-gray-700 px-2 py-1 transition-colors select-none hover:bg-gray-700"
+    >
+      <TechIcon name={techName} />
+      <div className="text-center text-xs font-medium text-wrap text-gray-300">
+        {techName}
+      </div>
+    </Badge>
+  );
+}
+
+export default memo(TechStackItem);

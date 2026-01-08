@@ -1,6 +1,6 @@
 import { LuMousePointer2 } from 'react-icons/lu';
 
-interface CursorProps {
+interface CursorWithNameProps {
   nickname: string;
   color: string;
   backgroundColor: string;
@@ -14,7 +14,7 @@ function CursorWithName({
   backgroundColor,
   x,
   y,
-}: CursorProps) {
+}: CursorWithNameProps) {
   const renderColor = color ? color : '#000000';
 
   return (
