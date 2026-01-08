@@ -9,15 +9,10 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { AsyncApiPub, AsyncApiSub } from 'nestjs-asyncapi';
-import { Inject } from '@nestjs/common';
 import { JoinUserDTO } from './dto/join-user.dto';
 import { LeaveUserDTO } from './dto/left-user.dto';
 import { UserStatus, UserStatusDTO } from './dto/user-status.dto';
 import { WorkspaceService } from './workspace.service';
-import {
-  type IWidgetService,
-  WIDGET_SERVICE,
-} from '../widget/widget.interface';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
@@ -33,30 +28,14 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly workspaceService: WorkspaceService,
-    @Inject(WIDGET_SERVICE)
-    private readonly widgetService: IWidgetService,
-  ) {}
+  constructor(private readonly workspaceService: WorkspaceService) {}
 
-  async handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) {
     const result = this.workspaceService.handleDisconnect(client.id);
     if (!result) {
       return;
     }
     const { roomId, userId } = result;
-
-    const unlockedWidgetIds = await this.widgetService.unlockAllByUser(
-      roomId,
-      userId,
-    );
-
-    unlockedWidgetIds.forEach((widgetId) => {
-      this.server.to(roomId).emit('widget:unlocked', {
-        widgetId,
-        userId,
-      });
-    });
 
     this.server.to(roomId).emit('user:status', {
       userId,
@@ -155,18 +134,6 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       return;
     }
     const { roomId, userId } = result;
-
-    // 위젯 락 정리
-    const unlockedWidgetIds = await this.widgetService.unlockAllByUser(
-      roomId,
-      userId,
-    );
-    unlockedWidgetIds.forEach((widgetId) => {
-      this.server.to(roomId).emit('widget:unlocked', {
-        widgetId,
-        userId,
-      });
-    });
 
     await client.leave(roomId);
 

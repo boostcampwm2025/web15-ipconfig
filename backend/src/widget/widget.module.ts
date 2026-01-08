@@ -1,11 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { WidgetGateway } from './widget.gateway';
 import { WidgetMemoryService } from './widget.memory.service';
 import { WIDGET_SERVICE } from './widget.interface';
 import { WorkspaceModule } from '../workspace/workspace.module';
 
 @Module({
-  imports: [forwardRef(() => WorkspaceModule)],
+  imports: [WorkspaceModule],
   providers: [
     WidgetGateway,
     {
@@ -13,6 +13,5 @@ import { WorkspaceModule } from '../workspace/workspace.module';
       useClass: WidgetMemoryService, // 나중에 WidgetRedisService로 교체 가능
     },
   ],
-  exports: [WIDGET_SERVICE],
 })
 export class WidgetModule {}

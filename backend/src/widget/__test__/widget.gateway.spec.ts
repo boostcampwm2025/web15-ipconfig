@@ -27,8 +27,6 @@ describe('WidgetGateway', () => {
 
   const roomId = 'room-1';
   const socketId = 's1';
-  const userId = 'u1';
-  const otherUserId = 'u2';
 
   beforeEach(async () => {
     serviceMock = {
@@ -38,17 +36,10 @@ describe('WidgetGateway', () => {
       remove: jest.fn(),
       findAll: jest.fn(),
       findOne: jest.fn(),
-      lock: jest.fn(),
-      unlock: jest.fn(),
-      getLockOwner: jest.fn(),
-      unlockAllByUser: jest.fn(),
     };
 
     workspaceServiceMock = {
-      getUserBySocketId: jest.fn().mockReturnValue({
-        roomId,
-        user: { id: userId },
-      }),
+      getUserBySocketId: jest.fn(),
     };
 
     serverToEmitMock = jest.fn();
@@ -82,13 +73,13 @@ describe('WidgetGateway', () => {
     gateway.server = serverMock as unknown as Server;
   });
 
-  it('게이트웨이가 정상적으로 정의되어야 한다', () => {
+  it('게이트웨이가 정의되어 있어야 한다', () => {
     expect(gateway).toBeDefined();
   });
 
-  describe('widget:create (위젯 생성)', () => {
-    it('새로운 위젯을 생성하고 해당 워크스페이스에 브로드캐스트해야 한다', async () => {
-      // given: 위젯 생성을 위한 유효한 데이터가 준비된 상태
+  describe('create (위젯 생성 이벤트)', () => {
+    it('위젯을 생성하고 특정 룸에 "widget:created" 이벤트를 전파해야 한다', async () => {
+      // given: 클라이언트로부터 유효한 위젯 생성 데이터가 전달되었을 때
       const createDto: CreateWidgetDto = {
         widgetId: 'w-1',
         type: WidgetType.TECH_STACK,
@@ -104,12 +95,14 @@ describe('WidgetGateway', () => {
           } as TechStackContentDto,
         },
       };
+
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.create.mockResolvedValue(createDto);
 
-      // when: 클라이언트가 `widget:create` 이벤트를 전송했을 때
+      // when: 클라이언트가 위젯 생성 이벤트를 요청하면
       await gateway.create(createDto, clientMock as unknown as Socket);
 
-      // then: 위젯 서비스의 create가 호출되고, 같은 방의 모든 클라이언트에게 `widget:created` 이벤트가 전송된다
+      // then: 서비스 로직을 통해 위젯을 생성하고, 해당 룸의 모든 클라이언트에게 생성된 위젯 정보를 브로드캐스트해야 한다
       expect(serviceMock.create).toHaveBeenCalledWith(roomId, createDto);
       expect(serverMock.to).toHaveBeenCalledWith(roomId);
       expect(serverToEmitMock).toHaveBeenCalledWith(
@@ -119,221 +112,93 @@ describe('WidgetGateway', () => {
     });
   });
 
-  describe('widget:lock (위젯 잠금)', () => {
-    const lockDto = { widgetId: 'w-1' };
-
-    it('위젯 잠금에 성공하면 다른 사용자에게 잠금 사실을 알려야 한다', async () => {
-      // given: 위젯 서비스가 잠금 성공(true)을 반환하도록 설정
-      serviceMock.lock.mockResolvedValue(true);
-
-      // when: 클라이언트가 `widget:lock` 이벤트를 전송했을 때
-      await gateway.lock(lockDto, clientMock as unknown as Socket);
-
-      // then: 위젯 서비스의 lock이 호출되고, 자신을 제외한 다른 클라이언트에게 `widget:locked` 이벤트가 전송된다
-      expect(serviceMock.lock).toHaveBeenCalledWith(roomId, 'w-1', userId);
-      expect(clientToEmitMock).toHaveBeenCalledWith('widget:locked', {
+  describe('move (위젯 이동/레이아웃 변경 이벤트)', () => {
+    it('위젯 좌표를 수정하고 특정 룸에 "widget:moved" 이벤트를 전파해야 한다', async () => {
+      // given: 클라이언트로부터 위젯 위치 이동(레이아웃) 데이터가 전달되었을 때
+      const layoutDto: UpdateWidgetLayoutDto = {
         widgetId: 'w-1',
-        userId,
-      });
-      expect(clientMock.emit).not.toHaveBeenCalledWith(
-        'error',
-        expect.any(String),
-      );
-    });
-
-    it('위젯 잠금에 실패하면 요청한 사용자에게 에러를 전송해야 한다', async () => {
-      // given: 위젯 서비스가 잠금 실패(false)를 반환하도록 설정
-      serviceMock.lock.mockResolvedValue(false);
-
-      // when: 클라이언트가 `widget:lock` 이벤트를 전송했을 때
-      await gateway.lock(lockDto, clientMock as unknown as Socket);
-
-      // then: 위젯 서비스의 lock이 호출되고, 요청한 클라이언트에게만 'error' 이벤트가 전송된다
-      expect(serviceMock.lock).toHaveBeenCalledWith(roomId, 'w-1', userId);
-      expect(clientMock.emit).toHaveBeenCalledWith('error', expect.any(String));
-    });
-  });
-
-  describe('widget:unlock (위젯 잠금 해제)', () => {
-    const unlockDto = { widgetId: 'w-1' };
-
-    it('위젯 잠금 해제에 성공하면 다른 사용자에게 잠금 해제 사실을 알려야 한다', async () => {
-      // given: 위젯 서비스가 잠금 해제 성공(true)을 반환하도록 설정
-      serviceMock.unlock.mockResolvedValue(true);
-
-      // when: 클라이언트가 `widget:unlock` 이벤트를 전송했을 때
-      await gateway.unlock(unlockDto, clientMock as unknown as Socket);
-
-      // then: 위젯 서비스의 unlock이 호출되고, 자신을 제외한 다른 클라이언트에게 `widget:unlocked` 이벤트가 전송된다
-      expect(serviceMock.unlock).toHaveBeenCalledWith(roomId, 'w-1', userId);
-      expect(clientToEmitMock).toHaveBeenCalledWith('widget:unlocked', {
-        widgetId: 'w-1',
-        userId,
-      });
-    });
-
-    it('위젯 잠금 해제에 실패하면 아무런 이벤트를 전송하지 않아야 한다', async () => {
-      // given: 위젯 서비스가 잠금 해제 실패(false)를 반환하도록 설정
-      serviceMock.unlock.mockResolvedValue(false);
-
-      // when: 클라이언트가 `widget:unlock` 이벤트를 전송했을 때
-      await gateway.unlock(unlockDto, clientMock as unknown as Socket);
-
-      // then: 위젯 서비스의 unlock은 호출되지만, 다른 클라이언트에게는 아무런 이벤트도 전송되지 않는다
-      expect(serviceMock.unlock).toHaveBeenCalledWith(roomId, 'w-1', userId);
-      expect(clientToEmitMock).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('widget:move (위젯 이동)', () => {
-    const layoutDto: UpdateWidgetLayoutDto = {
-      widgetId: 'w-1',
-      x: 100,
-      y: 50,
-    };
-
-    it('잠금을 소유한 사용자가 요청 시, 위젯 위치를 변경하고 브로드캐스트해야 한다', async () => {
-      // given: 사용자가 해당 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(userId);
+        x: 100,
+        y: 50,
+      };
       const updatedWidget = { widgetId: 'w-1', data: { x: 100, y: 50 } };
+
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.updateLayout.mockResolvedValue(updatedWidget);
 
-      // when: 클라이언트가 `widget:move` 이벤트를 전송했을 때
+      // when: 클라이언트가 위젯 이동 이벤트를 요청하면
       await gateway.move(layoutDto, clientMock as unknown as Socket);
 
-      // then: 잠금 소유자를 확인하고, 레이아웃을 업데이트한 뒤, 다른 사용자에게 `widget:moved`로 변경사항을 알린다
-      expect(serviceMock.getLockOwner).toHaveBeenCalledWith(roomId, 'w-1');
+      // then: 서비스의 레이아웃 업데이트 메서드를 호출하고, 나를 제외한 다른 클라이언트들에게 변경된 위치 정보를 전송해야 한다
       expect(serviceMock.updateLayout).toHaveBeenCalledWith(roomId, layoutDto);
+      expect(clientMock.to).toHaveBeenCalledWith(roomId);
       expect(clientToEmitMock).toHaveBeenCalledWith(
         'widget:moved',
         updatedWidget,
       );
     });
-
-    it('다른 사용자가 잠금한 위젯에 대해서는 이동 요청을 무시해야 한다', async () => {
-      // given: 다른 사용자가 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(otherUserId);
-
-      // when: 클라이언트가 `widget:move` 이벤트를 전송했을 때
-      await gateway.move(layoutDto, clientMock as unknown as Socket);
-
-      // then: 잠금 소유자를 확인 후, 자신의 잠금이 아니므로 아무 작업도 수행하지 않는다
-      expect(serviceMock.getLockOwner).toHaveBeenCalledWith(roomId, 'w-1');
-      expect(serviceMock.updateLayout).not.toHaveBeenCalled();
-      expect(clientToEmitMock).not.toHaveBeenCalled();
-    });
   });
 
-  describe('widget:update (위젯 내용 수정)', () => {
-    const updateDto: UpdateWidgetDto = {
-      widgetId: 'w-1',
-      data: { content: { selectedItems: ['NestJS'] } },
-    };
+  describe('update (위젯 콘텐츠 수정 이벤트)', () => {
+    it('위젯 내용을 수정하고 특정 룸에 "widget:updated" 이벤트를 전파해야 한다', async () => {
+      // given: 클라이언트로부터 위젯의 내부 콘텐츠 수정 데이터가 전달되었을 때
+      const updateDto: UpdateWidgetDto = {
+        widgetId: 'w-1',
+        data: {
+          content: {
+            widgetType: WidgetType.TECH_STACK,
+            selectedItems: ['NestJS'],
+          },
+        },
+      };
+      const updatedWidget = {
+        widgetId: 'w-1',
+        data: { content: { selectedItems: ['NestJS'] } },
+      };
 
-    it('잠금을 소유한 사용자가 요청 시, 위젯 내용을 수정하고 브로드캐스트해야 한다', async () => {
-      // given: 사용자가 해당 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(userId);
-      const updatedWidget = { widgetId: 'w-1', data: updateDto.data };
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.update.mockResolvedValue(updatedWidget);
 
-      // when: 클라이언트가 `widget:update` 이벤트를 전송했을 때
+      // when: 클라이언트가 위젯 내용 수정 이벤트를 요청하면
       await gateway.update(updateDto, clientMock as unknown as Socket);
 
-      // then: 잠금 소유자를 확인하고, 위젯 내용을 업데이트한 뒤, 다른 사용자에게 `widget:updated`로 변경사항을 알린다
-      expect(serviceMock.getLockOwner).toHaveBeenCalledWith(roomId, 'w-1');
+      // then: 서비스의 콘텐츠 업데이트 메서드를 호출하고, 나를 제외한 다른 클라이언트들에게 변경된 콘텐츠 정보를 전송해야 한다
       expect(serviceMock.update).toHaveBeenCalledWith(roomId, updateDto);
+      expect(clientMock.to).toHaveBeenCalledWith(roomId);
       expect(clientToEmitMock).toHaveBeenCalledWith(
         'widget:updated',
         updatedWidget,
       );
     });
+  });
 
-    it('잠금되지 않은 위젯은 누구나 수정하고 브로드캐스트할 수 있다', async () => {
-      // given: 위젯이 잠금되어 있지 않은 상황 (소유자 null)
-      serviceMock.getLockOwner.mockResolvedValue(null);
-      const updatedWidget = { widgetId: 'w-1', data: updateDto.data };
-      serviceMock.update.mockResolvedValue(updatedWidget);
+  describe('remove (위젯 삭제 이벤트)', () => {
+    it('위젯을 삭제하고 특정 룸에 "widget:deleted" 이벤트를 전파해야 한다', async () => {
+      // given: 삭제할 위젯의 ID가 전달되었을 때
+      const widgetId = 'w-1';
+      const result = { widgetId };
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
+      serviceMock.remove.mockResolvedValue(result);
 
-      // when: 클라이언트가 `widget:update` 이벤트를 전송했을 때
-      await gateway.update(updateDto, clientMock as unknown as Socket);
+      // when: 클라이언트가 위젯 삭제 이벤트를 요청하면
+      await gateway.remove({ widgetId }, clientMock as unknown as Socket);
 
-      // then: 위젯 내용을 즉시 업데이트하고, 다른 사용자에게 `widget:updated`로 변경사항을 알린다
-      expect(serviceMock.update).toHaveBeenCalledWith(roomId, updateDto);
-      expect(clientToEmitMock).toHaveBeenCalledWith(
-        'widget:updated',
-        updatedWidget,
-      );
-    });
-
-    it('다른 사용자가 잠금한 위젯에 대해서는 수정 요청 시 에러를 발생시켜야 한다', async () => {
-      // given: 다른 사용자가 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(otherUserId);
-
-      // when: 클라이언트가 `widget:update` 이벤트를 전송했을 때
-      await gateway.update(updateDto, clientMock as unknown as Socket);
-
-      // then: 잠금 소유자를 확인 후, 자신의 잠금이 아니므로 업데이트를 수행하지 않고 요청자에게 에러를 보낸다
-      expect(serviceMock.update).not.toHaveBeenCalled();
-      expect(clientMock.emit).toHaveBeenCalledWith('error', expect.any(String));
+      // then: 서비스의 삭제 메서드를 호출하고, 룸의 모든 클라이언트에게 삭제된 위젯 ID를 브로드캐스트해야 한다
+      expect(serviceMock.remove).toHaveBeenCalledWith(roomId, widgetId);
+      expect(serverToEmitMock).toHaveBeenCalledWith('widget:deleted', result);
     });
   });
 
-  describe('widget:delete (위젯 삭제)', () => {
-    const widgetId = 'w-1';
-
-    it('잠금을 소유한 사용자가 요청 시, 위젯을 삭제하고 브로드캐스트해야 한다', async () => {
-      // given: 사용자가 해당 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(userId);
-      serviceMock.remove.mockResolvedValue({ widgetId });
-
-      // when: 클라이언트가 `widget:delete` 이벤트를 전송했을 때
-      await gateway.remove({ widgetId }, clientMock as unknown as Socket);
-
-      // then: 잠금 소유자를 확인하고, 위젯을 삭제한 뒤, 전체 사용자에게 `widget:deleted`로 삭제 사실을 알린다
-      expect(serviceMock.remove).toHaveBeenCalledWith(roomId, widgetId);
-      expect(serverToEmitMock).toHaveBeenCalledWith('widget:deleted', {
-        widgetId,
-      });
-    });
-
-    it('잠금되지 않은 위젯은 누구나 삭제하고 브로드캐스트할 수 있다', async () => {
-      // given: 위젯이 잠금되어 있지 않은 상황 (소유자 null)
-      serviceMock.getLockOwner.mockResolvedValue(null);
-      serviceMock.remove.mockResolvedValue({ widgetId });
-
-      // when: 클라이언트가 `widget:delete` 이벤트를 전송했을 때
-      await gateway.remove({ widgetId }, clientMock as unknown as Socket);
-
-      // then: 위젯을 즉시 삭제하고, 전체 사용자에게 `widget:deleted`로 삭제 사실을 알린다
-      expect(serviceMock.remove).toHaveBeenCalledWith(roomId, widgetId);
-      expect(serverToEmitMock).toHaveBeenCalledWith('widget:deleted', {
-        widgetId,
-      });
-    });
-
-    it('다른 사용자가 잠금한 위젯에 대해서는 삭제 요청 시 에러를 발생시켜야 한다', async () => {
-      // given: 다른 사용자가 위젯의 잠금을 소유하고 있는 상황
-      serviceMock.getLockOwner.mockResolvedValue(otherUserId);
-
-      // when: 클라이언트가 `widget:delete` 이벤트를 전송했을 때
-      await gateway.remove({ widgetId }, clientMock as unknown as Socket);
-
-      // then: 잠금 소유자를 확인 후, 자신의 잠금이 아니므로 삭제를 수행하지 않고 요청자에게 에러를 보낸다
-      expect(serviceMock.remove).not.toHaveBeenCalled();
-      expect(clientMock.emit).toHaveBeenCalledWith('error', expect.any(String));
-    });
-  });
-
-  describe('widget:load_all (전체 위젯 조회)', () => {
-    it('요청한 사용자에게만 전체 위젯 목록을 반환해야 한다', async () => {
-      // given: 서비스에 여러 위젯이 저장되어 있는 상황
+  describe('findAll (전체 위젯 로드 이벤트)', () => {
+    it('워크스페이스의 모든 위젯을 조회하여 요청자에게 "widget:load_all_response"로 반환해야 한다', async () => {
+      // given: 워크스페이스에 조회할 위젯 목록이 존재할 때
       const widgets = [{ widgetId: 'w-1' }];
+      workspaceServiceMock.getUserBySocketId.mockReturnValue({ roomId });
       serviceMock.findAll.mockResolvedValue(widgets);
 
-      // when: 클라이언트가 `widget:load_all` 이벤트를 전송했을 때
+      // when: 클라이언트가 전체 위젯 목록 로드를 요청하면
       await gateway.findAll(clientMock as unknown as Socket);
 
-      // then: 위젯 서비스의 findAll이 호출되고, 요청한 클라이언트에게만 `widget:load_all_response`로 목록이 전송된다
+      // then: 서비스에서 모든 위젯을 조회한 후, 요청을 보낸 클라이언트에게만 데이터를 응답해야 한다
       expect(serviceMock.findAll).toHaveBeenCalledWith(roomId);
       expect(clientMock.emit).toHaveBeenCalledWith(
         'widget:load_all_response',
