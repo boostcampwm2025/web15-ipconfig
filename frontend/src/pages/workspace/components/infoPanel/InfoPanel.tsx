@@ -1,6 +1,6 @@
 import type { User } from '@/common/types/user';
-import AgendaTimeline from './AgendaTimeline';
 import TeamMemberList from './TeamMemberList';
+import AgendaTimeline from './AgendaTimeline';
 
 interface InfoPanelProps {
   onUserHover: (e: React.MouseEvent, user: User) => void;
