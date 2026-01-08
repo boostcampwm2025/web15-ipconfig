@@ -25,20 +25,32 @@ import type {
 
 import TechStackItem from '@/features/widgets/techStack/components/TechStackItem';
 import SelectedTechStackBox from './SelectedTechStackBox';
+import type { TechStack } from '@/features/widgets/techStack/types/techStack';
+import { getTechStackName } from '../../utils/getTechIconUrl';
 
 function TechStackWidget({ id, position, width, height }: WidgetData) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<string[]>([]);
+  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStack[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
+    // 전달된 데이터가 없는 경우
+    if (!active.data.current || !active.data.current?.content) {
+      return;
+    }
+
+    // 잘못된 영역에 드롭한 경우
+    if (!active.data.current.support.includes(String(over?.id))) {
+      return;
+    }
+
     // 드롭 영역 위에 드롭되었는지 확인
     if (over && over.id === 'techStackWidget') {
-      const techName = active.data.current?.techName as string;
-      if (techName && !selectedTechStacks.includes(techName)) {
-        setSelectedTechStacks((prev) => [...prev, techName]);
+      const { id, name, category } = active.data.current.content as TechStack;
+      if (!selectedTechStacks.some((tech) => tech.id === id)) {
+        setSelectedTechStacks((prev) => [...prev, { id, name, category }]);
       }
     }
 
@@ -109,7 +121,9 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
         )}
       </WidgetContainer>
       <DragOverlay>
-        {activeId ? <TechStackItem techName={String(activeId)} /> : null}
+        {activeId ? (
+          <TechStackItem techName={getTechStackName(String(activeId))} />
+        ) : null}
       </DragOverlay>
     </DndContext>
   );

@@ -3,10 +3,11 @@ import SelectedTechItem from './SelectedTechItem';
 import type { Dispatch, SetStateAction } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/common/lib/utils';
+import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
 interface SelectedTechStackBoxProps {
-  selectedTechStacks: string[];
-  setSelectedTechStacks: Dispatch<SetStateAction<string[]>>;
+  selectedTechStacks: TechStack[];
+  setSelectedTechStacks: Dispatch<SetStateAction<TechStack[]>>;
   setIsTechStackModalOpen: (isOpen: boolean) => void;
 }
 
@@ -19,8 +20,8 @@ function SelectedTechStackBox({
     id: 'techStackWidget',
   });
 
-  const handleRemoveTech = (techName: string) => {
-    setSelectedTechStacks((prev) => prev.filter((t) => t !== techName));
+  const handleRemoveTech = (techId: string) => {
+    setSelectedTechStacks((prev) => prev.filter((t) => t.id !== techId));
   };
 
   return (
@@ -33,9 +34,9 @@ function SelectedTechStackBox({
     >
       {selectedTechStacks.map((tech) => (
         <SelectedTechItem
-          key={tech}
-          name={tech}
-          onRemove={() => handleRemoveTech(tech)}
+          key={tech.id}
+          name={tech.name}
+          onRemove={() => handleRemoveTech(tech.id)}
         />
       ))}
       <button
