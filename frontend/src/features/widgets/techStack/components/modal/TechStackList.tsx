@@ -3,7 +3,11 @@ import NoContents from './NoContents';
 import { TECH_STACKS } from '../../constant/techStackInfo';
 import DraggableTechStackItem from './DraggableTechStackItem';
 
-function TechStackList({ keyword }: { keyword: string }) {
+interface TechStackListProps {
+  keyword: string;
+}
+
+function TechStackList({ keyword }: TechStackListProps) {
   const filteredStacks = useMemo(() => {
     const lower = keyword.toLowerCase();
     return TECH_STACKS.filter((te) => te.name.toLowerCase().includes(lower));

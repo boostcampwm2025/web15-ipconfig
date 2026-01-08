@@ -2,13 +2,12 @@ import { Button } from '@/common/components/shadcn/button';
 import { Input } from '@/common/components/shadcn/input';
 import { LuSearch } from 'react-icons/lu';
 
-export default function SearchBar({
-  search,
-  setSearch,
-}: {
+interface SearchBarProps {
   search: string;
   setSearch: (search: string) => void;
-}) {
+}
+
+export default function SearchBar({ search, setSearch }: SearchBarProps) {
   return (
     <div className="relative mb-6 flex items-center justify-between select-none">
       <Input

@@ -1,14 +1,13 @@
 import { LuX } from 'react-icons/lu';
 import TechStackItem from '@/features/widgets/techStack/components/TechStackItem';
 
-// 선택된 기술 스택 아이템 컴포넌트
-function SelectedTechItem({
-  name,
-  onRemove,
-}: {
+interface SelectedTechItemProps {
   name: string;
   onRemove: () => void;
-}) {
+}
+
+// 선택된 기술 스택 아이템 컴포넌트
+function SelectedTechItem({ name, onRemove }: SelectedTechItemProps) {
   return (
     <div className="group borde relative flex flex-col items-center justify-center gap-2 rounded-lg">
       <button

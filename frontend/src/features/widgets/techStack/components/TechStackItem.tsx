@@ -2,7 +2,11 @@ import { memo, useState } from 'react';
 import { getTechIconUrl } from '@/features/widgets/techStack/utils/getTechIconUrl';
 import { Badge } from '@/common/components/shadcn/badge';
 
-function TechIcon({ name }: { name: string }) {
+interface TechIconProps {
+  name: string;
+}
+
+function TechIcon({ name }: TechIconProps) {
   const [error, setError] = useState(false);
   const iconUrl = getTechIconUrl(name);
 

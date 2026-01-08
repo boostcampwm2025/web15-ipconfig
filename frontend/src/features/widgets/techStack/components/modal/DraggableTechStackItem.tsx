@@ -2,7 +2,11 @@ import { memo } from 'react';
 import TechStackItem from '@/features/widgets/techStack/components/TechStackItem';
 import { useDraggable } from '@dnd-kit/core';
 
-function DraggableTechStackItem({ techName }: { techName: string }) {
+interface DraggableTechStackItemProps {
+  techName: string;
+}
+
+function DraggableTechStackItem({ techName }: DraggableTechStackItemProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: techName,
     data: { techName },

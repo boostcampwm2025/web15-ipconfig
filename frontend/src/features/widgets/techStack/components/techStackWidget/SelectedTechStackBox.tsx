@@ -4,15 +4,17 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/common/lib/utils';
 
+interface SelectedTechStackBoxProps {
+  selectedTechStacks: string[];
+  setSelectedTechStacks: Dispatch<SetStateAction<string[]>>;
+  setIsTechStackModalOpen: (isOpen: boolean) => void;
+}
+
 function SelectedTechStackBox({
   selectedTechStacks,
   setSelectedTechStacks,
   setIsTechStackModalOpen,
-}: {
-  selectedTechStacks: string[];
-  setSelectedTechStacks: Dispatch<SetStateAction<string[]>>;
-  setIsTechStackModalOpen: (isOpen: boolean) => void;
-}) {
+}: SelectedTechStackBoxProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: 'techStackWidget',
   });
