@@ -59,38 +59,27 @@ export const useSocket = ({
     // 2) 같은 workspace의 전체 유저 + 커서 목록 수신
     socket.on(
       'user:joined',
-      (payload: {
-        allUsers: {
+      (
+        payload: {
           id: string;
           nickname: string;
           color: string;
           backgroundColor: string;
-        }[];
-        cursors: {
-          userId: string;
-          workspaceId: string;
-          x: number;
-          y: number;
-        }[];
-      }) => {
+        }[],
+      ) => {
         setRemoteCursors((prev) => {
           const next = { ...prev };
 
-          const cursorMap = new Map(
-            payload.cursors.map((cursor) => [cursor.userId, cursor]),
-          );
-
-          payload.allUsers.forEach((user) => {
-            const existing = next[user.id];
-            const cursor = cursorMap.get(user.id);
-
+          payload.forEach((user) => {
             next[user.id] = {
               userId: user.id,
               nickname: user.nickname,
               color: user.color,
               backgroundColor: user.backgroundColor,
-              x: cursor?.x ?? existing?.x ?? 100,
-              y: cursor?.y ?? existing?.y ?? 100,
+              // 일단 아예 저 멀리 생성해서 안 보이도록 하기
+              // 추후에 update-cursor 이벤트를 받으면 그 때 위치를 업데이트 해주기
+              x: 10000,
+              y: 10000,
             };
           });
 
@@ -111,8 +100,8 @@ export const useSocket = ({
     // 4) 커서 이동 브로드캐스트 수신
     socket.on(
       'cursor:moved',
-      (payload: { userId: string; moveData: { x: number; y: number } }) => {
-        const { userId, moveData } = payload;
+      (payload: { userId: string; x: number; y: number }) => {
+        const { userId, x, y } = payload;
 
         setRemoteCursors((prev) => {
           const existing = prev[userId];
@@ -125,8 +114,8 @@ export const useSocket = ({
                 nickname: '임시 유저',
                 color: '#3b82f6',
                 backgroundColor: '#3b82f6',
-                x: moveData.x,
-                y: moveData.y,
+                x,
+                y,
               },
             };
           }
@@ -134,8 +123,8 @@ export const useSocket = ({
             ...prev,
             [userId]: {
               ...existing,
-              x: moveData.x,
-              y: moveData.y,
+              x,
+              y,
             },
           };
         });

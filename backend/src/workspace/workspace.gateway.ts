@@ -13,8 +13,6 @@ import { JoinUserDTO } from './dto/join-user.dto';
 import { LeaveUserDTO } from './dto/left-user.dto';
 import { UserStatus, UserStatusDTO } from './dto/user-status.dto';
 import { WorkspaceService } from './workspace.service';
-import { CursorService } from '../cursor/cursor.service';
-import { SetCursorDTO } from '../cursor/dto/set-cursor.dto';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
@@ -30,10 +28,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly workspaceService: WorkspaceService,
-    private readonly cursorService: CursorService,
-  ) {}
+  constructor(private readonly workspaceService: WorkspaceService) {}
 
   handleDisconnect(client: Socket) {
     const result = this.workspaceService.handleDisconnect(client.id);
@@ -94,27 +89,12 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
 
     await client.join(roomId);
 
-    this.cursorService.setCursor({
-      workspaceId: roomId,
-      userId: user.id,
-      // 아예 처음에 안보이게 하기...
-      x: 10000,
-      y: 10000,
-    } as SetCursorDTO);
-
-    // 현재 워크스페이스의 커서 상태도 함께 내려줄 수 있도록 확장 여지 확보
-    const cursors = this.cursorService.getCursorsByWorkspace(roomId);
-
     this.server.to(roomId).emit('user:status', {
       userId: user.id,
       status: UserStatus.ONLINE,
     });
 
-    // 같은 workspace(room)에 있는 전체 유저 + 커서 목록 전달
-    this.server.to(roomId).emit('user:joined', {
-      allUsers,
-      cursors,
-    });
+    this.server.to(roomId).emit('user:joined', allUsers);
   }
 
   @AsyncApiSub({
@@ -154,9 +134,6 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       return;
     }
     const { roomId, userId } = result;
-
-    // 커서 정보 정리
-    this.cursorService.removeCursor(roomId, userId);
 
     await client.leave(roomId);
 
