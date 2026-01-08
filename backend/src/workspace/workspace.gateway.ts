@@ -9,15 +9,10 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { AsyncApiPub, AsyncApiSub } from 'nestjs-asyncapi';
-import { Inject } from '@nestjs/common';
 import { JoinUserDTO } from './dto/join-user.dto';
 import { LeaveUserDTO } from './dto/left-user.dto';
 import { UserStatus, UserStatusDTO } from './dto/user-status.dto';
 import { WorkspaceService } from './workspace.service';
-import {
-  type IWidgetService,
-  WIDGET_SERVICE,
-} from '../widget/widget.interface';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
@@ -33,30 +28,14 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly workspaceService: WorkspaceService,
-    @Inject(WIDGET_SERVICE)
-    private readonly widgetService: IWidgetService,
-  ) {}
+  constructor(private readonly workspaceService: WorkspaceService) {}
 
-  async handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) {
     const result = this.workspaceService.handleDisconnect(client.id);
     if (!result) {
       return;
     }
     const { roomId, userId } = result;
-
-    const unlockedWidgetIds = await this.widgetService.unlockAllByUser(
-      roomId,
-      userId,
-    );
-
-    unlockedWidgetIds.forEach((widgetId) => {
-      this.server.to(roomId).emit('widget:unlocked', {
-        widgetId,
-        userId,
-      });
-    });
 
     this.server.to(roomId).emit('user:status', {
       userId,
@@ -74,7 +53,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     channel: 'user:join',
     summary: '워크스페이스 입장',
     description:
-      '사용자가 특정 워크스페이스(room)에 처음 접속할 때 클라이언트에서 보내는 이벤트',
+      '사용자가 특정 워크스페이스(room)에 처음 접속할 때 클라이언트에서 보내는 이벤트입니다.',
     message: {
       payload: JoinUserDTO,
     },
@@ -83,7 +62,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     channel: 'user:joined',
     summary: '워크스페이스 유저/커서 정보 브로드캐스트',
     description:
-      '새 유저가 입장했을 때, 같은 워크스페이스의 모든 유저와 커서 목록을 브로드캐스트합니다.',
+      '새 유저가 입장했을 때, 같은 워크스페이스의 모든 유저 목록을 브로드캐스트합니다.',
     message: {
       // allUsers, cursors 구조를 간단히 표현하기 위해 DTO 대신 any 사용
       payload: Object,
@@ -122,7 +101,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     channel: 'user:leave',
     summary: '워크스페이스 퇴장',
     description:
-      '사용자가 워크스페이스(room)에서 나갈 때 클라이언트에서 보내는 이벤트',
+      '사용자가 워크스페이스(room)에서 나갈 때 클라이언트에서 보내는 이벤트입니다.',
     message: {
       payload: LeaveUserDTO,
     },
@@ -155,18 +134,6 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       return;
     }
     const { roomId, userId } = result;
-
-    // 위젯 락 정리
-    const unlockedWidgetIds = await this.widgetService.unlockAllByUser(
-      roomId,
-      userId,
-    );
-    unlockedWidgetIds.forEach((widgetId) => {
-      this.server.to(roomId).emit('widget:unlocked', {
-        widgetId,
-        userId,
-      });
-    });
 
     await client.leave(roomId);
 
