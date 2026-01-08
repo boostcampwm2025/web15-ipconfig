@@ -37,6 +37,18 @@ function WorkSpacePage() {
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
 
+  const {
+    camera,
+    containerRef,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleZoomButton,
+    isPanning,
+    getMousePosition,
+    handleWheel,
+  } = useCanvas();
+
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   const workspaceId = 'w1';
 
