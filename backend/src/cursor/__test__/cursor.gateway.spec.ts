@@ -10,17 +10,25 @@ describe('CursorGateway', () => {
   let serverMock: Partial<Server>;
   let clientMock: Partial<Socket>;
   let workspaceServiceMock: Partial<WorkspaceService>;
+  let clientToEmitMock: jest.Mock;
 
   beforeEach(async () => {
     serverMock = {
       to: jest.fn(),
       emit: jest.fn(),
     };
+
+    clientToEmitMock = jest.fn();
     clientMock = {
+      id: 'socket-id-1',
       join: jest.fn(),
       leave: jest.fn(),
+      to: jest.fn().mockReturnValue({
+        emit: clientToEmitMock,
+      } as unknown as Socket),
       data: {},
     };
+
     workspaceServiceMock = {
       handleDisconnect: jest.fn().mockReturnValue({
         roomId: 'w1',
@@ -51,10 +59,6 @@ describe('CursorGateway', () => {
   });
 
   describe('cursor:move', () => {
-    beforeEach(() => {
-      serverMock.to = jest.fn().mockReturnValue(serverMock as Server);
-    });
-
     it('cursor:move 이벤트 발생 시 cursor:moved 이벤트가 발생하는지', () => {
       // GIVEN
       const payload: MoveCursorDTO = {
@@ -70,7 +74,8 @@ describe('CursorGateway', () => {
 
       // THEN
       // 워크 스페이스 id가 추가되어서 불러져야 함
-      expect(serverMock.emit).toHaveBeenCalledWith('cursor:moved', {
+      expect(clientMock.to).toHaveBeenCalledWith('w1');
+      expect(clientToEmitMock).toHaveBeenCalledWith('cursor:moved', {
         workspaceId: 'w1',
         userId: 'u1',
         x: 100,
