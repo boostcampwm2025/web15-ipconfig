@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 
 import type { WidgetData } from '@/common/types/widgetData';
 import type { User } from '@/common/types/user';
-import TechStackModal from '@/features/widgets/techStack/components/modal/TechStackModal';
 
 import { getRandomColor } from '@/utils/getRandomColor';
 import { useSocket } from '@/common/hooks/useSocket';
@@ -23,7 +22,6 @@ function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
     {},
   );
-  const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(true);
 
   // Global State
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
@@ -78,11 +76,6 @@ function WorkSpacePage() {
     setRemoteCursors,
   });
 
-  // --- Handlers ---
-  const handleModalClose = useCallback(() => {
-    setIsTechStackModalOpen(false);
-  }, []);
-
   // 커서 이동 스로틀링을 위한 ref
   const lastEmitRef = useRef<number>(0);
 
@@ -123,7 +116,7 @@ function WorkSpacePage() {
   }, [workspaceId, fetchMarkdown]);
 
   return (
-    <div className="dark flex h-screen flex-col overflow-hidden bg-gray-900 font-sans text-gray-100">
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-900 font-sans text-gray-100">
       {/* Hide Scrollbar CSS */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
@@ -161,10 +154,6 @@ function WorkSpacePage() {
         )}
 
         <ZoomControls handleZoomButton={handleZoomButton} camera={camera} />
-
-        {isTechStackModalOpen && (
-          <TechStackModal onModalClose={handleModalClose} />
-        )}
       </div>
 
       <ExportModal

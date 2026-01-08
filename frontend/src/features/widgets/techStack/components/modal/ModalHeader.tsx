@@ -1,26 +1,35 @@
 import { Button } from '@/common/components/shadcn/button';
-import { LuTrash2 } from 'react-icons/lu';
+import { LuX } from 'react-icons/lu';
+import type { ComponentProps } from 'react';
 
 interface HeaderProps {
   title: string;
   icon: React.ReactNode;
-  onRemove: () => void;
+  onClose: () => void;
 }
 
-export default function ModalHeader({ title, icon, onRemove }: HeaderProps) {
+export default function ModalHeader({
+  title,
+  icon,
+  onClose,
+  ...props
+}: HeaderProps & ComponentProps<'header'>) {
   return (
-    <div className="mb-4 flex items-center justify-between border-b border-gray-700 pb-2 select-none">
-      <h4 className="flex items-center gap-2 font-bold text-white">
+    <header
+      className="flex cursor-move items-center justify-between border-b border-gray-700 px-4 py-1 select-none"
+      {...props}
+    >
+      <div className="flex items-center gap-2 text-sm font-bold text-white">
         {icon} {title}
-      </h4>
+      </div>
       <Button
         variant="ghost"
         onMouseDown={(e) => e.stopPropagation()}
-        onClick={onRemove}
-        className="hover:text-main text-gray-500 transition-colors hover:cursor-pointer hover:bg-transparent dark:hover:bg-transparent"
+        onClick={onClose}
+        className="hover:text-main shrink-0 text-gray-500 transition-colors hover:cursor-pointer hover:bg-transparent dark:hover:bg-transparent"
       >
-        <LuTrash2 size={16} />
+        <LuX size={16} />
       </Button>
-    </div>
+    </header>
   );
 }
