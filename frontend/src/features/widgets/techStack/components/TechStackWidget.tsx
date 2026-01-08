@@ -15,12 +15,14 @@ import {
 import { useState } from 'react';
 import { Button } from '@/common/components/shadcn/button';
 import { SUBJECT_GROUPS } from '@/common/mocks/techStacks';
+import TechStackModal from './modal/TechStackModal';
 
 function TechStackWidget({ id, position, width, height }: WidgetData) {
   const [value, setValue] = useState<{ value: string; label: string }>({
     value: 'nest.js',
     label: 'Nest.js',
   });
+  const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
 
   return (
     <WidgetContainer
@@ -59,7 +61,10 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
         </Select>
 
         <main className="grid grid-cols-4 gap-3">
-          <button className="hover:border-primary flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70">
+          <button
+            className="hover:border-primary flex h-25 w-25 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70"
+            onClick={() => setIsTechStackModalOpen(true)}
+          >
             <LuPlus size={20} />
             <span>추가하기</span>
           </button>
@@ -69,6 +74,12 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
           <Button>확정</Button>
         </footer>
       </section>
+      {isTechStackModalOpen && (
+        <TechStackModal
+          isOpen={isTechStackModalOpen}
+          onModalClose={() => setIsTechStackModalOpen(false)}
+        />
+      )}
     </WidgetContainer>
   );
 }

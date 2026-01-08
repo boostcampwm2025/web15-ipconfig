@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import type { WidgetData } from '@/common/types/widgetData';
 import type { User } from '@/common/types/user';
-import TechStackModal from '@/features/widgets/techStack/components/modal/TechStackModal';
 
 import { getRandomColor } from '@/utils/getRandomColor';
 import { useSocket } from '@/common/hooks/useSocket';
@@ -22,7 +21,6 @@ function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
     {},
   );
-  const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(true);
 
   // Global State
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
@@ -66,11 +64,6 @@ function WorkSpacePage() {
     currentUser,
     setRemoteCursors,
   });
-
-  // --- Handlers ---
-  const handleModalClose = useCallback(() => {
-    setIsTechStackModalOpen(false);
-  }, []);
 
   // 커서 이동 스로틀링을 위한 ref
   const lastEmitRef = useRef<number>(0);
@@ -163,10 +156,6 @@ function WorkSpacePage() {
         )}
 
         <ZoomControls />
-
-        {isTechStackModalOpen && (
-          <TechStackModal onModalClose={handleModalClose} />
-        )}
       </div>
 
       <ExportModal
