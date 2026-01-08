@@ -7,7 +7,9 @@ export interface IWidgetService {
     workspaceId: string,
     createWidgetDto: CreateWidgetDto,
   ): Promise<CreateWidgetDto>;
+
   findAll(workspaceId: string): Promise<CreateWidgetDto[]>;
+
   findOne(workspaceId: string, widgetId: string): Promise<CreateWidgetDto>;
 
   update(
@@ -21,6 +23,18 @@ export interface IWidgetService {
   ): Promise<CreateWidgetDto>;
 
   remove(workspaceId: string, widgetId: string): Promise<{ widgetId: string }>;
+
+  lock(workspaceId: string, widgetId: string, userId: string): Promise<boolean>;
+
+  unlock(
+    workspaceId: string,
+    widgetId: string,
+    userId: string,
+  ): Promise<boolean>;
+
+  getLockOwner(workspaceId: string, widgetId: string): Promise<string | null>;
+
+  unlockAllByUser(workspaceId: string, userId: string): Promise<string[]>;
 }
 
 export const WIDGET_SERVICE = 'WIDGET_SERVICE';
