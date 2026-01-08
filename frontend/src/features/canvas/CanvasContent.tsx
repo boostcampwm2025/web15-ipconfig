@@ -58,7 +58,7 @@ function CanvasContent({
           width: '100%',
           height: '100%',
         }}
-        className="relative will-change-transform"
+        className="relative"
       >
         {/* 위젯 렌더링 */}
         <TechStackWidget
