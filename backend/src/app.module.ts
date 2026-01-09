@@ -4,10 +4,9 @@ import { AppService } from './app.service';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { WidgetModule } from './widget/widget.module';
 import { CursorModule } from './cursor/cursor.module';
-import { MarkdownModule } from './markdown/markdown.module';
 
 @Module({
-  imports: [WorkspaceModule, WidgetModule, CursorModule, MarkdownModule],
+  imports: [WorkspaceModule, WidgetModule, CursorModule],
   controllers: [AppController],
   providers: [AppService],
 })
