@@ -1,8 +1,8 @@
-import CursorWithName from '@/common/components/CursorWithName';
 import type { Cursor } from '@/common/types/cursor';
-import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
+import { TechStackWidget } from '../widgets/techStack/components/techStackWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
+import CursorWithName from '@/common/components/CursorWithName';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -31,31 +31,22 @@ function CanvasContent({
   return (
     <div
       ref={containerRef}
-      className={`h-full w-full cursor-${isPanning ? 'grabbing' : 'default'}`}
+      className={`h-full w-full cursor-${isPanning ? 'grabbing' : 'default'} relative overflow-hidden bg-gray-900`}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      {/* 배경 패턴 */}
-      <div
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        style={{
-          backgroundImage:
-            'radial-gradient(rgb(51,65,85) 1px, transparent 1px)',
-          backgroundSize: `${20 * camera.scale}px ${20 * camera.scale}px`,
-          backgroundPosition: `${camera.x % (20 * camera.scale)}px ${camera.y % (20 * camera.scale)}px`,
-        }}
-      />
       {/* World Container: 실제 변환(Transform)이 일어나는 레이어 */}
       <div
         style={{
           transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`,
           transformOrigin: '0 0',
-          width: '100%',
-          height: '100%',
+          width: 0,
+          height: 0,
+          overflow: 'visible',
         }}
-        className="relative"
+        className="relative bg-white"
       >
         {/* 위젯 렌더링 */}
         <TechStackWidget
