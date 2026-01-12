@@ -24,7 +24,7 @@ export abstract class BaseContentDto {
   readonly widgetType: WidgetType;
 }
 
-export class TechStackItemDto {
+export class TechStackItem {
   @ApiProperty({ description: '기술 스택 ID', example: 'react' })
   @IsString()
   readonly id: string;
@@ -49,12 +49,12 @@ export class TechStackContentDto implements BaseContentDto {
       { id: 'react', category: 'Frontend', name: 'React' },
       { id: 'nestjs', category: 'Backend', name: 'NestJS' },
     ],
-    type: [TechStackItemDto],
+    type: [TechStackItem],
   })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => TechStackItemDto)
-  readonly selectedItems: TechStackItemDto[];
+  @Type(() => TechStackItem)
+  readonly selectedItems: TechStackItem[];
 }
 
 export class PostItContentDto implements BaseContentDto {
