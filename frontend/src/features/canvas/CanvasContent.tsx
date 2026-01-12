@@ -40,9 +40,7 @@ function CanvasContent({
     >
       {/* 캔버스 이동 이벤트 감지용 */}
       <div
-        className={`absolute inset-0 h-full w-full touch-none ${
-          isPanning ? 'cursor-grabbing' : 'cursor-default'
-        }`}
+        className={`absolute inset-0 h-full w-full touch-none ${isPanning ? 'cursor-grabbing' : 'cursor-default'}`}
         onPointerDown={handlePointerDown}
         style={{}}
       />

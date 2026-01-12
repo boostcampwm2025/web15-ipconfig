@@ -55,7 +55,7 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
         position={position}
         type="tech"
         content="Tech Stack"
-        width={width}
+        width={Math.max(width ?? 0, 500)}
         height={height}
       >
         <WidgetHeader
