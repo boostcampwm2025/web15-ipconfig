@@ -33,7 +33,6 @@ function CanvasContent({
     <div
       ref={containerRef}
       className={`relative h-full w-full touch-none overflow-hidden bg-gray-900 select-none`}
-      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
