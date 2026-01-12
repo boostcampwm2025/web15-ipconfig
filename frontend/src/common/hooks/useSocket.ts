@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import type { WidgetData, WidgetType } from '../types/widgetData';
 
 // Remote cursor 상태 타입
 type RemoteCursorState = Record<
@@ -25,12 +26,15 @@ interface UseSocketParams {
   workspaceId: string;
   currentUser: CurrentUserInfo;
   setRemoteCursors: React.Dispatch<React.SetStateAction<RemoteCursorState>>;
+  createWidget: React.Dispatch<React.SetStateAction<WidgetData[]>>;
+  updateWidget: React.Dispatch<React.SetStateAction<WidgetData[]>>;
 }
 
 export const useSocket = ({
   workspaceId,
   currentUser,
   setRemoteCursors,
+  createWidget,
 }: UseSocketParams) => {
   const socketRef = useRef<Socket | null>(null);
 
@@ -145,6 +149,20 @@ export const useSocket = ({
     socket.emit('cursor:move', {
       userId: currentUser.id,
       moveData: { x, y },
+    });
+  };
+
+  const emitCreateWidget = (type: WidgetType, data: WidgetData) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    socket.emit('widget:create', {
+      widget: {
+        // 임시 데이터 넣어서 주고 나중에 대체하기
+        widgetId: 'temp-widget-id',
+        type,
+        data,
+      },
     });
   };
 
