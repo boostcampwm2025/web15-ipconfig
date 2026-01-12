@@ -3,7 +3,7 @@ import type { Cursor } from '@/common/types/cursor';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
-import type { WidgetData } from '@/common/types/widgetData';
+import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -14,6 +14,7 @@ interface CanvasContainerProps {
   isPanning: boolean;
   remoteCursor: Record<string, Cursor>;
   widgets: Record<string, WidgetData>;
+  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
 }
 
@@ -26,6 +27,7 @@ function CanvasContent({
   isPanning,
   remoteCursor,
   widgets,
+  emitUpdateWidget,
   emitDeleteWidget,
 }: CanvasContainerProps) {
   const [techStackPosition, setTechStackPosition] = useState({
@@ -64,11 +66,13 @@ function CanvasContent({
       >
         {/* 위젯 렌더링 */}
         {Object.entries(widgets).map(([widgetId, widget]) => (
+          // TODO: 나중에 위젯 타입에 따라 분기처리 필요
           <TechStackWidget
             key={widgetId}
             widgetId={widgetId}
             data={widget}
             emitDeleteWidget={emitDeleteWidget}
+            emitUpdateWidget={emitUpdateWidget}
           />
         ))}
         {/* 커서 렌더링 */}

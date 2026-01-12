@@ -1,4 +1,10 @@
-import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
+import type {
+  WidgetContent,
+  WidgetData,
+  WidgetType,
+  TechStackItem,
+  TechStackContentDto,
+} from '@/common/types/widgetData';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuLayers } from 'react-icons/lu';
@@ -12,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/common/components/shadcn/select';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/common/components/shadcn/button';
 import { SUBJECT_GROUPS } from '@/common/mocks/techStacks';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
@@ -20,21 +26,24 @@ import { DndContext, pointerWithin } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 
 import SelectedTechStackBox from './SelectedTechStackBox';
-import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
 interface TechStackWidgetProps {
   widgetId: string;
   data: WidgetData;
+  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
 }
 
 function TechStackWidget({
   widgetId,
   data,
+  emitUpdateWidget,
   emitDeleteWidget,
 }: TechStackWidgetProps) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStack[]>([]);
+  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStackItem[]>(
+    [],
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -50,10 +59,20 @@ function TechStackWidget({
     }
 
     // 드롭 영역 위에 드롭되었는지 확인
+
     if (over && over.id === 'techStackWidget') {
-      const { id, name, category } = active.data.current.content as TechStack;
+      const { id, name, category } = active.data.current
+        .content as TechStackItem;
       if (!selectedTechStacks.some((tech) => tech.id === id)) {
-        setSelectedTechStacks((prev) => [...prev, { id, name, category }]);
+        const newSelectedTechStacks = [
+          ...selectedTechStacks,
+          { id, name, category },
+        ];
+        setSelectedTechStacks(newSelectedTechStacks);
+        emitUpdateWidget(widgetId, {
+          widgetType: 'TECH_STACK',
+          selectedItems: newSelectedTechStacks,
+        } as TechStackContentDto);
       }
     }
   };

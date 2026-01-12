@@ -20,7 +20,7 @@ export interface IWidgetService {
   update(
     workspaceId: string,
     updateWidgetDto: UpdateWidgetDto,
-  ): Promise<CreateWidgetDto>;
+  ): Promise<UpdateWidgetDto>;
 
   updateLayout(
     workspaceId: string,

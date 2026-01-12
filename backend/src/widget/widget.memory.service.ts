@@ -60,7 +60,7 @@ export class WidgetMemoryService implements IWidgetService {
   async update(
     workspaceId: string,
     updateWidgetDto: UpdateWidgetDto,
-  ): Promise<CreateWidgetDto> {
+  ): Promise<UpdateWidgetDto> {
     const widgets = this.getWidgetsMap(workspaceId);
     const existingWidget = widgets.get(updateWidgetDto.widgetId);
 
@@ -82,7 +82,15 @@ export class WidgetMemoryService implements IWidgetService {
     } as CreateWidgetDto;
 
     widgets.set(updateWidgetDto.widgetId, updatedWidget);
-    return Promise.resolve(updatedWidget);
+
+    const updatedWidgetDto = {
+      ...updateWidgetDto,
+      data: {
+        ...updateWidgetDto.data,
+        content: updatedWidget.data.content,
+      },
+    } as UpdateWidgetDto;
+    return Promise.resolve(updatedWidgetDto);
   }
 
   async updateLayout(

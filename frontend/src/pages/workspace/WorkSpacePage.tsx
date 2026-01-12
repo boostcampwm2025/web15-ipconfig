@@ -149,6 +149,7 @@ function WorkSpacePage() {
             isPanning={isPanning}
             remoteCursor={remoteCursors}
             widgets={widgets}
+            emitUpdateWidget={emitUpdateWidget}
             emitDeleteWidget={emitDeleteWidget}
           />
         </main>
