@@ -61,7 +61,7 @@ function SelectInput({ selectedValue, setSelectedValue }: SelectInputProps) {
       ...prev,
       { category: '커스텀 주제', options: [newOption] },
     ]);
-    setSelectedValue(newOption);
+    setSelectedValue(`[커스텀 주제] ${newOption}`);
     setOpen(false);
     setSearchText('');
   };
