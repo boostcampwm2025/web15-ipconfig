@@ -4,7 +4,6 @@ import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuLayers } from 'react-icons/lu';
 
 import { useState } from 'react';
-import { Button } from '@/common/components/shadcn/button';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
 
@@ -57,11 +56,6 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
             setSelectedTechStacks={setSelectedTechStacks}
             setIsTechStackModalOpen={setIsTechStackModalOpen}
           />
-
-          <footer className="flex items-center justify-end gap-2 font-bold">
-            <Button variant="secondary">투표</Button>
-            <Button>확정</Button>
-          </footer>
         </section>
         {isTechStackModalOpen && (
           <TechStackModal
