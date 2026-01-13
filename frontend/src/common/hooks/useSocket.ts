@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type {
   WidgetContent,
@@ -155,7 +155,12 @@ export const useSocket = ({
     socket.on('widget:updated', (payload: UpdateWidgetData) => {
       setWidgets((prev) => {
         const next = { ...prev };
-        next[payload.widgetId].content = payload.data.content;
+        if (next[payload.widgetId]) {
+          next[payload.widgetId] = {
+            ...next[payload.widgetId],
+            content: payload.data.content,
+          };
+        }
         return next;
       });
     });
@@ -206,6 +211,17 @@ export const useSocket = ({
       data: {
         content: data,
       },
+    });
+
+    setWidgets((prev) => {
+      const next = { ...prev };
+      if (next[widgetId]) {
+        next[widgetId] = {
+          ...next[widgetId],
+          content: data,
+        };
+      }
+      return next;
     });
   };
 
