@@ -75,6 +75,7 @@ function WorkSpacePage() {
     emitCreateWidget,
     emitUpdateWidget,
     emitDeleteWidget,
+    emitMoveWidget,
   } = useSocket({
     workspaceId,
     currentUser,
@@ -151,6 +152,7 @@ function WorkSpacePage() {
             widgets={widgets}
             emitUpdateWidget={emitUpdateWidget}
             emitDeleteWidget={emitDeleteWidget}
+            emitMoveWidget={emitMoveWidget}
           />
         </main>
         <RightSidebar

@@ -79,3 +79,16 @@ export interface UpdateWidgetData {
     content: WidgetContent;
   };
 }
+
+export interface MoveWidgetData {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  zIndex?: number;
+}
+
+export interface UpdateWidgetLayoutData {
+  widgetId: string;
+  data: MoveWidgetData;
+}

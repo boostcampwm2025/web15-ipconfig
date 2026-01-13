@@ -4,7 +4,11 @@ import TechStackWidget from '@/features/widgets/techStack/components/techStackWi
 import { GitConventionWidget } from '@/features/widgets/gitConvention/components/gitConventionWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
-import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
+import type {
+  WidgetContent,
+  WidgetData,
+  MoveWidgetData,
+} from '@/common/types/widgetData';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -17,6 +21,7 @@ interface CanvasContainerProps {
   widgets: Record<string, WidgetData>;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function CanvasContent({
@@ -30,6 +35,7 @@ function CanvasContent({
   widgets,
   emitUpdateWidget,
   emitDeleteWidget,
+  emitMoveWidget,
 }: CanvasContainerProps) {
   const [techStackPosition, setTechStackPosition] = useState({
     x: 500,
@@ -76,6 +82,7 @@ function CanvasContent({
                   data={widget}
                   emitDeleteWidget={emitDeleteWidget}
                   emitUpdateWidget={emitUpdateWidget}
+                  emitMoveWidget={emitMoveWidget}
                 />
               );
             case 'GIT_CONVENTION':
@@ -86,6 +93,7 @@ function CanvasContent({
                   data={widget}
                   emitDeleteWidget={emitDeleteWidget}
                   emitUpdateWidget={emitUpdateWidget}
+                  emitMoveWidget={emitMoveWidget}
                 />
               );
             default:

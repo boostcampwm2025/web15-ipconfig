@@ -2,6 +2,7 @@ import type {
   WidgetData,
   WidgetContent,
   GitConventionContentDto,
+  MoveWidgetData,
 } from '@/common/types/widgetData';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
@@ -16,6 +17,7 @@ interface GitConventionWidgetProps {
   data: WidgetData;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function GitConventionWidget({
@@ -23,6 +25,7 @@ function GitConventionWidget({
   data,
   emitDeleteWidget,
   emitUpdateWidget,
+  emitMoveWidget,
 }: GitConventionWidgetProps) {
   // GitConventionContentDto 임을 명시하고, 이후에 data 사용
   const gitConventionContent = data.content as GitConventionContentDto;
@@ -52,6 +55,15 @@ function GitConventionWidget({
         title="Git Convention"
         icon={<LuGitBranch className="text-primary" size={18} />}
         onClickDelete={() => emitDeleteWidget(widgetId)}
+        onDrag={() =>
+          emitMoveWidget(widgetId, {
+            x: data.x,
+            y: data.y,
+            width: data.width,
+            height: data.height,
+            zIndex: data.zIndex,
+          })
+        }
       />
       <section className="relative flex h-full flex-col gap-4 p-1">
         <StrategySelector
