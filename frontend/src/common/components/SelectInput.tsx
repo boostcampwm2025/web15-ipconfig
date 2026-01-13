@@ -70,14 +70,17 @@ function SelectInput({ initialOptions }: CustomSearchSelectProps) {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'w-[250px] justify-between',
+            'flex-1 justify-between',
             open && 'border-primary! ring-primary/50! ring-1',
           )}
         >
           {value || '주제를 선택해주세요...'}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0">
+      <PopoverContent
+        className="p-0"
+        style={{ width: 'var(--radix-popover-trigger-width)' }}
+      >
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="원하는 주제를 입력하세요..."
@@ -95,7 +98,7 @@ function SelectInput({ initialOptions }: CustomSearchSelectProps) {
                     key={option}
                     value={option}
                     onSelect={handleSelect}
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between pl-4"
                   >
                     {option}
                     <Check
