@@ -11,6 +11,7 @@ import {
   PartialGroundRuleContentDto,
   PartialPostItContentDto,
   PartialTechStackContentDto,
+  PartialGitConventionContentDto,
   WidgetType,
 } from './widget-content.dto';
 
@@ -18,6 +19,7 @@ import {
   PartialTechStackContentDto,
   PartialPostItContentDto,
   PartialGroundRuleContentDto,
+  PartialGitConventionContentDto,
 )
 class UpdateWidgetContentData {
   @ApiProperty({
@@ -26,6 +28,7 @@ class UpdateWidgetContentData {
       { $ref: getSchemaPath(PartialTechStackContentDto) },
       { $ref: getSchemaPath(PartialPostItContentDto) },
       { $ref: getSchemaPath(PartialGroundRuleContentDto) },
+      { $ref: getSchemaPath(PartialGitConventionContentDto) },
     ],
   })
   @IsOptional()
@@ -39,13 +42,18 @@ class UpdateWidgetContentData {
         { value: PartialTechStackContentDto, name: WidgetType.TECH_STACK },
         { value: PartialPostItContentDto, name: WidgetType.POST_IT },
         { value: PartialGroundRuleContentDto, name: WidgetType.GROUND_RULE },
+        {
+          value: PartialGitConventionContentDto,
+          name: WidgetType.GIT_CONVENTION,
+        },
       ],
     },
   })
   readonly content:
     | PartialTechStackContentDto
     | PartialPostItContentDto
-    | PartialGroundRuleContentDto;
+    | PartialGroundRuleContentDto
+    | PartialGitConventionContentDto;
 }
 
 export class UpdateWidgetDto {

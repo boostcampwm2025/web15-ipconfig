@@ -6,6 +6,7 @@ import {
   IsString,
   IsOptional,
   ValidateNested,
+  IsObject,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -13,6 +14,7 @@ export enum WidgetType {
   TECH_STACK = 'TECH_STACK',
   POST_IT = 'POST_IT',
   GROUND_RULE = 'GROUND_RULE',
+  GIT_CONVENTION = 'GIT_CONVENTION',
 }
 
 /**
@@ -92,6 +94,50 @@ export class GroundRuleContentDto implements BaseContentDto {
   readonly rules?: string[];
 }
 
+export type GitStrategy = 'GITHUB_FLOW' | 'GIT_FLOW' | 'TRUNK_BASED';
+
+export interface BranchRuleState {
+  mainBranch: string;
+  developBranch?: string;
+  prefixes: string[];
+}
+
+export interface CommitConventionState {
+  useGitmoji: boolean;
+  commitTypes: string[];
+}
+
+export interface GitConventionData {
+  strategy: GitStrategy;
+  branchRules: BranchRuleState;
+  commitConvention: CommitConventionState;
+}
+
+export class GitConventionContentDto implements BaseContentDto {
+  @ApiProperty({ example: WidgetType.GIT_CONVENTION })
+  @IsEnum(WidgetType)
+  readonly widgetType = WidgetType.GIT_CONVENTION;
+
+  @ApiProperty({ description: 'Git 전략', example: 'GITHUB_FLOW' })
+  readonly strategy: GitStrategy;
+
+  @ApiProperty({
+    description: 'Git 브랜치 규칙',
+    example: { mainBranch: 'main', developBranch: 'develop', prefixes: [] },
+  })
+  @IsObject()
+  @ValidateNested()
+  readonly branchRules: BranchRuleState;
+
+  @ApiProperty({
+    description: 'Git 커밋 규칙',
+    example: { useGitmoji: false, commitTypes: [] },
+  })
+  @IsObject()
+  @ValidateNested()
+  readonly commitConvention: CommitConventionState;
+}
+
 // Update용 Partial DTO Export
 export class PartialTechStackContentDto extends PartialType(
   TechStackContentDto,
@@ -99,4 +145,7 @@ export class PartialTechStackContentDto extends PartialType(
 export class PartialPostItContentDto extends PartialType(PostItContentDto) {}
 export class PartialGroundRuleContentDto extends PartialType(
   GroundRuleContentDto,
+) {}
+export class PartialGitConventionContentDto extends PartialType(
+  GitConventionContentDto,
 ) {}
