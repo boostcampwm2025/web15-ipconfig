@@ -1,6 +1,7 @@
 import CursorWithName from '@/common/components/CursorWithName';
 import type { Cursor } from '@/common/types/cursor';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
+import { GitConventionWidget } from '@/features/widgets/gitConvention/components/gitConventionWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
 
@@ -64,6 +65,14 @@ function CanvasContent({
           width={200}
           type="tech"
           content="Tech Stack"
+        />
+        <GitConventionWidget
+          id="git-convention-test"
+          // TODO: 임시 위치
+          position={{ x: 1200, y: 500 }}
+          width={420}
+          type="git-convention"
+          content="Git Convention"
         />
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
