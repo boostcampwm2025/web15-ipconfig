@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Plus } from 'lucide-react';
+import { Check, ChevronDownIcon, Plus } from 'lucide-react';
 
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
@@ -79,10 +79,11 @@ function SelectInput({ selectedValue, setSelectedValue }: SelectInputProps) {
           )}
         >
           {selectedValue || '주제를 선택해주세요...'}
+          <ChevronDownIcon className="size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0"
+        className="p-1"
         style={{ width: 'var(--radix-popover-trigger-width)' }}
       >
         <Command shouldFilter={false}>
@@ -91,7 +92,7 @@ function SelectInput({ selectedValue, setSelectedValue }: SelectInputProps) {
             value={searchText}
             onValueChange={setSearchText}
           />
-          <CommandList>
+          <CommandList className="py-1">
             {filteredGroupedOptions.map((groupedOption) => (
               <CommandGroup
                 heading={groupedOption.category}
