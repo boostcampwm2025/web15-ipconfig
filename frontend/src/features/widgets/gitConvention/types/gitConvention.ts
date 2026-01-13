@@ -8,7 +8,7 @@ export interface BranchRuleState {
 
 export interface CommitConventionState {
   useGitmoji: boolean;
-  useCommitTypes: boolean;
+  commitTypes: string[];
 }
 
 export interface GitConventionData {

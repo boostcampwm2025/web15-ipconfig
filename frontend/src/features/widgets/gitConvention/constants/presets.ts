@@ -15,7 +15,7 @@ export const GIT_CONVENTION_PRESETS: Record<string, GitConventionData> = {
     },
     commitConvention: {
       useGitmoji: false,
-      useCommitTypes: true,
+      commitTypes: ['feat', 'fix', 'refactor', 'chore', 'docs', 'test'],
     },
   },
   GIT_FLOW: {
@@ -27,7 +27,7 @@ export const GIT_CONVENTION_PRESETS: Record<string, GitConventionData> = {
     },
     commitConvention: {
       useGitmoji: false,
-      useCommitTypes: true,
+      commitTypes: ['feat', 'fix', 'refactor', 'chore', 'docs', 'test'],
     },
   },
   TRUNK_BASED: {
@@ -38,7 +38,7 @@ export const GIT_CONVENTION_PRESETS: Record<string, GitConventionData> = {
     },
     commitConvention: {
       useGitmoji: false,
-      useCommitTypes: true,
+      commitTypes: ['feat', 'fix', 'chore'],
     },
   },
 };
