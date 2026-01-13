@@ -138,7 +138,7 @@ function WorkSpacePage() {
 
       {/* Main Workspace */}
       <div className="relative flex flex-1 overflow-hidden">
-        <ToolBar onTechStackClick={emitCreateWidget} />
+        <ToolBar onToolClick={emitCreateWidget} />
         <main className="relative h-full w-full flex-1">
           <CanvasContent
             camera={camera}

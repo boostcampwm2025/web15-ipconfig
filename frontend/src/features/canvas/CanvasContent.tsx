@@ -66,24 +66,32 @@ function CanvasContent({
         className="relative"
       >
         {/* 위젯 렌더링 */}
-        {Object.entries(widgets).map(([widgetId, widget]) => (
-          // TODO: 나중에 위젯 타입에 따라 분기처리 필요
-          <TechStackWidget
-            key={widgetId}
-            widgetId={widgetId}
-            data={widget}
-            emitDeleteWidget={emitDeleteWidget}
-            emitUpdateWidget={emitUpdateWidget}
-          />
-        ))}
-        <GitConventionWidget
-          id="git-convention-test"
-          // TODO: 임시 위치
-          position={{ x: 1200, y: 500 }}
-          width={420}
-          type="git-convention"
-          content="Git Convention"
-        />
+        {Object.entries(widgets).map(([widgetId, widget]) => {
+          switch (widget.content.widgetType) {
+            case 'TECH_STACK':
+              return (
+                <TechStackWidget
+                  key={widgetId}
+                  widgetId={widgetId}
+                  data={widget}
+                  emitDeleteWidget={emitDeleteWidget}
+                  emitUpdateWidget={emitUpdateWidget}
+                />
+              );
+            case 'GIT_CONVENTION':
+              return (
+                <GitConventionWidget
+                  key={widgetId}
+                  widgetId={widgetId}
+                  data={widget}
+                  emitDeleteWidget={emitDeleteWidget}
+                  emitUpdateWidget={emitUpdateWidget}
+                />
+              );
+            default:
+              return null;
+          }
+        })}
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
           <div
