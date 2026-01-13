@@ -12,7 +12,7 @@ export function StrategySelector({ value, onChange }: StrategySelectorProps) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-muted-foreground ml-1 text-xs font-semibold">
-        Git Strategy
+        Git 전략
       </label>
       <div className="flex flex-col gap-1.5">
         {STRATEGY_OPTIONS.map((option) => {

@@ -50,22 +50,22 @@ function GitConventionWidget({ id, position, width, height }: WidgetData) {
         {isModalOpen && (
           <div className="bg-background/80 absolute inset-0 z-50 flex items-center justify-center p-4 text-center backdrop-blur-sm">
             <div className="bg-popover text-popover-foreground space-y-3 rounded-lg border p-4 shadow-md">
-              <p className="text-sm font-semibold">Change Strategy?</p>
+              <p className="text-sm font-semibold">전략을 변경하시겠습니까?</p>
               <p className="text-muted-foreground text-xs">
-                This will reset all rules.
+                모든 규칙이 초기화됩니다.
               </p>
               <div className="flex justify-center gap-2">
                 <button
                   onClick={actions.cancelChangeStrategy}
                   className="hover:bg-muted rounded border px-3 py-1 text-xs"
                 >
-                  Cancel
+                  취소
                 </button>
                 <button
                   onClick={actions.confirmChangeStrategy}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-3 py-1 text-xs"
                 >
-                  Confirm
+                  변경
                 </button>
               </div>
             </div>
