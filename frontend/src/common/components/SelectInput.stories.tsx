@@ -11,11 +11,11 @@ const meta = {
   args: {
     initialOptions: [
       {
-        group: '프론트엔드',
+        category: '프론트엔드',
         options: ['Next.js', 'React', 'Vue', 'Angular', 'Svelte'],
       },
       {
-        group: '백엔드',
+        category: '백엔드',
         options: ['Node.js', 'Express', 'Django', 'Flask', 'Spring'],
       },
     ],
