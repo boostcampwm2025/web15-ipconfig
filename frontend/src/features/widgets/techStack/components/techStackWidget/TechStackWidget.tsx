@@ -5,40 +5,21 @@ import { LuLayers } from 'react-icons/lu';
 
 import { useState } from 'react';
 import { Button } from '@/common/components/shadcn/button';
-import { SUBJECT_GROUPS } from '@/common/mocks/techStacks';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
 
 import SelectedTechStackBox from './SelectedTechStackBox';
-import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 import SelectInput from '@/common/components/SelectInput';
+
+import SubjectGuideline from './SubjectGuideline';
+import { useSelectedTechStacks } from '@/features/widgets/techStack/hooks/techStackWidget/useSelectedTechStacks';
+import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
 
 function TechStackWidget({ id, position, width, height }: WidgetData) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStack[]>([]);
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    // 전달된 데이터가 없는 경우
-    if (!active.data.current || !active.data.current?.content) {
-      return;
-    }
-
-    // 잘못된 영역에 드롭한 경우
-    if (!active.data.current.support.includes(String(over?.id))) {
-      return;
-    }
-
-    // 드롭 영역 위에 드롭되었는지 확인
-    if (over && over.id === 'techStackWidget') {
-      const { id, name, category } = active.data.current.content as TechStack;
-      if (!selectedTechStacks.some((tech) => tech.id === id)) {
-        setSelectedTechStacks((prev) => [...prev, { id, name, category }]);
-      }
-    }
-  };
+  const { selectedTechStacks, setSelectedTechStacks, handleDragEnd } =
+    useSelectedTechStacks();
+  const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
 
   return (
     <DndContext collisionDetection={pointerWithin} onDragEnd={handleDragEnd}>
@@ -57,8 +38,19 @@ function TechStackWidget({ id, position, width, height }: WidgetData) {
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2 font-bold">
             <div className="shrink-0">주제 :</div>
-            <SelectInput initialOptions={SUBJECT_GROUPS} />
+            <SelectInput
+              selectedValue={selectedSubject}
+              setSelectedValue={setSelectedSubject}
+            />
           </div>
+
+          {parsedSubject && (
+            <SubjectGuideline
+              key={`${parsedSubject.category}-${parsedSubject.option}`}
+              category={parsedSubject.category}
+              option={parsedSubject.option}
+            />
+          )}
 
           <SelectedTechStackBox
             selectedTechStacks={selectedTechStacks}
