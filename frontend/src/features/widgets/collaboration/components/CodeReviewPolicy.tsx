@@ -16,7 +16,6 @@ export default function CodeReviewPolicy() {
         코드 리뷰 규칙
       </h2>
 
-      {/* 최대 리뷰 시간 */}
       <div className="mt-4 flex items-center">
         <p className="mb-2 flex-1 text-sm text-gray-300">최대 리뷰 시간</p>
         <CounterInput
@@ -28,7 +27,6 @@ export default function CodeReviewPolicy() {
         />
       </div>
 
-      {/* 필요한 Approve 수 */}
       <div className="mt-6 flex items-center">
         <p className="mb-2 flex-1 text-sm text-gray-300">필요한 Approve 수</p>
         <CounterInput
@@ -39,7 +37,6 @@ export default function CodeReviewPolicy() {
         />
       </div>
 
-      {/* 병합 차단 */}
       <div className="mt-6 flex items-center gap-2">
         <Label htmlFor="merge-block" className="flex-1">
           요청된 변경 해결 전 병합 금지

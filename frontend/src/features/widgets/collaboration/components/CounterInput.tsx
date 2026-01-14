@@ -19,7 +19,6 @@ export default function CounterInput({
   };
   return (
     <div className="flex w-fit items-center gap-3 rounded-lg border border-gray-700 px-2 py-1">
-      {/* - 버튼 */}
       <button
         className="hover:bg-primary rounded bg-gray-700 px-2 py-1 text-gray-200 hover:text-black"
         onClick={() => setValue((p: number) => Math.max(1, p - 1))}
@@ -27,7 +26,6 @@ export default function CounterInput({
         -
       </button>
 
-      {/* 숫자 / 인풋 토글 */}
       {editValue ? (
         <input
           type="text"
@@ -54,7 +52,6 @@ export default function CounterInput({
         </span>
       )}
 
-      {/* + 버튼 */}
       <button
         className="hover:bg-primary rounded bg-gray-700 px-2 py-1 text-gray-200 hover:text-black"
         onClick={() => setValue((p: number) => p + 1)}

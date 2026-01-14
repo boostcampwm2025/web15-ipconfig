@@ -81,12 +81,10 @@ export default function TaskWorkflow() {
 
   return (
     <div className="max-w-[400px] rounded-2xl border border-gray-700 p-6 text-gray-200">
-      {/* 헤더 */}
       <h2 className="flex items-center gap-2 text-xl font-semibold">
         작업 관리
       </h2>
 
-      {/* 플랫폼 */}
       <div className="mt-6">
         <p className="mb-2 text-sm">사용 플랫폼</p>
         <Select>
@@ -103,7 +101,6 @@ export default function TaskWorkflow() {
         </Select>
       </div>
 
-      {/* 스프린트 주기 */}
       <div className="mt-6 flex items-center gap-3">
         <p className="flex-1 text-sm">스프린트 주기</p>
 
@@ -126,7 +123,6 @@ export default function TaskWorkflow() {
         </Select>
       </div>
 
-      {/* 상태 단계 */}
       <div className="mt-8">
         <p className="mb-2 text-sm">상태 단계</p>
 
@@ -152,7 +148,6 @@ export default function TaskWorkflow() {
           </DndContext>
         </div>
 
-        {/* 단계 추가 UI */}
         {!isAdding ? (
           <button
             onClick={() => setIsAdding(true)}
