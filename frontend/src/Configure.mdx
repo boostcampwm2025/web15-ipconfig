@@ -1,0 +1,26 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Project Guide/Configure" />
+
+# TeamConfig Storybook
+
+위젯 기반 컴포넌트를 Storybook에서 독립적으로 개발하고 테스트합니다.
+
+## 프로젝트 구조
+
+- `src/common`: 공용 컴포넌트, 훅, API, 타입
+- `src/features`: 위젯 및 캔버스 도메인 로직
+- `src/pages`: 워크스페이스 페이지
+
+## 기술 스택
+
+- React 19 + TypeScript + Vite
+- Tailwind CSS + Radix UI
+- Zustand (상태 관리) + Socket.io (실시간 통신)
+- DnD Kit (드래그 앤 드롭)
+
+## 스토리 작성
+
+- 스토리 위치: `src/**/*.stories.tsx`
+- 각 컴포넌트의 다양한 상태(기본, 로딩, 에러 등)를 스토리로 작성
+- 접근성 체크는 `@storybook/addon-a11y`로 자동 확인

@@ -1,15 +1,23 @@
 import type { PropsWithChildren } from 'react';
 import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 
 type ReactPortalProps = {
-  parent?: HTMLElement;
+  portalTargetId?: string;
 } & PropsWithChildren;
 
-const defaultRoot = document.getElementById('root') as HTMLElement;
-
 export default function ReactPortal({
-  parent = defaultRoot,
+  portalTargetId = 'root',
   children,
 }: ReactPortalProps) {
-  return parent && createPortal(children, parent);
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    // 클라이언트 사이드에서 타겟 엘리먼트 확인
+    setTarget(document.getElementById(portalTargetId));
+  }, [portalTargetId]);
+
+  if (!target) return null;
+
+  return createPortal(children, target);
 }
