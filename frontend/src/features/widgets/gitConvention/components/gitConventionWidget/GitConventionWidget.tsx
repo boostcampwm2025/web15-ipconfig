@@ -50,6 +50,7 @@ function GitConventionWidget({
       height={data.height}
       zIndex={data.zIndex}
       content={data.content}
+      emitMoveWidget={emitMoveWidget}
     >
       <WidgetHeader
         title="Git Convention"

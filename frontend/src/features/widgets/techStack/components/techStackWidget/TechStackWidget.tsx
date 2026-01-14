@@ -2,6 +2,7 @@ import type {
   WidgetContent,
   WidgetData,
   TechStackContentDto,
+  MoveWidgetData,
 } from '@/common/types/widgetData';
 import type { TechStackItem } from '@/features/widgets/techStack/types/techStack';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
@@ -31,6 +32,7 @@ interface TechStackWidgetProps {
   data: WidgetData;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function TechStackWidget({
@@ -38,6 +40,7 @@ function TechStackWidget({
   data,
   emitUpdateWidget,
   emitDeleteWidget,
+  emitMoveWidget,
 }: TechStackWidgetProps) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
 
@@ -101,6 +104,8 @@ function TechStackWidget({
         height={data.height}
         zIndex={data.zIndex}
         content={data.content as WidgetContent}
+        emitMoveWidget={emitMoveWidget}
+        emitDeleteWidget={emitDeleteWidget}
       >
         <WidgetHeader
           title="기술 스택"
