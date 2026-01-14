@@ -6,7 +6,7 @@ interface WorkspaceHeaderProps {
 
 function WorkspaceHeader({ onExportClick }: WorkspaceHeaderProps) {
   return (
-    <header className="z-50 flex h-16 shrink-0 items-center justify-between border-b border-gray-700 bg-gray-800 px-6 shadow-lg">
+    <header className="flex h-16 shrink-0 items-center justify-between bg-transparent px-6">
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-blue-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
           15
