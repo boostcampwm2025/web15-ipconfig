@@ -1,10 +1,9 @@
 import type {
   WidgetContent,
   WidgetData,
-  TechStackItem,
   TechStackContentDto,
-  MoveWidgetData,
 } from '@/common/types/widgetData';
+import type { TechStackItem } from '@/features/widgets/techStack/types/techStack';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuLayers } from 'react-icons/lu';
@@ -32,7 +31,6 @@ interface TechStackWidgetProps {
   data: WidgetData;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
-  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function TechStackWidget({
@@ -40,7 +38,6 @@ function TechStackWidget({
   data,
   emitUpdateWidget,
   emitDeleteWidget,
-  emitMoveWidget,
 }: TechStackWidgetProps) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
 
@@ -109,15 +106,6 @@ function TechStackWidget({
           title="기술 스택"
           icon={<LuLayers className="text-primary" size={18} />}
           onClickDelete={() => emitDeleteWidget(widgetId)}
-          onDrag={() =>
-            emitMoveWidget(widgetId, {
-              x: data.x,
-              y: data.y,
-              width: data.width,
-              height: data.height,
-              zIndex: data.zIndex,
-            })
-          }
         />
         <section className="flex flex-col gap-4">
           <Select>

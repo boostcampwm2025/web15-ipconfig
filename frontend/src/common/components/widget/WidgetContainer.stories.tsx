@@ -63,7 +63,6 @@ export const Default: Story = {
           title="샘플 위젯"
           icon={<LuFileText size={18} />}
           onClickDelete={() => {}}
-          onDrag={() => {}}
         />
         <div className="text-white">
           <p>위젯 컨텐츠 영역</p>
@@ -87,7 +86,6 @@ export const SmallWidget: Story = {
           title="작은 위젯"
           icon={<LuFileText size={18} />}
           onClickDelete={() => {}}
-          onDrag={() => {}}
         />
         <div className="text-sm text-white">
           <p>작은 크기의 위젯</p>
@@ -111,7 +109,6 @@ export const LargeWidget: Story = {
           title="큰 위젯"
           icon={<LuFileText size={18} />}
           onClickDelete={() => {}}
-          onDrag={() => {}}
         />
         <div className="text-white">
           <p>큰 크기의 위젯입니다.</p>

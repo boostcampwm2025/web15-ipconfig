@@ -55,15 +55,6 @@ function GitConventionWidget({
         title="Git Convention"
         icon={<LuGitBranch className="text-primary" size={18} />}
         onClickDelete={() => emitDeleteWidget(widgetId)}
-        onDrag={() =>
-          emitMoveWidget(widgetId, {
-            x: data.x,
-            y: data.y,
-            width: data.width,
-            height: data.height,
-            zIndex: data.zIndex,
-          })
-        }
       />
       <section className="relative flex h-full flex-col gap-4 p-1">
         <StrategySelector
