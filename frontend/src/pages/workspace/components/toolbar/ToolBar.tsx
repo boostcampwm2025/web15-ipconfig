@@ -4,8 +4,8 @@ import { LuLayers } from 'react-icons/lu';
 
 function ToolBar() {
   return (
-    <aside className="z-40 flex w-16 shrink-0 flex-col items-center gap-6 border-r border-gray-700 bg-gray-800 py-6">
-      <div className="flex flex-col gap-4">
+    <div className="fixed top-1/2 left-6 z-50 flex -translate-y-1/2 flex-col gap-2 rounded-2xl border border-gray-700 bg-gray-800 p-2 shadow-2xl backdrop-blur-xl transition-all hover:scale-105">
+      <div className="flex flex-col items-center justify-center gap-4">
         <ToolButton
           icon={<LuMousePointer2 size={20} />}
           label="Select"
@@ -16,7 +16,7 @@ function ToolBar() {
 
         <ToolButton icon={<LuLayers size={20} />} label="기술 스택" />
       </div>
-    </aside>
+    </div>
   );
 }
 
