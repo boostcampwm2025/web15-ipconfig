@@ -1,3 +1,6 @@
+import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
+import type { TechStackItem } from '@/features/widgets/techStack/types/techStack';
+
 export type WidgetType =
   | 'TECH_STACK'
   | 'POST_IT'
@@ -9,12 +12,6 @@ export type WidgetContent =
   | PostItContentDto
   | GroundRuleContentDto
   | GitConventionContentDto;
-
-export interface TechStackItem {
-  id: string;
-  category: string;
-  name: string;
-}
 
 export interface TechStackContentDto {
   widgetType: WidgetType;
@@ -31,25 +28,6 @@ export interface PostItContentDto {
 export interface GroundRuleContentDto {
   widgetType: WidgetType;
   rules: string[];
-}
-
-export type GitStrategy = 'GITHUB_FLOW' | 'GIT_FLOW' | 'TRUNK_BASED';
-
-export interface BranchRuleState {
-  mainBranch: string;
-  developBranch?: string;
-  prefixes: string[];
-}
-
-export interface CommitConventionState {
-  useGitmoji: boolean;
-  commitTypes: string[];
-}
-
-export interface GitConventionData {
-  strategy: GitStrategy;
-  branchRules: BranchRuleState;
-  commitConvention: CommitConventionState;
 }
 
 export interface GitConventionContentDto {
