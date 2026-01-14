@@ -1,6 +1,7 @@
 import CursorWithName from '@/common/components/CursorWithName';
 import type { Cursor } from '@/common/types/cursor';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
+import CommunicationWidget from '@/features/widgets/communication/components/communicationWidget/CommunicationWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
 
@@ -26,6 +27,10 @@ function CanvasContent({
   const [techStackPosition, setTechStackPosition] = useState({
     x: 500,
     y: 500,
+  });
+  const [communicationPosition, setCommunicationPosition] = useState({
+    x: 800,
+    y: 1000,
   });
 
   return (
@@ -64,6 +69,13 @@ function CanvasContent({
           width={200}
           type="tech"
           content="Tech Stack"
+        />
+        <CommunicationWidget
+          id="communication"
+          position={communicationPosition}
+          width={600}
+          type="communication"
+          content="Communication Attributes"
         />
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
