@@ -1,9 +1,10 @@
 import type {
   WidgetContent,
   WidgetData,
-  TechStackItem,
   TechStackContentDto,
+  MoveWidgetData,
 } from '@/common/types/widgetData';
+import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuLayers } from 'react-icons/lu';
@@ -16,7 +17,7 @@ import SelectedTechStackBox from './SelectedTechStackBox';
 import SelectInput from '@/common/components/SelectInput';
 
 import SubjectGuideline from './SubjectGuideline';
-import { useSelectedTechStacks } from '@/features/widgets/techStack/hooks/techStackWidget/useSelectedTechStacks';
+
 import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
 
 interface TechStackWidgetProps {
@@ -24,6 +25,7 @@ interface TechStackWidgetProps {
   data: WidgetData;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function TechStackWidget({
@@ -31,6 +33,7 @@ function TechStackWidget({
   data,
   emitUpdateWidget,
   emitDeleteWidget,
+  emitMoveWidget,
 }: TechStackWidgetProps) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
   // const { selectedTechStacks, setSelectedTechStacks, handleDragEnd } =
@@ -42,9 +45,9 @@ function TechStackWidget({
     : [];
 
   const handleSetSelectedTechStacks = (
-    value: React.SetStateAction<TechStackItem[]>,
+    value: React.SetStateAction<TechStack[]>,
   ) => {
-    let newItems: TechStackItem[];
+    let newItems: TechStack[];
     if (typeof value === 'function') {
       newItems = value(selectedTechStacks);
     } else {
@@ -72,8 +75,7 @@ function TechStackWidget({
 
     // 드롭 영역 위에 드롭되었는지 확인
     if (over && over.id === 'techStackWidget') {
-      const { id, name, category } = active.data.current
-        .content as TechStackItem;
+      const { id, name, category } = active.data.current.content as TechStack;
       if (!selectedTechStacks.some((tech) => tech.id === id)) {
         const newSelectedTechStacks = [
           ...selectedTechStacks,
@@ -102,6 +104,15 @@ function TechStackWidget({
           title="기술 스택"
           icon={<LuLayers className="text-primary" size={18} />}
           onClickDelete={() => emitDeleteWidget(widgetId)}
+          onDrag={() =>
+            emitMoveWidget(widgetId, {
+              x: data.x,
+              y: data.y,
+              width: data.width,
+              height: data.height,
+              zIndex: data.zIndex,
+            })
+          }
         />
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2 font-bold">

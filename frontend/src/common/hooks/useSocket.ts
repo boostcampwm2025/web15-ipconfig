@@ -6,6 +6,8 @@ import type {
   WidgetType,
   CreateWidgetData,
   UpdateWidgetData,
+  UpdateWidgetLayoutData,
+  MoveWidgetData,
 } from '../types/widgetData';
 
 // Remote cursor 상태 타입
@@ -174,6 +176,24 @@ export const useSocket = ({
       });
     });
 
+    // 8) 위젯 레이아웃 업데이트
+    socket.on('widget:moved', (payload: UpdateWidgetLayoutData) => {
+      setWidgets((prev) => {
+        const next = { ...prev };
+        if (next[payload.widgetId]) {
+          next[payload.widgetId] = {
+            ...next[payload.widgetId],
+            x: payload.data.x ?? next[payload.widgetId].x,
+            y: payload.data.y ?? next[payload.widgetId].y,
+            width: payload.data.width ?? next[payload.widgetId].width,
+            height: payload.data.height ?? next[payload.widgetId].height,
+            zIndex: payload.data.zIndex ?? next[payload.widgetId].zIndex,
+          };
+        }
+        return next;
+      });
+    });
+
     return () => {
       socket.emit('user:leave', { workspaceId, userId: currentUser.id });
       socket.disconnect();
@@ -224,6 +244,19 @@ export const useSocket = ({
     });
   };
 
+  const emitMoveWidget = (
+    widgetId: string,
+    { x, y, width, height, zIndex }: MoveWidgetData,
+  ) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    socket.emit('widget:move', {
+      widgetId,
+      data: { x, y, width, height, zIndex },
+    });
+  };
+
   const emitDeleteWidget = (widgetId: string) => {
     const socket = socketRef.current;
     if (!socket) return;
@@ -239,5 +272,6 @@ export const useSocket = ({
     emitCreateWidget,
     emitUpdateWidget,
     emitDeleteWidget,
+    emitMoveWidget,
   };
 };

@@ -79,6 +79,7 @@ function WorkSpacePage() {
     emitCreateWidget,
     emitUpdateWidget,
     emitDeleteWidget,
+    emitMoveWidget,
   } = useSocket({
     workspaceId,
     currentUser,
@@ -141,6 +142,7 @@ function WorkSpacePage() {
             widgets={widgets}
             emitUpdateWidget={emitUpdateWidget}
             emitDeleteWidget={emitDeleteWidget}
+            emitMoveWidget={emitMoveWidget}
           />
         </main>
       </div>
@@ -156,7 +158,7 @@ function WorkSpacePage() {
       <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
         <div className="pointer-events-auto">
           <div className="absolute top-0 left-0">
-            <ToolBar onTechStackClick={emitCreateWidget} />
+            <ToolBar onToolClick={emitCreateWidget} />
           </div>
           <AnimatePresence mode="wait">
             {isSidebarExpanded ? (

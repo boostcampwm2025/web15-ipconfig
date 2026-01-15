@@ -1,11 +1,17 @@
 import type { Cursor } from '@/common/types/cursor';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
+import CommunicationWidget from '@/features/widgets/communication/components/communicationWidget/CommunicationWidget';
+import { GitConventionWidget } from '@/features/widgets/gitConvention/components/gitConventionWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
+import type {
+  WidgetContent,
+  WidgetData,
+  MoveWidgetData,
+} from '@/common/types/widgetData';
 import CollaborationWidget from '../widgets/collaboration/components/CollaborationWidget';
 import CursorWithName from '@/common/components/CursorWithName';
 import { cn } from '@/common/lib/utils';
-import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -18,6 +24,7 @@ interface CanvasContainerProps {
   widgets: Record<string, WidgetData>;
   emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
   emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
 function CanvasContent({
@@ -31,12 +38,8 @@ function CanvasContent({
   widgets,
   emitUpdateWidget,
   emitDeleteWidget,
+  emitMoveWidget,
 }: CanvasContainerProps) {
-  const [techStackPosition, setTechStackPosition] = useState({
-    x: 500,
-    y: 500,
-  });
-
   return (
     // 뷰포트 레이어
     <div
@@ -63,17 +66,34 @@ function CanvasContent({
         className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
       >
         {/* 위젯 렌더링 */}
-
-        {Object.entries(widgets).map(([widgetId, widget]) => (
-          // TODO: 나중에 위젯 타입에 따라 분기처리 필요
-          <TechStackWidget
-            key={widgetId}
-            widgetId={widgetId}
-            data={widget}
-            emitDeleteWidget={emitDeleteWidget}
-            emitUpdateWidget={emitUpdateWidget}
-          />
-        ))}
+        {Object.entries(widgets).map(([widgetId, widget]) => {
+          switch (widget.content.widgetType) {
+            case 'TECH_STACK':
+              return (
+                <TechStackWidget
+                  key={widgetId}
+                  widgetId={widgetId}
+                  data={widget}
+                  emitDeleteWidget={emitDeleteWidget}
+                  emitUpdateWidget={emitUpdateWidget}
+                  emitMoveWidget={emitMoveWidget}
+                />
+              );
+            case 'GIT_CONVENTION':
+              return (
+                <GitConventionWidget
+                  key={widgetId}
+                  widgetId={widgetId}
+                  data={widget}
+                  emitDeleteWidget={emitDeleteWidget}
+                  emitUpdateWidget={emitUpdateWidget}
+                  emitMoveWidget={emitMoveWidget}
+                />
+              );
+            default:
+              return null;
+          }
+        })}
         <CollaborationWidget
           key={'GROUNDRULE_COLLABORATION'}
           widgetId={'GROUNDRULE_COLLABORATION'}
@@ -84,6 +104,12 @@ function CanvasContent({
             height: 600,
             zIndex: 1,
           }}
+        />
+        <CommunicationWidget
+          id="communication"
+          position={{ x: 800, y: 1000 }}
+          width={600}
+          onDelete={() => emitDeleteWidget('communication')}
         />
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (

@@ -23,6 +23,7 @@ const meta = {
     widgets: {},
     emitUpdateWidget: () => {},
     emitDeleteWidget: () => {},
+    emitMoveWidget: () => {},
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof CanvasContent>;
@@ -76,6 +77,7 @@ export const Default: Story = {
           widgets={{}}
           emitUpdateWidget={() => {}}
           emitDeleteWidget={() => {}}
+          emitMoveWidget={() => {}}
         />
       </div>
     );
@@ -101,6 +103,7 @@ export const WithCursors: Story = {
           widgets={{}}
           emitUpdateWidget={() => {}}
           emitDeleteWidget={() => {}}
+          emitMoveWidget={() => {}}
         />
       </div>
     );
@@ -126,6 +129,7 @@ export const Zoomed: Story = {
           widgets={{}}
           emitUpdateWidget={() => {}}
           emitDeleteWidget={() => {}}
+          emitMoveWidget={() => {}}
         />
       </div>
     );
@@ -151,6 +155,7 @@ export const Panning: Story = {
           widgets={{}}
           emitUpdateWidget={() => {}}
           emitDeleteWidget={() => {}}
+          emitMoveWidget={() => {}}
         />
       </div>
     );

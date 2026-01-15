@@ -4,9 +4,10 @@ interface HeaderProps {
   title: string;
   icon: React.ReactNode;
   onClickDelete: () => void;
+  onDrag: () => void;
 }
 
-function WidgetHeader({ title, icon, onClickDelete }: HeaderProps) {
+function WidgetHeader({ title, icon, onClickDelete, onDrag }: HeaderProps) {
   return (
     <div className="mb-4 flex items-center justify-between border-b border-gray-700 pb-2 select-none">
       <h4 className="flex items-center gap-2 font-bold text-white">

@@ -1,39 +1,69 @@
-import type { WidgetData } from '@/common/types/widgetData';
+import type {
+  WidgetData,
+  WidgetContent,
+  GitConventionContentDto,
+  MoveWidgetData,
+} from '@/common/types/widgetData';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuGitBranch } from 'react-icons/lu';
 import { useGitConvention } from '@/features/widgets/gitConvention/hooks/useGitConvention';
-import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
-import { GIT_CONVENTION_PRESETS } from '@/features/widgets/gitConvention/constants/presets';
-import { useState } from 'react';
 import { StrategySelector } from './StrategySelector';
 import { BranchRules } from './BranchRules';
 import { CommitStyle } from './CommitStyle';
 
-function GitConventionWidget({ x, y, width, height }: WidgetData) {
-  // TODO: 추후 Socket 연동 시 제거 및 대체
-  const [localData, setLocalData] = useState<GitConventionData>(
-    GIT_CONVENTION_PRESETS.GITHUB_FLOW,
-  );
+interface GitConventionWidgetProps {
+  widgetId: string;
+  data: WidgetData;
+  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
+  emitDeleteWidget: (widgetId: string) => void;
+  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
+}
 
-  const { strategy, branchRules, isModalOpen, actions } = useGitConvention({
-    data: localData,
-    onDataChange: setLocalData,
-  });
+function GitConventionWidget({
+  widgetId,
+  data,
+  emitDeleteWidget,
+  emitUpdateWidget,
+  emitMoveWidget,
+}: GitConventionWidgetProps) {
+  // GitConventionContentDto 임을 명시하고, 이후에 data 사용
+  const gitConventionContent = data.content as GitConventionContentDto;
+
+  const { strategy, branchRules, commitConvention, isModalOpen, actions } =
+    useGitConvention({
+      data: gitConventionContent.data,
+      onDataChange: (nextData) => {
+        emitUpdateWidget(widgetId, {
+          widgetType: 'GIT_CONVENTION',
+          data: nextData,
+        });
+      },
+    });
 
   return (
     <WidgetContainer
-      id="git-convention-widget"
-      x={100}
-      y={100}
-      width={300}
-      height={200}
-      zIndex={1}
+      id={widgetId}
+      x={data.x}
+      y={data.y}
+      width={data.width}
+      height={data.height}
+      zIndex={data.zIndex}
+      content={data.content}
     >
       <WidgetHeader
         title="Git Convention"
         icon={<LuGitBranch className="text-primary" size={18} />}
-        onClickDelete={() => {}}
+        onClickDelete={() => emitDeleteWidget(widgetId)}
+        onDrag={() =>
+          emitMoveWidget(widgetId, {
+            x: data.x,
+            y: data.y,
+            width: data.width,
+            height: data.height,
+            zIndex: data.zIndex,
+          })
+        }
       />
       <section className="relative flex h-full flex-col gap-4 p-1">
         <StrategySelector
@@ -44,7 +74,7 @@ function GitConventionWidget({ x, y, width, height }: WidgetData) {
         <BranchRules rules={branchRules} onChange={actions.updateBranchRules} />
         <div className="bg-border my-1 h-px" />
         <CommitStyle
-          convention={localData.commitConvention}
+          convention={commitConvention}
           onChange={actions.updateCommitConvention}
         />
         {/* TODO: 임시 모달 UI (나중에 WarningModal로 대체) */}
