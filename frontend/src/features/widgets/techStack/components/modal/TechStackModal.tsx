@@ -66,8 +66,6 @@ function TechStackModal({
   return (
     <ReactPortal portalTargetId={modalRootId}>
       <dialog
-        onPointerDown={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
         style={{ left: position.x, top: position.y }}
         className="fixed z-999 flex h-150 w-100 flex-col overflow-hidden rounded-xl border border-gray-600 bg-gray-800 shadow-2xl"
       >

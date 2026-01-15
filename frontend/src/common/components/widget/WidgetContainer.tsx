@@ -31,7 +31,6 @@ function WidgetContainer({
     x: number,
     y: number,
   ) => {
-    e.stopPropagation(); // Prevent canvas drag
     setDraggingId(id);
     setDragOffset({
       x: e.clientX - x,
@@ -41,7 +40,7 @@ function WidgetContainer({
 
   return (
     <div
-      className="animate-pop-in absolute rounded-xl shadow-2xl"
+      className="animate-pop-in pointer-events-auto absolute rounded-xl shadow-2xl"
       style={{
         left: x,
         top: y,
