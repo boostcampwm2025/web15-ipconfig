@@ -13,14 +13,10 @@ export interface IWidgetService {
 
   findOne(workspaceId: string, widgetId: string): Promise<CreateWidgetDto>;
 
-  findOneByWidgetType(
-    workspaceId: string,
-    widgetType: WidgetType,
-  ): Promise<CreateWidgetDto | null>;
   update(
     workspaceId: string,
     updateWidgetDto: UpdateWidgetDto,
-  ): Promise<CreateWidgetDto>;
+  ): Promise<UpdateWidgetDto>;
 
   updateLayout(
     workspaceId: string,

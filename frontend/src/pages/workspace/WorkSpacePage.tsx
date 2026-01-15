@@ -1,6 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
 
-import type { WidgetData } from '@/common/types/widgetData';
 import type { User } from '@/common/types/user';
 
 import { getRandomColor } from '@/utils/getRandomColor';
@@ -9,6 +8,7 @@ import { useMarkdown } from '@/common/hooks/useMarkdown';
 import CanvasContent from '@/features/canvas/CanvasContent';
 import ToolBar from '@/pages/workspace/components/toolbar/ToolBar';
 import type { Cursor } from '@/common/types/cursor';
+import type { WidgetData } from '@/common/types/widgetData';
 
 // Page-specific components
 import WorkspaceHeader from './components/WorkspaceHeader';
@@ -22,10 +22,7 @@ function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
     {},
   );
-
-  // Global State
-  const [widgets, setWidgets] = useState<WidgetData[]>([]);
-  const [techStack, setTechStack] = useState<Set<string>>(new Set(['React']));
+  const [widgets, setWidgets] = useState<Record<string, WidgetData>>({});
 
   // UI State
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -73,10 +70,16 @@ function WorkSpacePage() {
   })[0];
 
   // ----- WebSocket 초기화 & 이벤트 바인딩 -----
-  const { emitCursorMove } = useSocket({
+  const {
+    emitCursorMove,
+    emitCreateWidget,
+    emitUpdateWidget,
+    emitDeleteWidget,
+  } = useSocket({
     workspaceId,
     currentUser,
     setRemoteCursors,
+    setWidgets,
   });
 
   // 커서 이동 스로틀링을 위한 ref
@@ -135,7 +138,7 @@ function WorkSpacePage() {
 
       {/* Main Workspace */}
       <div className="relative flex flex-1 overflow-hidden">
-        <ToolBar />
+        <ToolBar onTechStackClick={emitCreateWidget} />
         <main className="relative h-full w-full flex-1">
           <CanvasContent
             camera={camera}
@@ -145,6 +148,9 @@ function WorkSpacePage() {
             handlePointerUp={handlePointerUp}
             isPanning={isPanning}
             remoteCursor={remoteCursors}
+            widgets={widgets}
+            emitUpdateWidget={emitUpdateWidget}
+            emitDeleteWidget={emitDeleteWidget}
           />
         </main>
         <RightSidebar

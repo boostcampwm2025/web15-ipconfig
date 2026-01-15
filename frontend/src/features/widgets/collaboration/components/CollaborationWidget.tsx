@@ -3,7 +3,7 @@ import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
-import type { WidgetData } from '@/common/types/widgetData';
+import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuUsers } from 'react-icons/lu';
 
@@ -25,12 +25,24 @@ export interface CollaborationState {
   };
 }
 
+interface CollaborationWidgetProps {
+  widgetId: string;
+  data: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    zIndex: number;
+  };
+  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
+  emitDeleteWidget: (widgetId: string) => void;
+}
 export default function CollaborationWidget({
-  id,
-  position,
-  width,
-  height,
-}: WidgetData) {
+  widgetId,
+  data,
+  emitDeleteWidget,
+  emitUpdateWidget,
+}: CollaborationWidgetProps) {
   const [prRules, setPrRules] = useState<CollaborationState['prRules']>({
     activeVersion: 'semantic',
     selectedLabels: ['feature', 'fix', 'refactor'],
@@ -53,16 +65,17 @@ export default function CollaborationWidget({
 
   return (
     <WidgetContainer
-      id={id}
-      type="groundrule-collaboration"
-      content="Collaboration"
-      position={position}
-      width={width}
-      height={height}
+      id={widgetId}
+      x={data.x}
+      y={data.y}
+      width={850}
+      height={data.height}
+      zIndex={data.zIndex}
     >
       <WidgetHeader
         title="작업 및 협업"
         icon={<LuUsers className="text-primary" size={18} />}
+        onClickDelete={() => {}}
       />
       <div className="grid w-[800px] grid-cols-1 gap-2 md:grid-cols-2">
         <div className="w-full justify-self-center">

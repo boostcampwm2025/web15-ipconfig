@@ -11,11 +11,16 @@ import TechStackItem from '../TechStackItem';
 interface TechStackModalProps {
   isOpen: boolean;
   onModalClose: () => void;
+  modalRootId?: string;
 }
 
 const HEADER_ICON = <LuLayers className="text-purple-400" size={18} />;
 
-function TechStackModal({ isOpen, onModalClose }: TechStackModalProps) {
+function TechStackModal({
+  isOpen,
+  onModalClose,
+  modalRootId,
+}: TechStackModalProps) {
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 300);
   const { active } = useDndContext();
@@ -59,10 +64,8 @@ function TechStackModal({ isOpen, onModalClose }: TechStackModalProps) {
   if (!isOpen) return null;
 
   return (
-    <ReactPortal>
+    <ReactPortal portalTargetId={modalRootId}>
       <dialog
-        onPointerDown={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
         style={{ left: position.x, top: position.y }}
         className="fixed z-999 flex h-150 w-100 flex-col overflow-hidden rounded-xl border border-gray-600 bg-gray-800 shadow-2xl"
       >

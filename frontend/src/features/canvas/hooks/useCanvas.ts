@@ -1,6 +1,8 @@
 import type { Camera } from '@/common/types/camera';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ZOOM_CONFIG } from '../constants/zoom';
+
+import { CANVAS_CONFIG } from '../constants/canvas';
 
 export default function useCanvas() {
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, scale: 1 });
@@ -8,22 +10,25 @@ export default function useCanvas() {
   const lastMousePos = useRef<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const zoomTo = (delta: number, pivotX: number, pivotY: number) => {
-    setCamera((prev) => {
-      const newScale = Math.min(
-        Math.max(prev.scale + delta, ZOOM_CONFIG.MIN_ZOOM),
-        ZOOM_CONFIG.MAX_ZOOM,
-      );
+  const zoomTo = useCallback(
+    (delta: number, pivotX: number, pivotY: number) => {
+      setCamera((prev) => {
+        const newScale = Math.min(
+          Math.max(prev.scale + delta, ZOOM_CONFIG.MIN_ZOOM),
+          ZOOM_CONFIG.MAX_ZOOM,
+        );
 
-      if (newScale === prev.scale) return prev;
+        if (newScale === prev.scale) return prev;
 
-      const ratio = newScale / prev.scale;
-      const newX = pivotX - (pivotX - prev.x) * ratio;
-      const newY = pivotY - (pivotY - prev.y) * ratio;
+        const ratio = newScale / prev.scale;
+        const newX = pivotX - (pivotX - prev.x) * ratio;
+        const newY = pivotY - (pivotY - prev.y) * ratio;
 
-      return { x: newX, y: newY, scale: newScale };
-    });
-  };
+        return { x: newX, y: newY, scale: newScale };
+      });
+    },
+    [],
+  );
 
   const handleZoomButton = (delta: number) => {
     const container = containerRef.current;
@@ -36,23 +41,26 @@ export default function useCanvas() {
     zoomTo(delta, centerX, centerY);
   };
 
-  const handleWheel = (e: WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      e.stopPropagation();
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
 
-      const container = containerRef.current;
-      if (!container) return;
+        const container = containerRef.current;
+        if (!container) return;
 
-      const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
 
-      const zoomDelta = -e.deltaY * ZOOM_CONFIG.WHEEL_SENSITIVITY;
+        const zoomDelta = -e.deltaY * ZOOM_CONFIG.WHEEL_SENSITIVITY;
 
-      zoomTo(zoomDelta, mouseX, mouseY);
-    }
-  };
+        zoomTo(zoomDelta, mouseX, mouseY);
+      }
+    },
+    [zoomTo],
+  );
 
   const handlePointerDown = (e: React.PointerEvent) => {
     setIsPanning(true);
@@ -67,7 +75,17 @@ export default function useCanvas() {
     lastMousePos.current = { x: e.clientX, y: e.clientY };
 
     if (isPanning) {
-      setCamera((prev) => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
+      setCamera((prev) => ({
+        ...prev,
+        x: Math.min(
+          Math.max(prev.x + dx, CANVAS_CONFIG.MIN_X),
+          CANVAS_CONFIG.MAX_X,
+        ),
+        y: Math.min(
+          Math.max(prev.y + dy, CANVAS_CONFIG.MIN_Y),
+          CANVAS_CONFIG.MAX_Y,
+        ),
+      }));
     }
   };
 
