@@ -26,8 +26,6 @@ function ToolBar({ onToolClick }: ToolBarProps) {
             onToolClick('TECH_STACK', {
               x: 0,
               y: 0,
-              width: 300,
-              height: 400,
               zIndex: 1,
               content: { widgetType: 'TECH_STACK', selectedItems: [] },
             });
@@ -40,8 +38,6 @@ function ToolBar({ onToolClick }: ToolBarProps) {
             onToolClick('GIT_CONVENTION', {
               x: 0,
               y: 0,
-              width: 300,
-              height: 400,
               zIndex: 1,
               content: {
                 widgetType: 'GIT_CONVENTION',

@@ -1,5 +1,5 @@
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
-import type { TechStackItem } from '@/features/widgets/techStack/types/techStack';
+import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
 export type WidgetType =
   | 'TECH_STACK'
@@ -16,7 +16,7 @@ export type WidgetContent =
 
 export interface TechStackContentDto {
   widgetType: WidgetType;
-  selectedItems: TechStackItem[];
+  selectedItems: TechStack[];
 }
 
 export interface PostItContentDto {
