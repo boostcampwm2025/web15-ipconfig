@@ -25,14 +25,6 @@ export class User {
   })
   @IsString()
   color: string;
-
-  @ApiProperty({
-    description: '유저 커서 바탕 색깔',
-    example: '#FF5733',
-    required: true,
-  })
-  @IsString()
-  backgroundColor: string;
 }
 
 export class JoinUserDTO {
