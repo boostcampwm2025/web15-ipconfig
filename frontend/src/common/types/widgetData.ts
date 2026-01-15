@@ -6,7 +6,8 @@ export type WidgetType =
   | 'POST_IT'
   | 'GROUND_RULE'
   | 'GIT_CONVENTION'
-  | 'GROUNDRULE_COLLABORATION';
+  | 'GROUNDRULE_COLLABORATION'
+  | 'COMMUNICATION';
 
 export type WidgetContent =
   | TechStackContentDto
