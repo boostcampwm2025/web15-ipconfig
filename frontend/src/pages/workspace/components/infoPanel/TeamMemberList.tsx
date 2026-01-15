@@ -23,30 +23,34 @@ function TeamMemberList({ onUserHover, onUserLeave }: TeamMemberListProps) {
             초대하기
           </div>
         </button>
-        {INITIAL_USERS.map((user) => (
-          <li
-            key={user.id}
-            className="group relative flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-700"
-            onMouseEnter={(e) => onUserHover(e, user)}
-            onMouseLeave={onUserLeave}
-          >
-            <div
-              className={`h-8 w-8 rounded-full ${user.color} flex items-center justify-center text-xs font-bold text-gray-900`}
+        <div className="overflow-y-auto">
+          {INITIAL_USERS.map((user) => (
+            <li
+              key={user.id}
+              className="group relative flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-700"
+              onMouseEnter={(e) => onUserHover(e, user)}
+              onMouseLeave={onUserLeave}
             >
-              {user.name[0]}
-            </div>
-            <div>
-              <div className="text-sm font-bold text-gray-200">{user.name}</div>
               <div
-                className={`text-xs ${
-                  user.status === '준비중' ? 'text-gray-500' : user.textColor
-                }`}
+                className={`h-8 w-8 rounded-full ${user.color} flex items-center justify-center text-xs font-bold text-gray-900`}
               >
-                {user.status}
+                {user.name[0]}
               </div>
-            </div>
-          </li>
-        ))}
+              <div>
+                <div className="text-sm font-bold text-gray-200">
+                  {user.name}
+                </div>
+                <div
+                  className={`text-xs ${
+                    user.status === '준비중' ? 'text-gray-500' : user.textColor
+                  }`}
+                >
+                  {user.status}
+                </div>
+              </div>
+            </li>
+          ))}
+        </div>
       </ul>
     </div>
   );
