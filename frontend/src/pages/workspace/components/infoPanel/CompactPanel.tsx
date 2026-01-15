@@ -13,7 +13,7 @@ interface CompactPanelProps {
 }
 
 function getUserLabel(u: User) {
-  return u?.name ?? u?.name ?? 'U';
+  return u?.nickname ?? u?.nickname ?? 'U';
 }
 
 function getAvatarStyleAndClass(u: User) {
