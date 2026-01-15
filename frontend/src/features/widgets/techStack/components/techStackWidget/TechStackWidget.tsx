@@ -9,8 +9,6 @@ import { LuLayers } from 'react-icons/lu';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
 import { useTechStack } from '@/features/widgets/techStack/hooks/useTechStack';
-import type { TechStack } from '@/features/widgets/techStack/types/techStack';
-import { useState } from 'react';
 import SelectedTechStackBox from './SelectedTechStackBox';
 import SelectInput from '@/common/components/SelectInput';
 import SubjectGuideline from './SubjectGuideline';
