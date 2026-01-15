@@ -113,16 +113,18 @@ describe('WidgetMemoryService', () => {
       // when: 위젯의 x 좌표만 300으로 변경하는 레이아웃 업데이트를 요청하면
       const updateResult = await service.updateLayout(workspaceId, {
         widgetId: widgetId,
-        x: 300,
-      } as UpdateWidgetLayoutDto);
+        data: {
+          x: 300,
+          y: 100,
+          width: 200,
+          height: 200,
+          zIndex: 1,
+        },
+      });
 
       // then: x 좌표는 300으로 업데이트되고, y 좌표나 내부 콘텐츠는 유지되어야 한다
       expect(updateResult.data.x).toBe(300);
       expect(updateResult.data.y).toBe(100);
-      const content = updateResult.data.content as TechStackContentDto;
-      expect(content.selectedItems).toEqual([
-        { id: 'react', name: 'React', category: 'Frontend' },
-      ]);
     });
   });
 

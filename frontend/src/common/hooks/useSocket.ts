@@ -168,11 +168,7 @@ export const useSocket = ({
         if (next[payload.widgetId]) {
           next[payload.widgetId] = {
             ...next[payload.widgetId],
-            x: payload.data.x ?? next[payload.widgetId].x,
-            y: payload.data.y ?? next[payload.widgetId].y,
-            width: payload.data.width ?? next[payload.widgetId].width,
-            height: payload.data.height ?? next[payload.widgetId].height,
-            zIndex: payload.data.zIndex ?? next[payload.widgetId].zIndex,
+            ...payload.data,
           };
         }
         return next;
@@ -198,7 +194,6 @@ export const useSocket = ({
   const emitCreateWidget = (type: WidgetType, data: WidgetData) => {
     const socket = socketRef.current;
     if (!socket) return;
-
     socket.emit('widget:create', {
       // 임시 UUID 생성해서 반환
       widgetId: crypto.randomUUID(),

@@ -72,7 +72,6 @@ export default function CollaborationWidget({
         title="작업 및 협업"
         icon={<LuUsers className="text-primary" size={18} />}
         onClickDelete={() => {}}
-        onDrag={() => {}}
       />
       <div className="grid w-[800px] grid-cols-1 gap-2 md:grid-cols-2">
         <div className="w-full justify-self-center">

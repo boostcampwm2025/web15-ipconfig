@@ -120,7 +120,16 @@ describe('WidgetGateway', () => {
   });
 
   describe('widget:lock (위젯 잠금)', () => {
-    const lockDto = { widgetId: 'w-1' };
+    const lockDto: UpdateWidgetLayoutDto = {
+      widgetId: 'w-1',
+      data: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        zIndex: 0,
+      },
+    };
 
     it('위젯 잠금에 성공하면 다른 사용자에게 잠금 사실을 알려야 한다', async () => {
       // given: 위젯 서비스가 잠금 성공(true)을 반환하도록 설정
@@ -162,7 +171,13 @@ describe('WidgetGateway', () => {
       serviceMock.unlock.mockResolvedValue(true);
 
       // when: 클라이언트가 `widget:unlock` 이벤트를 전송했을 때
-      await gateway.unlock(unlockDto, clientMock as unknown as Socket);
+      await gateway.unlock(
+        {
+          widgetId: 'w-1',
+          data: { x: 0, y: 0, width: 0, height: 0, zIndex: 0 },
+        } as UpdateWidgetLayoutDto,
+        clientMock as unknown as Socket,
+      );
 
       // then: 위젯 서비스의 unlock이 호출되고, 자신을 제외한 다른 클라이언트에게 `widget:unlocked` 이벤트가 전송된다
       expect(serviceMock.unlock).toHaveBeenCalledWith(roomId, 'w-1', userId);
@@ -177,7 +192,13 @@ describe('WidgetGateway', () => {
       serviceMock.unlock.mockResolvedValue(false);
 
       // when: 클라이언트가 `widget:unlock` 이벤트를 전송했을 때
-      await gateway.unlock(unlockDto, clientMock as unknown as Socket);
+      await gateway.unlock(
+        {
+          widgetId: 'w-1',
+          data: { x: 0, y: 0, width: 0, height: 0, zIndex: 0 },
+        } as UpdateWidgetLayoutDto,
+        clientMock as unknown as Socket,
+      );
 
       // then: 위젯 서비스의 unlock은 호출되지만, 다른 클라이언트에게는 아무런 이벤트도 전송되지 않는다
       expect(serviceMock.unlock).toHaveBeenCalledWith(roomId, 'w-1', userId);
@@ -188,23 +209,28 @@ describe('WidgetGateway', () => {
   describe('widget:move (위젯 이동)', () => {
     const layoutDto: UpdateWidgetLayoutDto = {
       widgetId: 'w-1',
-      x: 100,
-      y: 50,
+      data: { x: 100, y: 50, width: 0, height: 0, zIndex: 0 },
     };
 
     it('잠금을 소유한 사용자가 요청 시, 위젯 위치를 변경하고 브로드캐스트해야 한다', async () => {
       // given: 사용자가 해당 위젯의 잠금을 소유하고 있는 상황
       serviceMock.getLockOwner.mockResolvedValue(userId);
-      const updatedWidget = { widgetId: 'w-1', data: { x: 100, y: 50 } };
+      const updatedWidget: UpdateWidgetLayoutDto = {
+        widgetId: 'w-1',
+        data: { x: 100, y: 50, width: 0, height: 0, zIndex: 0 },
+      };
       serviceMock.updateLayout.mockResolvedValue(updatedWidget);
 
       // when: 클라이언트가 `widget:move` 이벤트를 전송했을 때
-      await gateway.move(layoutDto, clientMock as unknown as Socket);
+      await gateway.move(updatedWidget, clientMock as unknown as Socket);
 
       // then: 잠금 소유자를 확인하고, 레이아웃을 업데이트한 뒤, 다른 사용자에게 `widget:moved`로 변경사항을 알린다
       expect(serviceMock.getLockOwner).toHaveBeenCalledWith(roomId, 'w-1');
-      expect(serviceMock.updateLayout).toHaveBeenCalledWith(roomId, layoutDto);
-      expect(clientToEmitMock).toHaveBeenCalledWith(
+      expect(serviceMock.updateLayout).toHaveBeenCalledWith(
+        roomId,
+        updatedWidget,
+      );
+      expect(serverToEmitMock).toHaveBeenCalledWith(
         'widget:moved',
         updatedWidget,
       );
@@ -227,7 +253,14 @@ describe('WidgetGateway', () => {
   describe('widget:update (위젯 내용 수정)', () => {
     const updateDto: UpdateWidgetDto = {
       widgetId: 'w-1',
-      data: { content: { selectedItems: ['NestJS'] } },
+      data: {
+        content: {
+          widgetType: WidgetType.TECH_STACK,
+          selectedItems: [
+            { id: 'nestjs', name: 'NestJS', category: 'Backend' },
+          ],
+        } as TechStackContentDto,
+      },
     };
 
     it('잠금을 소유한 사용자가 요청 시, 위젯 내용을 수정하고 브로드캐스트해야 한다', async () => {

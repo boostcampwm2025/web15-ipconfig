@@ -81,7 +81,7 @@ export class WidgetMemoryService implements IWidgetService {
   async updateLayout(
     workspaceId: string,
     layoutDto: UpdateWidgetLayoutDto,
-  ): Promise<CreateWidgetDto> {
+  ): Promise<UpdateWidgetLayoutDto> {
     const widgets = this.getWidgetsMap(workspaceId);
     const existingWidget = widgets.get(layoutDto.widgetId);
 
@@ -91,18 +91,23 @@ export class WidgetMemoryService implements IWidgetService {
       );
     }
 
-    const { widgetId, ...layoutChanges } = layoutDto;
+    const { widgetId, data } = layoutDto;
 
     const updatedWidget = {
       ...existingWidget,
       data: {
         ...existingWidget.data,
-        ...layoutChanges,
+        ...data,
       },
     } as CreateWidgetDto;
 
     widgets.set(widgetId, updatedWidget);
-    return Promise.resolve(updatedWidget);
+
+    const updatedWidgetLayoutDto = {
+      widgetId,
+      data,
+    } as UpdateWidgetLayoutDto;
+    return Promise.resolve(updatedWidgetLayoutDto);
   }
 
   async remove(

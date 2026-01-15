@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import type { UserExtended } from '@/common/types/user';
 
@@ -17,6 +18,8 @@ import UserHoverCard from './components/UserHoverCard';
 import ZoomControls from './components/ZoomControls';
 import ExportModal from './components/ExportModal';
 import useCanvas from '@/features/canvas/hooks/useCanvas';
+import CompactPanel from './components/infoPanel/CompactPanel';
+import { INITIAL_USERS } from '@/common/mocks/users';
 
 function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
@@ -28,6 +31,7 @@ function WorkSpacePage() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
+  const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
   const {
     camera,
@@ -41,10 +45,6 @@ function WorkSpacePage() {
   } = useCanvas();
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
-
-  // Dragging State
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   const workspaceId = 'w1';
@@ -107,30 +107,16 @@ function WorkSpacePage() {
     try {
       await fetchMarkdown(workspaceId);
       setIsExportModalOpen(true);
-    } catch (error) {
+    } catch {
       // 일단 alert를 사용했는데, 그냥 마크다운 내용으로 (마크다운 생성 실패)를 보내는 것도 나쁘지 않을 것 같습니다!
       alert('마크다운 생성에 실패했습니다.');
     }
   }, [workspaceId, fetchMarkdown]);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-gray-900 font-sans text-gray-100">
-      {/* Hide Scrollbar CSS */}
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
-
-      <WorkspaceHeader onExportClick={handleExportClick} />
-
-      {/* Main Workspace */}
-      <div className="relative flex flex-1 overflow-hidden">
-        <ToolBar onToolClick={emitCreateWidget} />
+    <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
+      {/* 캔버스: 화면 전체 */}
+      <div className="absolute inset-0">
         <main className="relative h-full w-full flex-1">
           <CanvasContent
             camera={camera}
@@ -146,18 +132,64 @@ function WorkSpacePage() {
             emitMoveWidget={emitMoveWidget}
           />
         </main>
-        <RightSidebar
-          onUserHover={handleUserHover}
-          onUserLeave={handleUserLeave}
-        />
-
-        {hoveredUser && (
-          <UserHoverCard user={hoveredUser} position={hoverPosition} />
-        )}
-
-        <ZoomControls handleZoomButton={handleZoomButton} camera={camera} />
       </div>
 
+      {/* 헤더: 최상단 오버레이 */}
+      <div className="pointer-events-none absolute top-0 left-0 z-50 w-full">
+        <div className="pointer-events-auto">
+          <WorkspaceHeader onExportClick={handleExportClick} />
+        </div>
+      </div>
+
+      {/* HUD 레이어 */}
+      <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
+        <div className="pointer-events-auto">
+          <div className="absolute top-0 left-0">
+            <ToolBar onToolClick={emitCreateWidget} />
+          </div>
+          <AnimatePresence mode="sync">
+            {isSidebarExpanded ? (
+              <motion.div
+                key="sidebar"
+                initial={{ x: 300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 300, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                className="pointer-events-auto absolute top-0 right-0 bottom-0"
+              >
+                <RightSidebar
+                  onUserHover={handleUserHover}
+                  onUserLeave={handleUserLeave}
+                  onToggle={() => setSidebarExpanded((p) => !p)}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="compact"
+                initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                transition={{ duration: 0.3 }}
+                className="absolute top-18 right-6"
+              >
+                <CompactPanel
+                  members={INITIAL_USERS}
+                  currentAgenda=""
+                  currentTime=""
+                  isExpanded={false}
+                  onToggle={() => setSidebarExpanded((p) => !p)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <ZoomControls handleZoomButton={handleZoomButton} camera={camera} />
+        </div>
+      </div>
+
+      {hoveredUser && (
+        <UserHoverCard user={hoveredUser} position={hoverPosition} />
+      )}
       <ExportModal
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
