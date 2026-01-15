@@ -13,11 +13,17 @@ import {
   TechStackContentDto,
   PostItContentDto,
   GroundRuleContentDto,
+  GitConventionContentDto,
   BaseContentDto,
 } from './widget-content.dto';
 
 // 위젯의 공통 속성 및 가변 콘텐츠 정의
-@ApiExtraModels(TechStackContentDto, PostItContentDto, GroundRuleContentDto)
+@ApiExtraModels(
+  TechStackContentDto,
+  PostItContentDto,
+  GroundRuleContentDto,
+  GitConventionContentDto,
+)
 export class WidgetData {
   @ApiProperty({ description: 'X 좌표 (Canvas 기준)', example: 100 })
   @IsNumber()
@@ -45,6 +51,7 @@ export class WidgetData {
       { $ref: getSchemaPath(TechStackContentDto) },
       { $ref: getSchemaPath(PostItContentDto) },
       { $ref: getSchemaPath(GroundRuleContentDto) },
+      { $ref: getSchemaPath(GitConventionContentDto) },
     ],
   })
   @IsObject()
@@ -57,13 +64,15 @@ export class WidgetData {
         { value: TechStackContentDto, name: WidgetType.TECH_STACK },
         { value: PostItContentDto, name: WidgetType.POST_IT },
         { value: GroundRuleContentDto, name: WidgetType.GROUND_RULE },
+        { value: GitConventionContentDto, name: WidgetType.GIT_CONVENTION },
       ],
     },
   })
   readonly content:
     | TechStackContentDto
     | PostItContentDto
-    | GroundRuleContentDto;
+    | GroundRuleContentDto
+    | GitConventionContentDto;
 }
 
 // 최종 생성 DTO

@@ -40,6 +40,8 @@ function CommunicationWidget({
         title="커뮤니케이션"
         icon={<LuUsers className="text-primary" size={18} />}
         onClickDelete={onDelete || (() => {})}
+        // 나중에 onDrag가 삭제됩니다. 임시로 넣어놨습니다.
+        onDrag={() => {}}
       />
       <div className="flex flex-col gap-6 p-4">
         <CommunicationSection
