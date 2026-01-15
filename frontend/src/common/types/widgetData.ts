@@ -1,4 +1,8 @@
-export type WidgetType = 'TECH_STACK' | 'POST_IT' | 'GROUND_RULE';
+export type WidgetType =
+  | 'TECH_STACK'
+  | 'POST_IT'
+  | 'GROUND_RULE'
+  | 'GROUNDRULE_COLLABORATION';
 
 export type WidgetContent =
   | TechStackContentDto

@@ -3,6 +3,7 @@ import TechStackWidget from '@/features/widgets/techStack/components/techStackWi
 import { GitConventionWidget } from '@/features/widgets/gitConvention/components/gitConventionWidget';
 import { useState } from 'react';
 import type { Camera } from '@/common/types/camera';
+import CollaborationWidget from '../widgets/collaboration/components/CollaborationWidget';
 import CursorWithName from '@/common/components/CursorWithName';
 import { cn } from '@/common/lib/utils';
 import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
@@ -63,6 +64,7 @@ function CanvasContent({
         className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
       >
         {/* 위젯 렌더링 */}
+
         {Object.entries(widgets).map(([widgetId, widget]) => (
           // TODO: 나중에 위젯 타입에 따라 분기처리 필요
           <TechStackWidget
@@ -73,6 +75,17 @@ function CanvasContent({
             emitUpdateWidget={emitUpdateWidget}
           />
         ))}
+        <CollaborationWidget
+          key={'GROUNDRULE_COLLABORATION'}
+          widgetId={'GROUNDRULE_COLLABORATION'}
+          data={{
+            x: 300,
+            y: 400,
+            width: 850,
+            height: 600,
+            zIndex: 1,
+          }}
+        />
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
           <div
