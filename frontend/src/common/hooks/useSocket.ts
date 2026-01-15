@@ -209,7 +209,6 @@ export const useSocket = ({
   const emitCreateWidget = (type: WidgetType, data: WidgetData) => {
     const socket = socketRef.current;
     if (!socket) return;
-
     socket.emit('widget:create', {
       // 임시 UUID 생성해서 반환
       widgetId: crypto.randomUUID(),
