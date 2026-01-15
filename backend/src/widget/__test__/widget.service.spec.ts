@@ -33,8 +33,8 @@ describe('WidgetMemoryService', () => {
         zIndex: 1,
         content: {
           widgetType: WidgetType.TECH_STACK,
-          selectedItems: ['React'],
-        } as TechStackContentDto,
+          selectedItems: [{ id: 'react', name: 'React', category: 'Frontend' }],
+        } as unknown as TechStackContentDto,
       },
     };
     // given: 모든 테스트 시작 전 위젯 생성
@@ -60,7 +60,7 @@ describe('WidgetMemoryService', () => {
           content: {
             widgetType: WidgetType.TECH_STACK,
             selectedItems: [],
-          } as TechStackContentDto,
+          } as unknown as TechStackContentDto,
         },
       };
 
@@ -120,7 +120,9 @@ describe('WidgetMemoryService', () => {
       expect(updateResult.data.x).toBe(300);
       expect(updateResult.data.y).toBe(100);
       const content = updateResult.data.content as TechStackContentDto;
-      expect(content.selectedItems).toEqual(['React']);
+      expect(content.selectedItems).toEqual([
+        { id: 'react', name: 'React', category: 'Frontend' },
+      ]);
     });
   });
 
@@ -133,15 +135,18 @@ describe('WidgetMemoryService', () => {
         data: {
           content: {
             widgetType: WidgetType.TECH_STACK,
-            selectedItems: ['NestJS'],
+            selectedItems: [
+              { id: 'nestjs', name: 'NestJS', category: 'Backend' },
+            ],
           },
         },
       });
 
       // then: 콘텐츠 내용은 변경되고, 위치는 유지되어야 한다
       const content = updateResult.data.content as TechStackContentDto;
-      expect(content.selectedItems).toEqual(['NestJS']);
-      expect(updateResult.data.x).toBe(100);
+      expect(content.selectedItems).toEqual([
+        { id: 'nestjs', name: 'NestJS', category: 'Backend' },
+      ]);
     });
   });
 

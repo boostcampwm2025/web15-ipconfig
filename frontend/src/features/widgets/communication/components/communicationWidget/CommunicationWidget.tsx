@@ -1,4 +1,3 @@
-import type { WidgetData } from '@/common/types/widgetData';
 import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuUsers } from 'react-icons/lu';
@@ -10,7 +9,21 @@ import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
 import { MeetingSection } from './MeetingSection';
 
-function CommunicationWidget({ id, position, width, height }: WidgetData) {
+interface CommunicationWidgetProps {
+  id: string;
+  position: { x: number; y: number };
+  width: number;
+  height?: number;
+  onDelete?: () => void;
+}
+
+function CommunicationWidget({
+  id,
+  position,
+  width,
+  height,
+  onDelete,
+}: CommunicationWidgetProps) {
   const [data, setData] = useState<CommunicationData>(
     DEFAULT_COMMUNICATION_DATA,
   );
@@ -18,15 +31,15 @@ function CommunicationWidget({ id, position, width, height }: WidgetData) {
   return (
     <WidgetContainer
       id={id}
-      position={position}
-      type="COMMUNICATION"
-      content="Communication"
+      x={position.x}
+      y={position.y}
       width={width}
       height={height}
     >
       <WidgetHeader
         title="커뮤니케이션"
         icon={<LuUsers className="text-primary" size={18} />}
+        onClickDelete={onDelete || (() => {})}
       />
       <div className="flex flex-col gap-6 p-4">
         <CommunicationSection

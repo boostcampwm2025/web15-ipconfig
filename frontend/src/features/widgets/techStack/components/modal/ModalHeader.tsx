@@ -24,7 +24,6 @@ export default function ModalHeader({
       </div>
       <Button
         variant="ghost"
-        onMouseDown={(e) => e.stopPropagation()}
         onClick={onClose}
         className="hover:text-main shrink-0 text-gray-500 transition-colors hover:cursor-pointer hover:bg-transparent dark:hover:bg-transparent"
       >

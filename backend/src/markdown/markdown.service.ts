@@ -5,6 +5,7 @@ import {
   WidgetType,
   GroundRuleContentDto,
   TechStackContentDto,
+  PostItContentDto,
 } from '../widget/dto/widget-content.dto';
 import { CreateWidgetDto } from '../widget/dto/create-widget.dto';
 
@@ -14,60 +15,61 @@ export class MarkdownService {
     @Inject(WIDGET_SERVICE) private readonly widgetService: IWidgetService,
   ) {}
 
-  private buildGroundRuleSection(widget: CreateWidgetDto | null): string[] {
-    if (!widget) return [];
+  private buildGroundRuleSection(widgets: CreateWidgetDto[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
 
     const lines: string[] = [];
-    const content = widget.data.content as GroundRuleContentDto;
-
     lines.push('## 1. 📋 Ground Rule');
-    lines.push('| Ground Rule| Value| ');
-    lines.push('| :--- | :--- | ');
-
-    if (content.rules && content.rules.length > 0) {
-      content.rules.forEach((rule) => {
-        lines.push(`| ${rule} | - |`);
-      });
-    }
+    lines.push('| Rule | Description |');
+    lines.push('| :--- | :--- |');
+    widgets.forEach((widget) => {
+      const content = widget.data.content as GroundRuleContentDto;
+      if (content.rules && content.rules.length > 0) {
+        content.rules.forEach((rule) => {
+          lines.push(`| ${rule} | - |`);
+        });
+      }
+    });
 
     lines.push('');
     return lines;
   }
 
-  private buildTechStackSection(widget: CreateWidgetDto | null): string[] {
-    if (!widget) return [];
+  private buildTechStackSection(widgets: CreateWidgetDto[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
 
     const lines: string[] = [];
-    const content = widget.data.content as TechStackContentDto;
-
     lines.push('## 2. 🛠 Tech Stack Selection');
     lines.push('| Tech Name | Version |');
     lines.push('| :--- | :--- |');
 
-    if (content.selectedItems && content.selectedItems.length > 0) {
-      content.selectedItems.forEach((item) => {
-        lines.push(`| ${item} | vLatest |`);
-      });
-    }
+    widgets.forEach((widget) => {
+      const content = widget.data.content as TechStackContentDto;
+      if (content.selectedItems && content.selectedItems.length > 0) {
+        content.selectedItems.forEach((item) => {
+          lines.push(`| ${item.name} | vLatest |`);
+        });
+      }
+    });
 
     lines.push('');
     return lines;
   }
 
-  private buildElseSection(widget: CreateWidgetDto | null): string[] {
-    if (!widget) return [];
+  private buildElseSection(widgets: CreateWidgetDto[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
 
     const lines: string[] = [];
 
     lines.push('## 3. Else');
     lines.push('---');
 
-    if (widget) {
-      const content = widget.data.content as { text?: string };
+    widgets.forEach((widget) => {
+      const content = widget.data.content as PostItContentDto;
       if (content.text) {
         lines.push(content.text);
       }
-    }
+    });
 
     lines.push('');
     return lines;
@@ -91,26 +93,28 @@ export class MarkdownService {
     markdownParts.push(`> Created at: ${formattedDate}`);
     markdownParts.push('');
 
-    const groundRuleWidget = await this.widgetService.findOneByWidgetType(
-      workspaceId,
-      WidgetType.GROUND_RULE,
+    const allWidgets = await this.widgetService.findAll(workspaceId);
+
+    const groundRuleWidgets = allWidgets.filter(
+      (widget) => widget.data.content.widgetType === WidgetType.GROUND_RULE,
     );
-    markdownParts.push(...this.buildGroundRuleSection(groundRuleWidget));
+    markdownParts.push(...this.buildGroundRuleSection(groundRuleWidgets));
 
-    const techStackWidget = await this.widgetService.findOneByWidgetType(
-      workspaceId,
-      WidgetType.TECH_STACK,
+    const techStackWidgets = allWidgets.filter(
+      (widget) => widget.data.content.widgetType === WidgetType.TECH_STACK,
     );
-    markdownParts.push(...this.buildTechStackSection(techStackWidget));
+    markdownParts.push(...this.buildTechStackSection(techStackWidgets));
 
-    const postItWidget = await this.widgetService.findOneByWidgetType(
-      workspaceId,
-      WidgetType.POST_IT,
+    const postItWidgets = allWidgets.filter(
+      (widget) => widget.data.content.widgetType === WidgetType.POST_IT,
     );
+    markdownParts.push(...this.buildElseSection(postItWidgets));
 
-    markdownParts.push(...this.buildElseSection(postItWidget));
-
-    if (!groundRuleWidget && !techStackWidget && !postItWidget) {
+    if (
+      groundRuleWidgets.length === 0 &&
+      techStackWidgets.length === 0 &&
+      postItWidgets.length === 0
+    ) {
       markdownParts.push(
         '아직 적은 내용이 없는 것 같습니다! 위젯에 내용을 추가해보세요! 🚀',
       );

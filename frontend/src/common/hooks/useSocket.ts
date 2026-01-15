@@ -1,5 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import type {
+  WidgetContent,
+  WidgetData,
+  WidgetType,
+  CreateWidgetData,
+  UpdateWidgetData,
+} from '../types/widgetData';
 
 // Remote cursor 상태 타입
 type RemoteCursorState = Record<
@@ -25,12 +32,14 @@ interface UseSocketParams {
   workspaceId: string;
   currentUser: CurrentUserInfo;
   setRemoteCursors: React.Dispatch<React.SetStateAction<RemoteCursorState>>;
+  setWidgets: React.Dispatch<React.SetStateAction<Record<string, WidgetData>>>;
 }
 
 export const useSocket = ({
   workspaceId,
   currentUser,
   setRemoteCursors,
+  setWidgets,
 }: UseSocketParams) => {
   const socketRef = useRef<Socket | null>(null);
 
@@ -59,18 +68,19 @@ export const useSocket = ({
     // 2) 같은 workspace의 전체 유저 + 커서 목록 수신
     socket.on(
       'user:joined',
-      (
-        payload: {
+      (payload: {
+        allUsers: {
           id: string;
           nickname: string;
           color: string;
           backgroundColor: string;
-        }[],
-      ) => {
+        }[];
+        allWidgets: CreateWidgetData[];
+      }) => {
         setRemoteCursors((prev) => {
           const next = { ...prev };
 
-          payload.forEach((user) => {
+          payload.allUsers.forEach((user) => {
             next[user.id] = {
               userId: user.id,
               nickname: user.nickname,
@@ -81,6 +91,10 @@ export const useSocket = ({
               x: 10000,
               y: 10000,
             };
+          });
+
+          payload.allWidgets.forEach((widget) => {
+            setWidgets((prev) => ({ ...prev, [widget.widgetId]: widget.data }));
           });
 
           return next;
@@ -132,11 +146,39 @@ export const useSocket = ({
       },
     );
 
+    // 5) 위젯 생성
+    socket.on('widget:created', (payload: CreateWidgetData) => {
+      setWidgets((prev) => ({ ...prev, [payload.widgetId]: payload.data }));
+    });
+
+    // 6) 위젯 업데이트
+    socket.on('widget:updated', (payload: UpdateWidgetData) => {
+      setWidgets((prev) => {
+        const next = { ...prev };
+        if (next[payload.widgetId]) {
+          next[payload.widgetId] = {
+            ...next[payload.widgetId],
+            content: payload.data.content,
+          };
+        }
+        return next;
+      });
+    });
+
+    // 7) 위젯 삭제
+    socket.on('widget:deleted', (payload: { widgetId: string }) => {
+      setWidgets((prev) => {
+        const next = { ...prev };
+        delete next[payload.widgetId];
+        return next;
+      });
+    });
+
     return () => {
       socket.emit('user:leave', { workspaceId, userId: currentUser.id });
       socket.disconnect();
     };
-  }, [workspaceId, currentUser, setRemoteCursors]);
+  }, [workspaceId, currentUser, setRemoteCursors, setWidgets]);
 
   const emitCursorMove = (x: number, y: number) => {
     const socket = socketRef.current;
@@ -148,5 +190,55 @@ export const useSocket = ({
     });
   };
 
-  return { socketRef, emitCursorMove };
+  const emitCreateWidget = (type: WidgetType, data: WidgetData) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    socket.emit('widget:create', {
+      // 임시 UUID 생성해서 반환
+      widgetId: crypto.randomUUID(),
+      type,
+      data,
+    });
+  };
+
+  const emitUpdateWidget = (widgetId: string, data: WidgetContent) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    socket.emit('widget:update', {
+      widgetId,
+      data: {
+        content: data,
+      },
+    });
+
+    setWidgets((prev) => {
+      const next = { ...prev };
+      if (next[widgetId]) {
+        next[widgetId] = {
+          ...next[widgetId],
+          content: data,
+        };
+      }
+      return next;
+    });
+  };
+
+  const emitDeleteWidget = (widgetId: string) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    socket.emit('widget:delete', {
+      widgetId,
+    });
+  };
+
+  return {
+    socketRef,
+    emitCursorMove,
+    emitCreateWidget,
+    emitUpdateWidget,
+    emitDeleteWidget,
+  };
 };

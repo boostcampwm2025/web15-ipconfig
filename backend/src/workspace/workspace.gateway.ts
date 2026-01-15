@@ -83,7 +83,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
     channel: 'user:joined',
     summary: '워크스페이스 유저/커서 정보 브로드캐스트',
     description:
-      '새 유저가 입장했을 때, 같은 워크스페이스의 모든 유저 목록을 브로드캐스트합니다.',
+      '새 유저가 입장했을 때, 같은 워크스페이스의 모든 유저 목록, 모든 위젯 목록을 브로드캐스트합니다.',
     message: {
       // allUsers, cursors 구조를 간단히 표현하기 위해 DTO 대신 any 사용
       payload: Object,
@@ -108,6 +108,8 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       client.id,
     );
 
+    const allWidgets = await this.widgetService.findAll(roomId);
+
     await client.join(roomId);
 
     this.server.to(roomId).emit('user:status', {
@@ -115,7 +117,7 @@ export class WorkspaceGateway implements OnGatewayDisconnect {
       status: UserStatus.ONLINE,
     });
 
-    this.server.to(roomId).emit('user:joined', allUsers);
+    this.server.to(roomId).emit('user:joined', { allUsers, allWidgets });
   }
 
   @AsyncApiSub({

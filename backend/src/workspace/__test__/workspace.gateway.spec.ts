@@ -40,6 +40,7 @@ describe('WorkspaceGateway', () => {
     };
 
     widgetServiceMock = {
+      findAll: jest.fn().mockResolvedValue([]),
       unlockAllByUser: jest.fn().mockResolvedValue([]),
     };
 
@@ -168,14 +169,17 @@ describe('WorkspaceGateway', () => {
         userId: 'u1',
         status: 'ONLINE',
       });
-      expect(serverMock.emit).toHaveBeenCalledWith('user:joined', [
-        {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-          backgroundColor: '#ffffff',
-        },
-      ]);
+      expect(serverMock.emit).toHaveBeenCalledWith('user:joined', {
+        allUsers: [
+          {
+            id: 'u1',
+            nickname: 'user1',
+            color: '#000000',
+            backgroundColor: '#ffffff',
+          },
+        ],
+        allWidgets: [],
+      });
     });
 
     it('user:join 이벤트 발생 시 client가 방에 들어가는지', async () => {
