@@ -36,6 +36,5 @@ export const Default: Story = {
     title: '위젯 제목',
     icon: <LuFileText size={18} />,
     onClickDelete: () => {},
-    onDrag: () => {},
   },
 };

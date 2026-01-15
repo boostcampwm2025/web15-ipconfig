@@ -21,7 +21,7 @@ export interface IWidgetService {
   updateLayout(
     workspaceId: string,
     updateWidgetLayoutDto: UpdateWidgetLayoutDto,
-  ): Promise<CreateWidgetDto>;
+  ): Promise<UpdateWidgetLayoutDto>;
 
   remove(workspaceId: string, widgetId: string): Promise<{ widgetId: string }>;
 

@@ -42,10 +42,6 @@ function WorkSpacePage() {
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
 
-  // Dragging State
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   const workspaceId = 'w1';
 
@@ -116,7 +112,7 @@ function WorkSpacePage() {
     try {
       await fetchMarkdown(workspaceId);
       setIsExportModalOpen(true);
-    } catch (error) {
+    } catch {
       // 일단 alert를 사용했는데, 그냥 마크다운 내용으로 (마크다운 생성 실패)를 보내는 것도 나쁘지 않을 것 같습니다!
       alert('마크다운 생성에 실패했습니다.');
     }

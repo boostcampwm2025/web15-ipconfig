@@ -4,8 +4,7 @@ import type {
   GitConventionContentDto,
   MoveWidgetData,
 } from '@/common/types/widgetData';
-import WidgetContainer from '@/common/components/widget/WidgetContainer';
-import WidgetHeader from '@/common/components/widget/WidgetHeader';
+import WidgetShell from '@/common/components/widget/WidgetShell';
 import { LuGitBranch } from 'react-icons/lu';
 import { useGitConvention } from '@/features/widgets/gitConvention/hooks/useGitConvention';
 import { StrategySelector } from './StrategySelector';
@@ -42,29 +41,14 @@ function GitConventionWidget({
     });
 
   return (
-    <WidgetContainer
-      id={widgetId}
-      x={data.x}
-      y={data.y}
-      width={data.width}
-      height={data.height}
-      zIndex={data.zIndex}
-      content={data.content}
+    <WidgetShell
+      widgetId={widgetId}
+      data={data}
+      title="Git 컨벤션"
+      icon={<LuGitBranch className="text-primary" size={18} />}
+      emitDeleteWidget={emitDeleteWidget}
+      emitMoveWidget={emitMoveWidget}
     >
-      <WidgetHeader
-        title="Git Convention"
-        icon={<LuGitBranch className="text-primary" size={18} />}
-        onClickDelete={() => emitDeleteWidget(widgetId)}
-        onDrag={() =>
-          emitMoveWidget(widgetId, {
-            x: data.x,
-            y: data.y,
-            width: data.width,
-            height: data.height,
-            zIndex: data.zIndex,
-          })
-        }
-      />
       <section className="relative flex h-full flex-col gap-4 p-1">
         <StrategySelector
           value={strategy}
@@ -103,7 +87,7 @@ function GitConventionWidget({
           </div>
         )}
       </section>
-    </WidgetContainer>
+    </WidgetShell>
   );
 }
 

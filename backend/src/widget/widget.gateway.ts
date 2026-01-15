@@ -186,8 +186,8 @@ export class WidgetGateway {
       updateLayoutDto.widgetId,
     );
 
-    // 락이 없거나, 다른 사람이 점유중일 시 무시
-    if (owner !== userId) {
+    if (owner && owner !== userId) {
+      client.emit('error', 'Widget is locked by another user.');
       return;
     }
 
@@ -196,7 +196,7 @@ export class WidgetGateway {
       updateLayoutDto,
     );
 
-    client.to(roomId).emit('widget:moved', updatedWidget);
+    this.server.to(roomId).emit('widget:moved', updatedWidget);
 
     return updatedWidget;
   }
