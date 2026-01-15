@@ -44,8 +44,8 @@ function WidgetContainer({
       style={{
         left: x,
         top: y,
-        minWidth: width ?? 'auto',
-        minHeight: height ?? 'auto',
+        width: width ?? 'auto',
+        height: height ?? 'auto',
         zIndex: zIndex ?? 1,
       }}
       onMouseDown={(e) => handleMouseDown(e, id, x, y)}

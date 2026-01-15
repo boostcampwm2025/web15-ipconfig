@@ -8,23 +8,16 @@ import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuLayers } from 'react-icons/lu';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/common/components/shadcn/select';
 import { useState } from 'react';
-import { Button } from '@/common/components/shadcn/button';
-import { SUBJECT_GROUPS } from '@/common/mocks/techStacks';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
-import { DndContext, pointerWithin } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
+import { DndContext, pointerWithin, type DragEndEvent } from '@dnd-kit/core';
 
 import SelectedTechStackBox from './SelectedTechStackBox';
+import SelectInput from '@/common/components/SelectInput';
+
+import SubjectGuideline from './SubjectGuideline';
+import { useSelectedTechStacks } from '@/features/widgets/techStack/hooks/techStackWidget/useSelectedTechStacks';
+import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
 
 interface TechStackWidgetProps {
   widgetId: string;
@@ -40,6 +33,9 @@ function TechStackWidget({
   emitDeleteWidget,
 }: TechStackWidgetProps) {
   const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
+  // const { selectedTechStacks, setSelectedTechStacks, handleDragEnd } =
+  //   useSelectedTechStacks();
+  const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
 
   const selectedTechStacks = data.content
     ? (data.content as TechStackContentDto).selectedItems || []
@@ -108,38 +104,27 @@ function TechStackWidget({
           onClickDelete={() => emitDeleteWidget(widgetId)}
         />
         <section className="flex flex-col gap-4">
-          <Select>
-            <div className="flex items-center gap-2 font-bold">
-              <div className="shrink-0">주제 :</div>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="논의할 주제를 선택해주세요." />
-              </SelectTrigger>
-            </div>
+          <div className="flex items-center gap-2 font-bold">
+            <div className="shrink-0">주제 :</div>
+            <SelectInput
+              selectedValue={selectedSubject}
+              setSelectedValue={setSelectedSubject}
+            />
+          </div>
 
-            <SelectContent>
-              {SUBJECT_GROUPS.map((group) => (
-                <SelectGroup key={group.category}>
-                  <SelectLabel>{group.category}</SelectLabel>
-                  {group.subjects.map((subject) => (
-                    <SelectItem key={subject.value} value={subject.value}>
-                      {subject.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              ))}
-            </SelectContent>
-          </Select>
+          {parsedSubject && (
+            <SubjectGuideline
+              key={`${parsedSubject.category}-${parsedSubject.option}`}
+              category={parsedSubject.category}
+              option={parsedSubject.option}
+            />
+          )}
 
           <SelectedTechStackBox
             selectedTechStacks={selectedTechStacks}
             setSelectedTechStacks={handleSetSelectedTechStacks}
             setIsTechStackModalOpen={setIsTechStackModalOpen}
           />
-
-          <footer className="flex items-center justify-end gap-2 font-bold">
-            <Button variant="secondary">투표</Button>
-            <Button>확정</Button>
-          </footer>
         </section>
         {isTechStackModalOpen && (
           <TechStackModal
