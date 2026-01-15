@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { LuMinus, LuPlus } from 'react-icons/lu';
-import { cn } from '@/common/lib/utils';
-import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 
 interface SlaStepperProps {
   responseTime: number;

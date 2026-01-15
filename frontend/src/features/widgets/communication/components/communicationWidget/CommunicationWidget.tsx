@@ -39,7 +39,7 @@ function CommunicationWidget({ id, position, width, height }: WidgetData) {
           }
         />
 
-        <div className="bg-border h-[1px] w-full" />
+        <div className="bg-border h-px w-full" />
 
         <div className="grid grid-cols-2 gap-4">
           <SlaStepper
@@ -62,7 +62,7 @@ function CommunicationWidget({ id, position, width, height }: WidgetData) {
           />
         </div>
 
-        <div className="bg-border h-[1px] w-full" />
+        <div className="bg-border h-px w-full" />
 
         <MeetingSection
           data={data.meeting}
