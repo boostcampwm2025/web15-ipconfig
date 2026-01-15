@@ -8,31 +8,18 @@ import type {
   UpdateWidgetData,
   UpdateWidgetLayoutData,
   MoveWidgetData,
-} from '../types/widgetData';
+} from '@/common/types/widgetData';
+import type { User } from '@/common/types/user';
+import type { Cursor } from '@/common/types/cursor';
 
 // Remote cursor 상태 타입
-type RemoteCursorState = Record<
-  string,
-  {
-    userId: string;
-    nickname: string;
-    color: string;
-    backgroundColor: string;
-    x: number;
-    y: number;
-  }
->;
-
-interface CurrentUserInfo {
-  id: string;
-  nickname: string;
-  color: string;
-  backgroundColor: string;
-}
+type RemoteCursorState = {
+  [userId: string]: Cursor;
+};
 
 interface UseSocketParams {
   workspaceId: string;
-  currentUser: CurrentUserInfo;
+  currentUser: User;
   setRemoteCursors: React.Dispatch<React.SetStateAction<RemoteCursorState>>;
   setWidgets: React.Dispatch<React.SetStateAction<Record<string, WidgetData>>>;
 }
@@ -63,7 +50,6 @@ export const useSocket = ({
         id: currentUser.id,
         nickname: currentUser.nickname,
         color: currentUser.color,
-        backgroundColor: currentUser.backgroundColor,
       },
     });
 
@@ -87,7 +73,6 @@ export const useSocket = ({
               userId: user.id,
               nickname: user.nickname,
               color: user.color,
-              backgroundColor: user.backgroundColor,
               // 일단 아예 저 멀리 생성해서 안 보이도록 하기
               // 추후에 update-cursor 이벤트를 받으면 그 때 위치를 업데이트 해주기
               x: 10000,

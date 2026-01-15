@@ -123,7 +123,6 @@ function CanvasContent({
             <CursorWithName
               nickname={cursor.nickname}
               color={cursor.color}
-              backgroundColor={cursor.backgroundColor}
               x={cursor.x}
               y={cursor.y}
             />
