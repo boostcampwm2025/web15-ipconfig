@@ -160,7 +160,7 @@ function WorkSpacePage() {
           <div className="absolute top-0 left-0">
             <ToolBar onToolClick={emitCreateWidget} />
           </div>
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {isSidebarExpanded ? (
               <motion.div
                 key="sidebar"
