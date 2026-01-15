@@ -53,7 +53,7 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
         </button>
 
         <div
-          className="relative min-w-[3rem] cursor-pointer text-center"
+          className="relative min-w-12 cursor-pointer text-center"
           onClick={(e) => {
             e.stopPropagation();
             setIsEditing(true);

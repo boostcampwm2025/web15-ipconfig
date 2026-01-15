@@ -19,7 +19,7 @@ function CommunicationWidget({ id, position, width, height }: WidgetData) {
     <WidgetContainer
       id={id}
       position={position}
-      type="communication"
+      type="COMMUNICATION"
       content="Communication"
       width={width}
       height={height}

@@ -74,7 +74,7 @@ function CanvasContent({
           id="communication"
           position={communicationPosition}
           width={600}
-          type="communication"
+          type="COMMUNICATION"
           content="Communication Attributes"
         />
         {/* 커서 렌더링 */}

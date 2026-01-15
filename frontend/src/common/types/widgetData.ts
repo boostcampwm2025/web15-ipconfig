@@ -1,4 +1,4 @@
-export type WidgetType = 'tech' | 'communication';
+export type WidgetType = 'tech' | 'COMMUNICATION';
 
 export interface WidgetPosition {
   x: number;
