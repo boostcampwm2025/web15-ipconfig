@@ -129,23 +129,20 @@ function WorkSpacePage() {
     <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
       {/* 캔버스: 화면 전체 */}
       <div className="absolute inset-0">
-        <div className="relative flex h-full overflow-hidden">
-          <ToolBar onTechStackClick={emitCreateWidget} />
-          <main className="relative h-full w-full flex-1">
-            <CanvasContent
-              camera={camera}
-              containerRef={containerRef}
-              handlePointerDown={handlePointerDown}
-              handlePointerMove={handleCanvasPointerMove}
-              handlePointerUp={handlePointerUp}
-              isPanning={isPanning}
-              remoteCursor={remoteCursors}
-              widgets={widgets}
-              emitUpdateWidget={emitUpdateWidget}
-              emitDeleteWidget={emitDeleteWidget}
-            />
-          </main>
-        </div>
+        <main className="relative h-full w-full flex-1">
+          <CanvasContent
+            camera={camera}
+            containerRef={containerRef}
+            handlePointerDown={handlePointerDown}
+            handlePointerMove={handleCanvasPointerMove}
+            handlePointerUp={handlePointerUp}
+            isPanning={isPanning}
+            remoteCursor={remoteCursors}
+            widgets={widgets}
+            emitUpdateWidget={emitUpdateWidget}
+            emitDeleteWidget={emitDeleteWidget}
+          />
+        </main>
       </div>
 
       {/* 헤더: 최상단 오버레이 */}
@@ -158,6 +155,9 @@ function WorkSpacePage() {
       {/* HUD 레이어 */}
       <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
         <div className="pointer-events-auto">
+          <div className="absolute top-0 left-0">
+            <ToolBar onTechStackClick={emitCreateWidget} />
+          </div>
           <AnimatePresence mode="wait">
             {isSidebarExpanded ? (
               <motion.div
@@ -206,11 +206,6 @@ function WorkSpacePage() {
         onClose={() => setIsExportModalOpen(false)}
         markdown={exportMarkdown}
       />
-      <div className="pointer-events-none absolute top-0 left-0 z-50 w-full">
-        <div className="pointer-events-auto">
-          <WorkspaceHeader onExportClick={handleExportClick} />
-        </div>
-      </div>
     </div>
   );
 }
