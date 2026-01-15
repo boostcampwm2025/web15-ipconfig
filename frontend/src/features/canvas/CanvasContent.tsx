@@ -85,8 +85,6 @@ function CanvasContent({
             height: 600,
             zIndex: 1,
           }}
-          emitDeleteWidget={emitDeleteWidget}
-          emitUpdateWidget={emitUpdateWidget}
         />
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (

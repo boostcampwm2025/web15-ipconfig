@@ -3,7 +3,7 @@ import WidgetContainer from '@/common/components/widget/WidgetContainer';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
-import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
+import type { WidgetContent } from '@/common/types/widgetData';
 import WidgetHeader from '@/common/components/widget/WidgetHeader';
 import { LuUsers } from 'react-icons/lu';
 
@@ -34,14 +34,10 @@ interface CollaborationWidgetProps {
     height: number;
     zIndex: number;
   };
-  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
-  emitDeleteWidget: (widgetId: string) => void;
 }
 export default function CollaborationWidget({
   widgetId,
   data,
-  emitDeleteWidget,
-  emitUpdateWidget,
 }: CollaborationWidgetProps) {
   const [prRules, setPrRules] = useState<CollaborationState['prRules']>({
     activeVersion: 'semantic',

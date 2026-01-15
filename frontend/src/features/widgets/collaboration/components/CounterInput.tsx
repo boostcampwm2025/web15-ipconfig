@@ -4,12 +4,14 @@ export default function CounterInput({
   editValue,
   setEditValue,
   isTime,
+  max,
 }: {
   value: number;
   setValue: (value: number) => void;
   editValue: boolean;
   setEditValue: (value: boolean) => void;
   isTime?: boolean;
+  max: number;
 }) {
   const handleEnter = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -36,6 +38,7 @@ export default function CounterInput({
           onChange={(e) => {
             const value = e.target.value;
             if (/^\d*$/.test(value)) {
+              if (max && Number(value) > max) return;
               setValue(Number(value));
             }
           }}
@@ -54,7 +57,7 @@ export default function CounterInput({
 
       <button
         className="hover:bg-primary rounded bg-gray-700 px-2 py-1 text-gray-200 hover:text-black"
-        onClick={() => setValue(value + 1)}
+        onClick={() => setValue(max ? Math.min(max, value + 1) : value + 1)}
       >
         +
       </button>

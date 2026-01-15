@@ -33,6 +33,7 @@ export default function CodeReviewPolicy({
           editValue={editHours}
           setEditValue={setEditHours}
           isTime={true}
+          max={100}
         />
       </div>
 
@@ -43,6 +44,7 @@ export default function CodeReviewPolicy({
           setValue={(value) => onUpdate('approves', value as number)}
           editValue={editApproves}
           setEditValue={setEditApproves}
+          max={100}
         />
       </div>
 

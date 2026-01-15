@@ -55,6 +55,7 @@ export default function TaskWorkflow({ data, onUpdate }: TaskWorkflowProps) {
           setValue={(value) => onUpdate('cycleValue', value as number)}
           editValue={editCycleValue}
           setEditValue={setEditCycleValue}
+          max={100}
         />
 
         <Select
