@@ -51,10 +51,7 @@ export function CommunicationSection({
               value={data[item.key]}
               onValueChange={(value) => onChange(item.key, value)}
             >
-              <SelectTrigger
-                onPointerDown={(e) => e.stopPropagation()}
-                className="h-8 w-full text-xs font-medium"
-              >
+              <SelectTrigger className="h-8 w-full text-xs font-medium">
                 <SelectValue placeholder="선택해주세요" />
               </SelectTrigger>
               <SelectContent>

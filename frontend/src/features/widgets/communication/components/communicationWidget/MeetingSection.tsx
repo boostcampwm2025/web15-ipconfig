@@ -39,10 +39,7 @@ export function MeetingSection({ data, onChange }: MeetingSectionProps) {
             value={data.noMeetingDay}
             onValueChange={(value) => onChange('noMeetingDay', value)}
           >
-            <SelectTrigger
-              onPointerDown={(e) => e.stopPropagation()}
-              className="h-9 w-full text-xs font-medium"
-            >
+            <SelectTrigger className="h-9 w-full text-xs font-medium">
               <SelectValue placeholder="선택해주세요" />
             </SelectTrigger>
             <SelectContent>
@@ -67,11 +64,9 @@ export function MeetingSection({ data, onChange }: MeetingSectionProps) {
             return (
               <button
                 key={style}
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   onChange('feedbackStyle', style);
                 }}
-                onPointerDown={(e) => e.stopPropagation()}
                 className={cn(
                   'relative flex h-14 flex-col items-center justify-center gap-1 rounded-lg border transition-all duration-200',
                   isSelected

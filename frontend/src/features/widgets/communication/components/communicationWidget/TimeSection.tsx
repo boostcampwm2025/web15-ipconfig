@@ -28,10 +28,7 @@ export function TimeSection({ data, onChange }: TimeSectionProps) {
           value={data.coreTimeStart}
           onValueChange={(value) => onChange('coreTimeStart', value)}
         >
-          <SelectTrigger
-            onPointerDown={(e) => e.stopPropagation()}
-            className="h-8 flex-1 text-xs font-medium"
-          >
+          <SelectTrigger className="h-8 flex-1 text-xs font-medium">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -53,10 +50,7 @@ export function TimeSection({ data, onChange }: TimeSectionProps) {
           value={data.coreTimeEnd}
           onValueChange={(value) => onChange('coreTimeEnd', value)}
         >
-          <SelectTrigger
-            onPointerDown={(e) => e.stopPropagation()}
-            className="h-8 flex-1 text-xs font-medium"
-          >
+          <SelectTrigger className="h-8 flex-1 text-xs font-medium">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

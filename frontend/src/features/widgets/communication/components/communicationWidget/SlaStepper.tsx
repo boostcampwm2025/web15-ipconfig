@@ -17,12 +17,10 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
   }, [isEditing]);
 
   const handleDecrement = (e: React.MouseEvent) => {
-    e.stopPropagation();
     if (responseTime > 1) onChange(responseTime - 1);
   };
 
   const handleIncrement = (e: React.MouseEvent) => {
-    e.stopPropagation();
     if (responseTime < 48) onChange(responseTime + 1);
   };
 
@@ -43,7 +41,6 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
       <div className="flex items-center justify-between rounded-lg border p-3">
         <button
           onClick={handleDecrement}
-          onPointerDown={(e) => e.stopPropagation()}
           className="hover:bg-accent hover:text-accent-foreground text-muted-foreground/80 flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-50"
           disabled={responseTime <= 1}
         >
@@ -52,11 +49,9 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
 
         <div
           className="relative min-w-12 cursor-pointer text-center"
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             setIsEditing(true);
           }}
-          onPointerDown={(e) => e.stopPropagation()}
         >
           {isEditing ? (
             <input
@@ -65,7 +60,6 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
               value={responseTime}
               onChange={handleChange}
               onBlur={handleBlur}
-              onKeyDown={(e) => e.stopPropagation()}
               className="bg-background text-foreground focus:ring-primary/20 w-16 rounded-md border px-1 py-1 text-center text-sm font-bold focus:ring-2 focus:outline-none"
               min={1}
               max={48}
@@ -82,7 +76,6 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
 
         <button
           onClick={handleIncrement}
-          onPointerDown={(e) => e.stopPropagation()}
           className="hover:bg-accent hover:text-accent-foreground text-muted-foreground/80 flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-50"
           disabled={responseTime >= 48}
         >
