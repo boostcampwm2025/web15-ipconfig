@@ -232,6 +232,23 @@ export const useSocket = ({
     const socket = socketRef.current;
     if (!socket) return;
 
+    // 드래그한 클라이언트는 widget:moved 브로드캐스트를 받지 않으므로
+    // 로컬 상태를 먼저 낙관적으로 업데이트한다.
+    setWidgets((prev) => {
+      const next = { ...prev };
+      if (next[widgetId]) {
+        next[widgetId] = {
+          ...next[widgetId],
+          x: x ?? next[widgetId].x,
+          y: y ?? next[widgetId].y,
+          width: width ?? next[widgetId].width,
+          height: height ?? next[widgetId].height,
+          zIndex: zIndex ?? next[widgetId].zIndex,
+        };
+      }
+      return next;
+    });
+
     socket.emit('widget:move', {
       widgetId,
       data: { x, y, width, height, zIndex },

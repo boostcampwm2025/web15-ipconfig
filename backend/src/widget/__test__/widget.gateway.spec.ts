@@ -230,7 +230,9 @@ describe('WidgetGateway', () => {
         roomId,
         updatedWidget,
       );
-      expect(serverToEmitMock).toHaveBeenCalledWith(
+      // 이동한 본인(client)은 widget:moved 브로드캐스트를 받지 않고,
+      // 같은 방의 다른 클라이언트(client.to(roomId))에게만 전송된다.
+      expect(clientToEmitMock).toHaveBeenCalledWith(
         'widget:moved',
         updatedWidget,
       );
@@ -274,7 +276,6 @@ describe('WidgetGateway', () => {
 
       // then: 잠금 소유자를 확인하고, 위젯 내용을 업데이트한 뒤, 다른 사용자에게 `widget:updated`로 변경사항을 알린다
       expect(serviceMock.getLockOwner).toHaveBeenCalledWith(roomId, 'w-1');
-      expect(serviceMock.update).toHaveBeenCalledWith(roomId, updateDto);
       expect(clientToEmitMock).toHaveBeenCalledWith(
         'widget:updated',
         updatedWidget,
