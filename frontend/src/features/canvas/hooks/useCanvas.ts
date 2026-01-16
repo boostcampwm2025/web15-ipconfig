@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ZOOM_CONFIG } from '../constants/zoom';
 
 import { CANVAS_CONFIG } from '../constants/canvas';
+import { getPositionInCanvas } from '@/common/lib/canvas';
 
 export default function useCanvas() {
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, scale: 1 });
@@ -97,16 +98,23 @@ export default function useCanvas() {
   // World 좌표로 변환
   const getMousePosition = (e: React.PointerEvent | React.MouseEvent) => {
     if (!containerRef.current) return { x: 0, y: 0 };
-
     const rect = containerRef.current.getBoundingClientRect();
 
-    const canvasX = e.clientX - rect.left;
-    const canvasY = e.clientY - rect.top;
+    // 1단계: 뷰포트 기준 마우스 좌표
+    const mouseXInViewport = e.clientX;
+    const mouseYInViewport = e.clientY;
+    const mousePoint = { x: mouseXInViewport, y: mouseYInViewport };
 
-    const worldX = (canvasX - camera.x) / camera.scale;
-    const worldY = (canvasY - camera.y) / camera.scale;
+    // 2단계: 캔버스 컨테이너 기준 마우스 좌표
+    const containerPoint = { x: rect.left, y: rect.top };
 
-    return { x: worldX, y: worldY };
+    const mousePosition = getPositionInCanvas(
+      mousePoint,
+      containerPoint,
+      camera,
+    );
+
+    return mousePosition;
   };
 
   useEffect(() => {
