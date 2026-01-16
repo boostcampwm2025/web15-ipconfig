@@ -106,7 +106,7 @@ function CanvasContent({
         />
         <CommunicationWidget
           id="communication"
-          position={{ x: 800, y: 1000 }}
+          position={{ x: 800, y: 1200 }}
           width={600}
           onDelete={() => emitDeleteWidget('communication')}
         />
