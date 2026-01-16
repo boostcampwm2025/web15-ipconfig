@@ -1,4 +1,4 @@
-export interface Point {
+export interface Position {
   x: number;
   y: number;
 }
