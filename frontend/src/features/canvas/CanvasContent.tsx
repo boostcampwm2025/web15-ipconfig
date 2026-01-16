@@ -11,6 +11,7 @@ import type {
 import CollaborationWidget from '../widgets/collaboration/components/CollaborationWidget';
 import CursorWithName from '@/common/components/CursorWithName';
 import { cn } from '@/common/lib/utils';
+import { CanvasProvider } from './context/CanvasContext';
 
 interface CanvasContainerProps {
   camera: Camera;
@@ -64,52 +65,54 @@ function CanvasContent({
         }}
         className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
       >
-        {/* 위젯 렌더링 */}
-        {Object.entries(widgets).map(([widgetId, widget]) => {
-          switch (widget.content.widgetType) {
-            case 'TECH_STACK':
-              return (
-                <TechStackWidget
-                  key={widgetId}
-                  widgetId={widgetId}
-                  data={widget}
-                  emitDeleteWidget={emitDeleteWidget}
-                  emitUpdateWidget={emitUpdateWidget}
-                  emitMoveWidget={emitMoveWidget}
-                />
-              );
-            case 'GIT_CONVENTION':
-              return (
-                <GitConventionWidget
-                  key={widgetId}
-                  widgetId={widgetId}
-                  data={widget}
-                  emitDeleteWidget={emitDeleteWidget}
-                  emitUpdateWidget={emitUpdateWidget}
-                  emitMoveWidget={emitMoveWidget}
-                />
-              );
-            default:
-              return null;
-          }
-        })}
-        <CollaborationWidget
-          key={'GROUNDRULE_COLLABORATION'}
-          widgetId={'GROUNDRULE_COLLABORATION'}
-          data={{
-            x: 300,
-            y: 400,
-            width: 850,
-            height: 600,
-            zIndex: 1,
-          }}
-        />
-        <CommunicationWidget
-          id="communication"
-          position={{ x: 800, y: 1000 }}
-          width={600}
-          onDelete={() => emitDeleteWidget('communication')}
-        />
+        <CanvasProvider scale={camera.scale}>
+          {/* 위젯 렌더링 */}
+          {Object.entries(widgets).map(([widgetId, widget]) => {
+            switch (widget.content.widgetType) {
+              case 'TECH_STACK':
+                return (
+                  <TechStackWidget
+                    key={widgetId}
+                    widgetId={widgetId}
+                    data={widget}
+                    emitDeleteWidget={emitDeleteWidget}
+                    emitUpdateWidget={emitUpdateWidget}
+                    emitMoveWidget={emitMoveWidget}
+                  />
+                );
+              case 'GIT_CONVENTION':
+                return (
+                  <GitConventionWidget
+                    key={widgetId}
+                    widgetId={widgetId}
+                    data={widget}
+                    emitDeleteWidget={emitDeleteWidget}
+                    emitUpdateWidget={emitUpdateWidget}
+                    emitMoveWidget={emitMoveWidget}
+                  />
+                );
+              default:
+                return null;
+            }
+          })}
+          <CollaborationWidget
+            key={'GROUNDRULE_COLLABORATION'}
+            widgetId={'GROUNDRULE_COLLABORATION'}
+            data={{
+              x: 300,
+              y: 400,
+              width: 850,
+              height: 600,
+              zIndex: 1,
+            }}
+          />
+          <CommunicationWidget
+            id="communication"
+            position={{ x: 800, y: 1000 }}
+            width={600}
+            onDelete={() => emitDeleteWidget('communication')}
+          />
+        </CanvasProvider>
         {/* 커서 렌더링 */}
         {Object.values(remoteCursor).map((cursor) => (
           <div
