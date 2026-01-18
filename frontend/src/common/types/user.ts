@@ -1,11 +1,15 @@
 export interface User {
-  id: string;
-  name: string;
+  id: string; // 유저 ID
+  nickname: string; // 유저 닉네임
+  color: string; // 커서 색깔
+}
+
+// TODO: 유저 카드를 위한 타입 (추후 수정)
+export interface UserExtended extends User {
   role: string;
-  color: string; // Tailwind color class (e.g. 'bg-purple-500')
-  textColor: string; // e.g. 'text-purple-500'
+  textColor: string;
   style: string;
   time: string;
   status: string;
-  activity: number[]; // Array for graph height
+  activity: number[];
 }

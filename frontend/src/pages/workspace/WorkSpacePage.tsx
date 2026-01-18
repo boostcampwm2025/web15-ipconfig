@@ -1,9 +1,9 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import type { User } from '@/common/types/user';
+import type { UserExtended } from '@/common/types/user';
 
-import { getRandomColor } from '@/utils/getRandomColor';
+import { getRandomColor } from '@/utils/color';
 import { useSocket } from '@/common/hooks/useSocket';
 import { useMarkdown } from '@/common/hooks/useMarkdown';
 import CanvasContent from '@/features/canvas/CanvasContent';
@@ -29,7 +29,7 @@ function WorkSpacePage() {
 
   // UI State
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [hoveredUser, setHoveredUser] = useState<User | null>(null);
+  const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
@@ -49,23 +49,14 @@ function WorkSpacePage() {
   // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
   const workspaceId = 'w1';
 
-  // 유저는 어떻게 처리해야 할까요..? 일단 커서를 구현하면서 임시로 만들어놨는데
+  // TODO: 유저 생성 (ID는 임시로 uuid로 프론트엣어생성)
   const currentUser = useState(() => {
-    const generateUUID = () => {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
-    };
-
     const randomNickname = Math.floor(Math.random() * 10000);
 
     return {
-      id: generateUUID(),
+      id: crypto.randomUUID(),
       nickname: `임시 유저 ${randomNickname}`,
       color: getRandomColor(),
-      backgroundColor: getRandomColor(),
     };
   })[0];
 
@@ -99,7 +90,7 @@ function WorkSpacePage() {
   };
 
   // User Hover Logic
-  const handleUserHover = (e: React.MouseEvent, user: User) => {
+  const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setHoverPosition({
       top: Math.min(rect.top, window.innerHeight - 250),

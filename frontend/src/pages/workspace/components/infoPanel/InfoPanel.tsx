@@ -1,4 +1,4 @@
-import type { User } from '@/common/types/user';
+import type { UserExtended } from '@/common/types/user';
 import TeamMemberList from './TeamMemberList';
 import AgendaTimeline from './AgendaTimeline';
 import { LuChevronRight, LuChevronLeft } from 'react-icons/lu';
@@ -6,7 +6,7 @@ import { LuX } from 'react-icons/lu';
 import { Button } from '@/common/components/shadcn/button';
 
 interface InfoPanelProps {
-  onUserHover: (e: React.MouseEvent, user: User) => void;
+  onUserHover: (e: React.MouseEvent, user: UserExtended) => void;
   onUserLeave: () => void;
   onToggle: () => void;
 }

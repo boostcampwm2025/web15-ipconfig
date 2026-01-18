@@ -17,10 +17,6 @@ const meta = {
       control: 'color',
       description: '커서 색상',
     },
-    backgroundColor: {
-      control: 'color',
-      description: '커서 배경 색상',
-    },
     x: {
       control: 'number',
       description: 'X 좌표',
@@ -37,9 +33,17 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    nickname: 'User1',
+    nickname: '행복한 너구리',
     color: '#3B82F6',
-    backgroundColor: '#FFFFFF',
+    x: 0,
+    y: 0,
+  },
+};
+
+export const LightBackground: Story = {
+  args: {
+    nickname: '바쁜 원숭이',
+    color: '#D6F8C3',
     x: 0,
     y: 0,
   },
@@ -47,9 +51,8 @@ export const Default: Story = {
 
 export const RedCursor: Story = {
   args: {
-    nickname: 'RedUser',
+    nickname: '즐거운 고양이',
     color: '#EF4444',
-    backgroundColor: '#FEE2E2',
     x: 0,
     y: 0,
   },
@@ -57,9 +60,8 @@ export const RedCursor: Story = {
 
 export const GreenCursor: Story = {
   args: {
-    nickname: 'GreenUser',
+    nickname: '편안한 강아지',
     color: '#10B981',
-    backgroundColor: '#D1FAE5',
     x: 0,
     y: 0,
   },
@@ -67,9 +69,8 @@ export const GreenCursor: Story = {
 
 export const PurpleCursor: Story = {
   args: {
-    nickname: 'PurpleUser',
+    nickname: '자유로운 토끼',
     color: '#8B5CF6',
-    backgroundColor: '#EDE9FE',
     x: 0,
     y: 0,
   },

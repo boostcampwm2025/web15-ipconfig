@@ -27,7 +27,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const socketId = 's1';
@@ -60,7 +59,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const socketId = 's1';
@@ -109,7 +107,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const socketId = 's1';
@@ -136,7 +133,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const socketId = 's1';
@@ -174,7 +170,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const payload2: JoinUserDTO = {
@@ -183,7 +178,6 @@ describe('WorkspaceService', () => {
           id: 'u2',
           nickname: 'user2',
           color: '#FF0000',
-          backgroundColor: '#ffffff',
         },
       };
       service.joinUser(payload1, 's1');
@@ -206,7 +200,6 @@ describe('WorkspaceService', () => {
           id: 'u1',
           nickname: 'user1',
           color: '#000000',
-          backgroundColor: '#ffffff',
         },
       };
       const payload2: JoinUserDTO = {
@@ -215,7 +208,6 @@ describe('WorkspaceService', () => {
           id: 'u2',
           nickname: 'user2',
           color: '#FF0000',
-          backgroundColor: '#ffffff',
         },
       };
       service.joinUser(payload1, 's1');

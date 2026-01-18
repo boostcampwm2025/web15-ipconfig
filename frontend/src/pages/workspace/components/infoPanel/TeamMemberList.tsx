@@ -1,9 +1,9 @@
 import { LuShare2 } from 'react-icons/lu';
-import type { User } from '@/common/types/user';
+import type { UserExtended } from '@/common/types/user';
 import { INITIAL_USERS } from '@/common/mocks/users';
 
 interface TeamMemberListProps {
-  onUserHover: (e: React.MouseEvent, user: User) => void;
+  onUserHover: (e: React.MouseEvent, user: UserExtended) => void;
   onUserLeave: () => void;
 }
 
@@ -23,34 +23,32 @@ function TeamMemberList({ onUserHover, onUserLeave }: TeamMemberListProps) {
             초대하기
           </div>
         </button>
-        <div className="overflow-y-auto">
-          {INITIAL_USERS.map((user) => (
-            <li
-              key={user.id}
-              className="group relative flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-700"
-              onMouseEnter={(e) => onUserHover(e, user)}
-              onMouseLeave={onUserLeave}
+        {INITIAL_USERS.map((user) => (
+          <li
+            key={user.id}
+            className="group relative flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-700"
+            onMouseEnter={(e) => onUserHover(e, user)}
+            onMouseLeave={onUserLeave}
+          >
+            <div
+              className={`h-8 w-8 rounded-full ${user.color} flex items-center justify-center text-xs font-bold text-gray-900`}
             >
+              {user.nickname[0]}
+            </div>
+            <div>
+              <div className="text-sm font-bold text-gray-200">
+                {user.nickname}
+              </div>
               <div
-                className={`h-8 w-8 rounded-full ${user.color} flex items-center justify-center text-xs font-bold text-gray-900`}
+                className={`text-xs ${
+                  user.status === '준비중' ? 'text-gray-500' : user.textColor
+                }`}
               >
-                {user.name[0]}
+                {user.status}
               </div>
-              <div>
-                <div className="text-sm font-bold text-gray-200">
-                  {user.name}
-                </div>
-                <div
-                  className={`text-xs ${
-                    user.status === '준비중' ? 'text-gray-500' : user.textColor
-                  }`}
-                >
-                  {user.status}
-                </div>
-              </div>
-            </li>
-          ))}
-        </div>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

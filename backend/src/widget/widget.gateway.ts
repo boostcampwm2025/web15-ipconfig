@@ -196,7 +196,7 @@ export class WidgetGateway {
       updateLayoutDto,
     );
 
-    this.server.to(roomId).emit('widget:moved', updatedWidget);
+    client.to(roomId).emit('widget:moved', updatedWidget);
 
     return updatedWidget;
   }

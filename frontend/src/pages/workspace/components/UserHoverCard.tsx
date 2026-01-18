@@ -1,8 +1,8 @@
 import { LuClock, LuZap } from 'react-icons/lu';
-import type { User } from '@/common/types/user';
+import type { UserExtended } from '@/common/types/user';
 
 interface UserHoverCardProps {
-  user: User;
+  user: UserExtended;
   position: { top: number; left: number };
 }
 
@@ -19,10 +19,10 @@ function UserHoverCard({ user, position }: UserHoverCardProps) {
         <div
           className={`h-12 w-12 rounded-full ${user.color} flex items-center justify-center text-lg font-bold text-gray-900`}
         >
-          {user.name[0]}
+          {user.nickname[0]}
         </div>
         <div>
-          <h4 className="text-lg font-bold text-white">{user.name}</h4>
+          <h4 className="text-lg font-bold text-white">{user.nickname}</h4>
           <span className="rounded-full border border-gray-600 bg-gray-700 px-2 py-0.5 text-xs text-blue-400">
             {user.role}
           </span>

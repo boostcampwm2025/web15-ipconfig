@@ -42,7 +42,6 @@ export class WorkspaceService {
       id: payload.user.id,
       nickname: payload.user.nickname,
       color: payload.user.color,
-      backgroundColor: payload.user.backgroundColor,
     };
 
     this.userSessions.set(socketId, {
