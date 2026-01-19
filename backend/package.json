@@ -28,10 +28,14 @@
     "@nestjs/websockets": "^11.1.9",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
+    "ioredis": "^5.9.2",
     "nestjs-asyncapi": "^1.4.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.28",
+    "y-redis": "^1.0.3",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.29"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
