@@ -31,7 +31,20 @@ services:
       - /app/node_modules # <--- [핵심 수정] 이미지 내부의 node_modules를 보존합니다.
     networks:
       - web-os-network
+  # Redis Service 추가
+  redis:
+    container_name: teamConfig-redis
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - web-os-network
 
 networks:
   web-os-network:
     driver: bridge
+
+volumes:
+  redis_data:
