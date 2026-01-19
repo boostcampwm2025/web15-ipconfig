@@ -32,5 +32,15 @@ export default tseslint.config(
       "prettier/prettier": "error",
       '@typescript-eslint/no-unused-vars': 'warn',
     },
+
+  }, {
+  // 테스트 파일 대상으로 기준을 낮게 잡았습니다
+  files: ['**/*.spec.ts', '**/*.e2e-spec.ts'],
+  rules: {
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
+}
 );
