@@ -1,13 +1,9 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import type { UserExtended } from '@/common/types/user';
 
-import { getRandomColor } from '@/utils/color';
-import { useSocket } from '@/common/hooks/useSocket';
 import { useMarkdown } from '@/common/hooks/useMarkdown';
-import CanvasContent from '@/features/canvas/CanvasContent';
-import ToolBar from '@/pages/workspace/components/toolbar/ToolBar';
 import type { Cursor } from '@/common/types/cursor';
 import type { WidgetData } from '@/common/types/widgetData';
 
@@ -15,11 +11,10 @@ import type { WidgetData } from '@/common/types/widgetData';
 import WorkspaceHeader from './components/WorkspaceHeader';
 import RightSidebar from './components/infoPanel/InfoPanel';
 import UserHoverCard from './components/UserHoverCard';
-import ZoomControls from './components/ZoomControls';
 import ExportModal from './components/ExportModal';
-import useCanvas from '@/features/canvas/hooks/useCanvas';
 import CompactPanel from './components/infoPanel/CompactPanel';
 import { INITIAL_USERS } from '@/common/mocks/users';
+import Canvas from '@/common/components/canvas/Canvas';
 
 function WorkSpacePage() {
   const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
@@ -33,16 +28,16 @@ function WorkSpacePage() {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
-  const {
-    camera,
-    containerRef,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    handleZoomButton,
-    isPanning,
-    getMousePosition,
-  } = useCanvas();
+  // const {
+  //   camera,
+  //   containerRef,
+  //   handlePointerDown,
+  //   handlePointerMove,
+  //   handlePointerUp,
+  //   handleZoomButton,
+  //   isPanning,
+  //   getMousePosition,
+  // } = useCanvas();
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
 
@@ -50,44 +45,44 @@ function WorkSpacePage() {
   const workspaceId = 'w1';
 
   // TODO: 유저 생성 (ID는 임시로 uuid로 프론트엣어생성)
-  const currentUser = useState(() => {
-    const randomNickname = Math.floor(Math.random() * 10000);
+  // const currentUser = useState(() => {
+  //   const randomNickname = Math.floor(Math.random() * 10000);
 
-    return {
-      id: crypto.randomUUID(),
-      nickname: `임시 유저 ${randomNickname}`,
-      color: getRandomColor(),
-    };
-  })[0];
+  //   return {
+  //     id: crypto.randomUUID(),
+  //     nickname: `임시 유저 ${randomNickname}`,
+  //     color: getRandomColor(),
+  //   };
+  // })[0];
 
   // ----- WebSocket 초기화 & 이벤트 바인딩 -----
-  const {
-    emitCursorMove,
-    emitCreateWidget,
-    emitUpdateWidget,
-    emitDeleteWidget,
-    emitMoveWidget,
-  } = useSocket({
-    workspaceId,
-    currentUser,
-    setRemoteCursors,
-    setWidgets,
-  });
+  // const {
+  //   emitCursorMove,
+  //   emitCreateWidget,
+  //   emitUpdateWidget,
+  //   emitDeleteWidget,
+  //   emitMoveWidget,
+  // } = useSocket({
+  //   workspaceId,
+  //   currentUser,
+  //   setRemoteCursors,
+  //   setWidgets,
+  // });
 
   // 커서 이동 스로틀링을 위한 ref
-  const lastEmitRef = useRef<number>(0);
+  // const lastEmitRef = useRef<number>(0);
 
-  const handleCanvasPointerMove = (e: React.PointerEvent) => {
-    handlePointerMove(e);
+  // const handleCanvasPointerMove = (e: React.PointerEvent) => {
+  //   handlePointerMove(e);
 
-    const now = performance.now();
-    if (now - lastEmitRef.current < 30) return;
-    lastEmitRef.current = now;
+  //   const now = performance.now();
+  //   if (now - lastEmitRef.current < 30) return;
+  //   lastEmitRef.current = now;
 
-    const { x: worldX, y: worldY } = getMousePosition(e);
+  //   const { x: worldX, y: worldY } = getMousePosition(e);
 
-    emitCursorMove(worldX, worldY);
-  };
+  //   emitCursorMove(worldX, worldY);
+  // };
 
   // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
@@ -118,19 +113,7 @@ function WorkSpacePage() {
       {/* 캔버스: 화면 전체 */}
       <div className="absolute inset-0">
         <main className="relative h-full w-full flex-1">
-          <CanvasContent
-            camera={camera}
-            containerRef={containerRef}
-            handlePointerDown={handlePointerDown}
-            handlePointerMove={handleCanvasPointerMove}
-            handlePointerUp={handlePointerUp}
-            isPanning={isPanning}
-            remoteCursor={remoteCursors}
-            widgets={widgets}
-            emitUpdateWidget={emitUpdateWidget}
-            emitDeleteWidget={emitDeleteWidget}
-            emitMoveWidget={emitMoveWidget}
-          />
+          <Canvas remoteCursors={remoteCursors} widgets={widgets} />
         </main>
       </div>
 
@@ -145,7 +128,7 @@ function WorkSpacePage() {
       <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
         <div className="pointer-events-auto">
           <div className="absolute top-0 left-0">
-            <ToolBar onToolClick={emitCreateWidget} />
+            {/* <ToolBar onToolClick={emitCreateWidget} /> */}
           </div>
           <AnimatePresence mode="sync">
             {isSidebarExpanded ? (
@@ -183,7 +166,7 @@ function WorkSpacePage() {
             )}
           </AnimatePresence>
 
-          <ZoomControls handleZoomButton={handleZoomButton} camera={camera} />
+          {/* <ZoomControls handleZoomButton={handleZoomButton} camera={camera} /> */}
         </div>
       </div>
 

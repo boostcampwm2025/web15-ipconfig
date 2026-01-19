@@ -4,7 +4,7 @@ import type {
   TechStackContentDto,
   MoveWidgetData,
 } from '@/common/types/widgetData';
-import WidgetShell from '@/common/components/widget/WidgetShell';
+import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuLayers } from 'react-icons/lu';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
@@ -17,24 +17,15 @@ import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/u
 interface TechStackWidgetProps {
   widgetId: string;
   data: WidgetData;
-  emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
-  emitDeleteWidget: (widgetId: string) => void;
-  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
 }
 
-function TechStackWidget({
-  widgetId,
-  data,
-  emitUpdateWidget,
-  emitDeleteWidget,
-  emitMoveWidget,
-}: TechStackWidgetProps) {
+function TechStackWidget({ widgetId, data }: TechStackWidgetProps) {
   const techStackContent = data.content as TechStackContentDto;
 
   const { selectedTechStacks, isModalOpen, actions } = useTechStack({
     data: techStackContent,
     onDataChange: (nextData) => {
-      emitUpdateWidget(widgetId, nextData);
+      // emitUpdateWidget(widgetId, nextData);
     },
   });
   const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
@@ -44,13 +35,11 @@ function TechStackWidget({
       collisionDetection={pointerWithin}
       onDragEnd={actions.handleDragEnd}
     >
-      <WidgetShell
+      <WidgetFrame
         widgetId={widgetId}
         data={data}
         title="기술 스택"
         icon={<LuLayers className="text-primary" size={18} />}
-        emitDeleteWidget={emitDeleteWidget}
-        emitMoveWidget={emitMoveWidget}
       >
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2 font-bold">
@@ -81,7 +70,7 @@ function TechStackWidget({
             onModalClose={actions.closeModal}
           />
         )}
-      </WidgetShell>
+      </WidgetFrame>
     </DndContext>
   );
 }

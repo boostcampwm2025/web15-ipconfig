@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useRef, useState } from 'react';
-import CanvasContent from './CanvasContent';
+import CanvasContent from './Canvas';
 import type { Camera } from '@/common/types/camera';
 import type { Cursor } from '@/common/types/cursor';
 

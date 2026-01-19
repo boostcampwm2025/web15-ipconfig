@@ -4,12 +4,13 @@ import type {
   GitConventionContentDto,
   MoveWidgetData,
 } from '@/common/types/widgetData';
-import WidgetShell from '@/common/components/widget/WidgetShell';
+import WidgetShell from '@/common/components/widgetFrame/WidgetFrame';
 import { LuGitBranch } from 'react-icons/lu';
 import { useGitConvention } from '@/features/widgets/gitConvention/hooks/useGitConvention';
 import { StrategySelector } from './StrategySelector';
 import { BranchRules } from './BranchRules';
 import { CommitStyle } from './CommitStyle';
+import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 
 interface GitConventionWidgetProps {
   widgetId: string;
@@ -22,9 +23,7 @@ interface GitConventionWidgetProps {
 function GitConventionWidget({
   widgetId,
   data,
-  emitDeleteWidget,
   emitUpdateWidget,
-  emitMoveWidget,
 }: GitConventionWidgetProps) {
   // GitConventionContentDto 임을 명시하고, 이후에 data 사용
   const gitConventionContent = data.content as GitConventionContentDto;
@@ -41,13 +40,11 @@ function GitConventionWidget({
     });
 
   return (
-    <WidgetShell
+    <WidgetFrame
       widgetId={widgetId}
       data={data}
       title="Git 컨벤션"
       icon={<LuGitBranch className="text-primary" size={18} />}
-      emitDeleteWidget={emitDeleteWidget}
-      emitMoveWidget={emitMoveWidget}
     >
       <section className="relative flex h-full flex-col gap-4 p-1">
         <StrategySelector
@@ -87,7 +84,7 @@ function GitConventionWidget({
           </div>
         )}
       </section>
-    </WidgetShell>
+    </WidgetFrame>
   );
 }
 

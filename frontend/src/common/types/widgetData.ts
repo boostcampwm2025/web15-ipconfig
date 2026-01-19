@@ -1,3 +1,4 @@
+import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
@@ -13,7 +14,8 @@ export type WidgetContent =
   | TechStackContentDto
   | PostItContentDto
   | GroundRuleContentDto
-  | GitConventionContentDto;
+  | GitConventionContentDto
+  | CommunicationContentDto;
 
 export interface TechStackContentDto {
   widgetType: WidgetType;
@@ -37,6 +39,10 @@ export interface GitConventionContentDto {
   data: GitConventionData;
 }
 
+export interface CommunicationContentDto {
+  widgetType: WidgetType;
+  data: CommunicationData;
+}
 export interface WidgetData {
   x: number;
   y: number;
@@ -45,6 +51,8 @@ export interface WidgetData {
   zIndex?: number;
   content: WidgetContent;
 }
+
+export type Widgets = Record<string, WidgetData>;
 
 export interface CreateWidgetData {
   widgetId: string;

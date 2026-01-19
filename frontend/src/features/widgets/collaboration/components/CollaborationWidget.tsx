@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import WidgetContainer from '@/common/components/widget/WidgetContainer';
+import WidgetContainer from '@/common/components/widgetFrame/WidgetContainer';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
 import type { WidgetContent } from '@/common/types/widgetData';
-import WidgetHeader from '@/common/components/widget/WidgetHeader';
+import WidgetHeader from '@/common/components/widgetFrame/WidgetHeader';
 import { LuUsers } from 'react-icons/lu';
 
 export interface CollaborationState {

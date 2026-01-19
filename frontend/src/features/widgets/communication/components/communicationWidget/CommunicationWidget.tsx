@@ -1,5 +1,6 @@
-import WidgetContainer from '@/common/components/widget/WidgetContainer';
-import WidgetHeader from '@/common/components/widget/WidgetHeader';
+// import WidgetContainer from '@/common/components/widgetFrame/WidgetContainer';
+// import WidgetHeader from '@/common/components/widgetFrame/WidgetHeader';
+import { WidgetFrame } from '@/common/components/widgetFrame';
 import { LuUsers } from 'react-icons/lu';
 import { useState } from 'react';
 import type { CommunicationData } from '../../types/communication';
@@ -14,7 +15,6 @@ interface CommunicationWidgetProps {
   position: { x: number; y: number };
   width: number;
   height?: number;
-  onDelete?: () => void;
 }
 
 function CommunicationWidget({
@@ -22,25 +22,27 @@ function CommunicationWidget({
   position,
   width,
   height,
-  onDelete,
 }: CommunicationWidgetProps) {
   const [data, setData] = useState<CommunicationData>(
     DEFAULT_COMMUNICATION_DATA,
   );
 
   return (
-    <WidgetContainer
-      id={id}
-      x={position.x}
-      y={position.y}
-      width={width}
-      height={height}
+    <WidgetFrame
+      widgetId={id}
+      data={{
+        x: position.x,
+        y: position.y,
+        width: width,
+        height: height,
+        content: {
+          widgetType: 'COMMUNICATION',
+          data: data,
+        },
+      }}
+      title="커뮤니케이션"
+      icon={<LuUsers className="text-primary" size={18} />}
     >
-      <WidgetHeader
-        title="커뮤니케이션"
-        icon={<LuUsers className="text-primary" size={18} />}
-        onClickDelete={onDelete || (() => {})}
-      />
       <div className="flex flex-col gap-6 p-4">
         <CommunicationSection
           data={data.communication}
@@ -87,7 +89,7 @@ function CommunicationWidget({
           }
         />
       </div>
-    </WidgetContainer>
+    </WidgetFrame>
   );
 }
 

@@ -5,3 +5,5 @@ export interface Cursor {
   x: number;
   y: number;
 }
+
+export type Cursors = Record<string, Cursor>;

@@ -1,15 +1,19 @@
-import type { Camera } from '@/common/types/camera';
-import { ZOOM_CONFIG } from '@/features/canvas/constants/zoom';
+import { ZOOM_CONFIG } from '@/common/components/canvas/constants/zoom';
 import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
+import { useCanvas } from '../context/CanvasProvider';
+import { zoomByDeltaAtPivot } from '../lib/positionTransform';
 
-interface ZoomControlsProps {
-  handleZoomButton: (delta: number) => void;
-  camera: Camera;
-}
-
-function ZoomControls({ handleZoomButton, camera }: ZoomControlsProps) {
+function ZoomControls() {
+  const { camera, setCamera, getFrameInfo } = useCanvas();
   const isMaxZoom = camera.scale >= ZOOM_CONFIG.MAX_ZOOM;
   const isMinZoom = camera.scale <= ZOOM_CONFIG.MIN_ZOOM;
+
+  const handleZoomButton = (delta: number) => {
+    const { width, height } = getFrameInfo();
+
+    const pivot = { x: width / 2, y: height / 2 };
+    setCamera((prev) => zoomByDeltaAtPivot(delta, pivot, prev));
+  };
 
   return (
     <div className="absolute bottom-6 left-6 z-50 flex items-center gap-2">

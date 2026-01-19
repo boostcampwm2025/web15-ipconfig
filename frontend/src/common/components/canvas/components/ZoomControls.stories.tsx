@@ -36,7 +36,7 @@ const renderZoomControls = (initialScale: number, label?: string) => {
         className="relative h-[100px] w-full"
         // style={{ width: '400px', height: '250px' }}
       >
-        <ZoomControls handleZoomButton={handleZoom} camera={camera} />
+        <ZoomControls />
         {label && (
           <div className="absolute top-4 left-6 text-sm text-white">
             {label}
