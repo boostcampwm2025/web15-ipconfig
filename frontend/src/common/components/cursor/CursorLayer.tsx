@@ -1,10 +1,11 @@
-import type { Cursors } from '@/common/types/cursor';
 import CursorWithName from './CursorWithName';
+import useCursorStore from '@/common/store/cusor';
 
-function CursorLayer({ remoteCursors }: { remoteCursors: Cursors }) {
+function CursorLayer() {
+  const { cursorList } = useCursorStore();
   return (
     <>
-      {Object.values(remoteCursors).map((cursor) => (
+      {cursorList.map((cursor) => (
         <div
           key={cursor.userId}
           className="pointer-events-none absolute z-100"

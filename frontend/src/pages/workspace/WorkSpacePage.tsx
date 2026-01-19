@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import type { UserExtended } from '@/common/types/user';
@@ -14,46 +14,40 @@ import UserHoverCard from './components/UserHoverCard';
 import ExportModal from './components/ExportModal';
 import CompactPanel from './components/infoPanel/CompactPanel';
 import { INITIAL_USERS } from '@/common/mocks/users';
-import Canvas from '@/common/components/canvas/Canvas';
+import { Canvas } from '@/common/components/canvas';
+import ToolBar from './components/toolbar/ToolBar';
+import { joinRoom, leaveRoom } from '@/common/api/socket';
+import { getRandomColor } from '@/utils/color';
+import { useWorkspaceInfoStore } from '@/common/store/workspace';
 
 function WorkSpacePage() {
-  const [remoteCursors, setRemoteCursors] = useState<Record<string, Cursor>>(
-    {},
-  );
-  const [widgets, setWidgets] = useState<Record<string, WidgetData>>({});
-
   // UI State
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
+  const { workspaceId } = useWorkspaceInfoStore();
 
-  // const {
-  //   camera,
-  //   containerRef,
-  //   handlePointerDown,
-  //   handlePointerMove,
-  //   handlePointerUp,
-  //   handleZoomButton,
-  //   isPanning,
-  //   getMousePosition,
-  // } = useCanvas();
+  const currentUser = useState(() => {
+    const randomNickname = Math.floor(Math.random() * 10000);
+
+    return {
+      id: crypto.randomUUID(),
+      nickname: `임시 유저 ${randomNickname}`,
+      color: getRandomColor(),
+    };
+  })[0];
+
+  useEffect(() => {
+    // 소켓 연결
+    joinRoom(currentUser);
+    return () => {
+      leaveRoom();
+    };
+  }, [currentUser]);
+
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
-
-  // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
-  const workspaceId = 'w1';
-
-  // TODO: 유저 생성 (ID는 임시로 uuid로 프론트엣어생성)
-  // const currentUser = useState(() => {
-  //   const randomNickname = Math.floor(Math.random() * 10000);
-
-  //   return {
-  //     id: crypto.randomUUID(),
-  //     nickname: `임시 유저 ${randomNickname}`,
-  //     color: getRandomColor(),
-  //   };
-  // })[0];
 
   // ----- WebSocket 초기화 & 이벤트 바인딩 -----
   // const {
@@ -71,18 +65,6 @@ function WorkSpacePage() {
 
   // 커서 이동 스로틀링을 위한 ref
   // const lastEmitRef = useRef<number>(0);
-
-  // const handleCanvasPointerMove = (e: React.PointerEvent) => {
-  //   handlePointerMove(e);
-
-  //   const now = performance.now();
-  //   if (now - lastEmitRef.current < 30) return;
-  //   lastEmitRef.current = now;
-
-  //   const { x: worldX, y: worldY } = getMousePosition(e);
-
-  //   emitCursorMove(worldX, worldY);
-  // };
 
   // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
@@ -106,14 +88,14 @@ function WorkSpacePage() {
       // 일단 alert를 사용했는데, 그냥 마크다운 내용으로 (마크다운 생성 실패)를 보내는 것도 나쁘지 않을 것 같습니다!
       alert('마크다운 생성에 실패했습니다.');
     }
-  }, [workspaceId, fetchMarkdown]);
+  }, [fetchMarkdown, workspaceId]);
 
   return (
     <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
       {/* 캔버스: 화면 전체 */}
       <div className="absolute inset-0">
         <main className="relative h-full w-full flex-1">
-          <Canvas remoteCursors={remoteCursors} widgets={widgets} />
+          <Canvas />
         </main>
       </div>
 
@@ -128,7 +110,7 @@ function WorkSpacePage() {
       <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
         <div className="pointer-events-auto">
           <div className="absolute top-0 left-0">
-            {/* <ToolBar onToolClick={emitCreateWidget} /> */}
+            <ToolBar onToolClick={() => {}} />
           </div>
           <AnimatePresence mode="sync">
             {isSidebarExpanded ? (
@@ -165,8 +147,6 @@ function WorkSpacePage() {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* <ZoomControls handleZoomButton={handleZoomButton} camera={camera} /> */}
         </div>
       </div>
 
