@@ -7,25 +7,21 @@ import type {
 import WidgetContainer from './WidgetContainer';
 import WidgetHeader from './WidgetHeader';
 
-interface WidgetShellProps {
+interface WidgetFrameProps {
   widgetId: string;
   data: WidgetData;
   title: string;
   icon: ReactNode;
-  emitDeleteWidget: (widgetId: string) => void;
-  emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
   children: ReactNode;
 }
 
-function WidgetShell({
+function WidgetFrame({
   widgetId,
   data,
   title,
   icon,
-  emitDeleteWidget,
-  emitMoveWidget,
   children,
-}: WidgetShellProps) {
+}: WidgetFrameProps) {
   return (
     <WidgetContainer
       id={widgetId}
@@ -35,16 +31,17 @@ function WidgetShell({
       height={data.height}
       zIndex={data.zIndex}
       content={data.content as WidgetContent}
-      emitMoveWidget={emitMoveWidget}
     >
       <WidgetHeader
         title={title}
         icon={icon}
-        onClickDelete={() => emitDeleteWidget(widgetId)}
+        onClickDelete={() => {
+          // emitDeleteWidget(widgetId);
+        }}
       />
       {children}
     </WidgetContainer>
   );
 }
 
-export default WidgetShell;
+export default WidgetFrame;

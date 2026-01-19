@@ -46,6 +46,8 @@ export interface WidgetData {
   content: WidgetContent;
 }
 
+export type Widgets = Record<string, WidgetData>;
+
 export interface CreateWidgetData {
   widgetId: string;
   type: WidgetType;
