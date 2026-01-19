@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import CursorWithName from '../CursorWithName';
+import CursorWithName from './CursorWithName';
 
 const meta = {
   title: 'Common/CursorWithName',
