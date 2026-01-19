@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import type React from 'react';
 import type { ComponentProps } from 'react';
 import type { MoveWidgetData, WidgetContent } from '@/common/types/widgetData';
+import { useCanvasScale } from '@/features/canvas/context/CanvasContext';
 
 interface WidgetContainerProps extends Omit<ComponentProps<'div'>, 'content'> {
   id: string;
@@ -24,10 +25,18 @@ function WidgetContainer({
   zIndex,
   emitMoveWidget,
 }: WidgetContainerProps) {
+  const scale = useCanvasScale();
   // 드래그 중 로컬 위치 상태 (즉시 UI 업데이트용)
   const [localPosition, setLocalPosition] = useState({ x, y });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+
+  // 드래그 시작 시점의 데이터 저장 (Ref로 관리하여 클로저 문제 해결)
+  const dragStartRef = useRef({
+    mouseX: 0,
+    mouseY: 0,
+    widgetX: 0,
+    widgetY: 0,
+  });
 
   // 스로틀링을 위한 ref (커서처럼)
   const lastEmitRef = useRef<number>(0);
@@ -35,7 +44,6 @@ function WidgetContainer({
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     // 헤더 영역이 아닌 곳에서는 드래그 시작하지 않음
     const target = e.target as HTMLElement;
-    // 헤더 영역임을 구분할 수 있는 방법이 따로 있을까? 만약 헤더 CSS 속성이 변한다면...
     const isHeader = target.closest('[data-widget-header="true"]');
     if (!isHeader) return;
 
@@ -44,10 +52,17 @@ function WidgetContainer({
     e.preventDefault();
 
     setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - x,
-      y: e.clientY - y,
-    });
+
+    // 시작 시점의 위치 정보 저장
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      widgetX: x, // props로 전달받은 현재 위젯 위치 (서버 동기화된 위치)
+      widgetY: y,
+    };
+
+    // 로컬 포지션 초기화 (혹시 모를 오차 방지)
+    setLocalPosition({ x, y });
   };
 
   useEffect(() => {
@@ -56,9 +71,15 @@ function WidgetContainer({
     const handlePointerMove = (e: PointerEvent) => {
       e.preventDefault();
 
-      // 실제 받는 x, y 위치 계산 (캔버스 좌표계)
-      const actualX = e.clientX - dragOffset.x;
-      const actualY = e.clientY - dragOffset.y;
+      const { mouseX, mouseY, widgetX, widgetY } = dragStartRef.current;
+
+      // 마우스 이동 거리 계산 (scale 보정)
+      const deltaX = (e.clientX - mouseX) / scale;
+      const deltaY = (e.clientY - mouseY) / scale;
+
+      // 실제 위젯 위치 계산
+      const actualX = widgetX + deltaX;
+      const actualY = widgetY + deltaY;
 
       // 즉시 UI 업데이트
       setLocalPosition({
@@ -90,7 +111,7 @@ function WidgetContainer({
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [isDragging, dragOffset, emitMoveWidget, id]);
+  }, [isDragging, emitMoveWidget, id, scale]);
 
   // 화면에 그릴 위치: 드래그 중이면 로컬 상태, 아니면 서버에서 받은 실제 위치 사용
   const displayPosition = isDragging ? localPosition : { x, y };
