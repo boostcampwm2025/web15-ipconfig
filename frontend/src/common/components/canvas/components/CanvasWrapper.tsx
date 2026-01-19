@@ -1,25 +1,22 @@
-import type { Cursors } from '@/common/types/cursor';
-import type { Widgets } from '@/common/types/widgetData';
-import { cn } from '@/common/lib/utils';
-import CursorLayer from '@/common/components/cursor/CursorLayer';
-import WidgetLayer from '../widgetFrame/WidgetLayer';
-import { CanvasProvider, useCanvas } from './context/CanvasProvider';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Position } from '@/common/types/canvas';
+import { useCanvas } from '../context/CanvasProvider';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PropsWithChildren,
+} from 'react';
+import { ZOOM_CONFIG } from '../constants/zoom';
 import {
   browserToCanvasPosition,
   getNewCameraState,
   zoomByDeltaAtPivot,
-} from './lib/positionTransform';
-import ZoomControls from './components/ZoomControls';
-import { ZOOM_CONFIG } from './constants/zoom';
+} from '../lib/positionTransform';
+import { emitCursorMove } from '@/common/api/socket';
+import { cn } from '@/common/lib/utils';
 
-interface CanvasProps {
-  remoteCursors: Cursors;
-  widgets: Widgets;
-}
-
-function CanvasContent({ remoteCursors, widgets }: CanvasProps) {
+export function CanvasWrapper({ children }: PropsWithChildren) {
   const { camera, setCamera, frameRef, getFrameInfo } = useCanvas();
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePos = useRef<Position | null>(null);
@@ -50,23 +47,23 @@ function CanvasContent({ remoteCursors, widgets }: CanvasProps) {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    const mousePositionInCanvas = getMousePosition(e);
+    emitCursorMove(mousePositionInCanvas.x, mousePositionInCanvas.y);
+
     // TODO: 쓰로틀링 적용하기
     if (!lastMousePos.current) return;
 
-    if (isPanning) {
-      const dx = e.clientX - lastMousePos.current.x;
-      const dy = e.clientY - lastMousePos.current.y;
-      lastMousePos.current = { x: e.clientX, y: e.clientY };
+    const dx = e.clientX - lastMousePos.current.x;
+    const dy = e.clientY - lastMousePos.current.y;
+    lastMousePos.current = { x: e.clientX, y: e.clientY };
 
+    // 패닝 하는 경우
+    if (isPanning) {
       setCamera((prev) => ({
         ...prev,
         ...getNewCameraState(prev, { dx, dy }),
       }));
     }
-
-    const mousePositionInCanvas = getMousePosition(e);
-
-    ///emitCursorMove(mousePositionInCanvas.x, mousePositionInCanvas.y);
   };
 
   const handlePointerUp = () => {
@@ -127,21 +124,8 @@ function CanvasContent({ remoteCursors, widgets }: CanvasProps) {
         }}
         className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
       >
-        <WidgetLayer widgets={widgets} />
-        {/* 커서 렌더링 */}
-        <CursorLayer remoteCursors={remoteCursors} />
+        {children}
       </div>
     </div>
   );
 }
-
-function Canvas({ remoteCursors, widgets }: CanvasProps) {
-  return (
-    <CanvasProvider>
-      <CanvasContent remoteCursors={remoteCursors} widgets={widgets} />
-      <ZoomControls />
-    </CanvasProvider>
-  );
-}
-
-export default Canvas;
