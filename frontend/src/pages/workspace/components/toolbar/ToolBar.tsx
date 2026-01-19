@@ -23,11 +23,10 @@ function ToolBar({ onToolClick }: ToolBarProps) {
           label="기술 스택"
           onClick={() => {
             onToolClick('TECH_STACK', {
-              x: 0,
-              y: 0,
-              width: 500,
-              zIndex: 1,
-              content: { widgetType: 'TECH_STACK', selectedItems: [] },
+              widgetId: 'techStack',
+              type: 'TECH_STACK',
+              layout: { x: 0, y: 0, width: 500, zIndex: 1 },
+              content: { selectedItems: [] },
             });
           }}
         />
@@ -36,20 +35,26 @@ function ToolBar({ onToolClick }: ToolBarProps) {
           label="Git Convention"
           onClick={() => {
             onToolClick('GIT_CONVENTION', {
-              x: 0,
-              y: 0,
-              width: 500,
-              zIndex: 1,
+              widgetId: 'gitConvention',
+              type: 'GIT_CONVENTION',
+              layout: { x: 0, y: 0, width: 500, zIndex: 1 },
               content: {
-                widgetType: 'GIT_CONVENTION',
-                data: {
-                  strategy: 'GITHUB_FLOW',
-                  branchRules: {
-                    mainBranch: 'main',
-                    developBranch: 'develop',
-                    prefixes: [],
-                  },
-                  commitConvention: { useGitmoji: false, commitTypes: [] },
+                strategy: 'GITHUB_FLOW',
+                branchRules: {
+                  mainBranch: 'main',
+                  developBranch: 'develop',
+                  prefixes: ['feature', 'fix', 'refactor'],
+                },
+                commitConvention: {
+                  useGitmoji: false,
+                  commitTypes: [
+                    'feat',
+                    'fix',
+                    'refactor',
+                    'chore',
+                    'docs',
+                    'test',
+                  ],
                 },
               },
             });

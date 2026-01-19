@@ -1,42 +1,24 @@
-import type { ReactNode } from 'react';
-import type { WidgetContent, WidgetData } from '@/common/types/widgetData';
+/* eslint-disable react-refresh/only-export-components */
+import type { PropsWithChildren } from 'react';
+import type { WidgetData } from '@/common/types/widgetData';
 import WidgetContainer from './WidgetContainer';
 import WidgetHeader from './WidgetHeader';
+import { createContext } from '@/common/contexts/createContext';
 
-interface WidgetFrameProps {
-  widgetId: string;
-  data: WidgetData;
-  title: string;
-  icon: ReactNode;
-  children: ReactNode;
-}
+export const [WidgetFrameProvider, useWidgetFrame] = createContext<WidgetData>({
+  contextName: 'WidgetFrameContext',
+  hookName: 'useWidgetFrame',
+  providerName: 'WidgetFrameProvider',
+});
 
-function WidgetFrame({
-  widgetId,
-  data,
-  title,
-  icon,
-  children,
-}: WidgetFrameProps) {
+function WidgetFrame({ children, ...props }: PropsWithChildren<WidgetData>) {
   return (
-    <WidgetContainer
-      id={widgetId}
-      x={data.x}
-      y={data.y}
-      width={data.width}
-      height={data.height}
-      zIndex={data.zIndex}
-      content={data.content as WidgetContent}
-    >
-      <WidgetHeader
-        title={title}
-        icon={icon}
-        onClickDelete={() => {
-          // emitDeleteWidget(widgetId);
-        }}
-      />
-      {children}
-    </WidgetContainer>
+    <WidgetFrameProvider value={props}>
+      <WidgetContainer>
+        <WidgetHeader />
+        {children}
+      </WidgetContainer>
+    </WidgetFrameProvider>
   );
 }
 

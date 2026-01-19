@@ -1,73 +1,87 @@
 import type {
-  MoveWidgetData,
   WidgetContent,
-  Widgets,
+  WidgetData,
+  WidgetType,
 } from '@/common/types/widgetData';
-import CollaborationWidget from '@/features/widgets/collaboration/components/CollaborationWidget';
+import CollaborationWidget, {
+  type CollaborationData,
+} from '@/features/widgets/collaboration/components/CollaborationWidget';
 import CommunicationWidget from '@/features/widgets/communication/components/communicationWidget/CommunicationWidget';
 import GitConventionWidget from '@/features/widgets/gitConvention/components/gitConventionWidget/GitConventionWidget';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
+import WidgetFrame from './WidgetFrame';
+import type { CommunicationData } from '@/features/widgets/communication/types/communication';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 
-function WidgetLayer({
-  widgets,
-  // emitUpdateWidget,
-  // emitDeleteWidget,
-  // emitMoveWidget,
-}: {
-  widgets: Widgets;
-  // emitUpdateWidget: (widgetId: string, data: WidgetContent) => void;
-  // emitDeleteWidget: (widgetId: string) => void;
-  // emitMoveWidget: (widgetId: string, data: MoveWidgetData) => void;
-}) {
+function WidgetLayer() {
+  const { widgetList } = useWorkspaceWidgetStore();
   return (
     <>
-      {Object.entries(widgets).map(([widgetId, widget]) => {
-        switch (widget.content.widgetType) {
-          case 'TECH_STACK':
-            return (
-              <TechStackWidget
-                key={widgetId}
-                widgetId={widgetId}
-                data={widget}
-                emitDeleteWidget={emitDeleteWidget}
-                emitUpdateWidget={emitUpdateWidget}
-                emitMoveWidget={emitMoveWidget}
-              />
-            );
-          case 'GIT_CONVENTION':
-            return (
-              <GitConventionWidget
-                key={widgetId}
-                widgetId={widgetId}
-                data={widget}
-                emitDeleteWidget={emitDeleteWidget}
-                emitUpdateWidget={emitUpdateWidget}
-                emitMoveWidget={emitMoveWidget}
-              />
-            );
-          default:
-            return null;
+      {widgetList.map(({ widgetId, type, layout, content }) => (
+        <WidgetFrame
+          widgetId={widgetId}
+          type={type}
+          layout={layout}
+          content={content}
+        >
+          <WidgetContent type={type} />
+        </WidgetFrame>
+      ))}
+
+      <WidgetFrame
+        widgetId={'COLLABORATION'}
+        type={'COLLABORATION'}
+        layout={{ x: 500, y: 500, zIndex: 0 }}
+        content={
+          {
+            prRules: {
+              activeVersion: 'semantic',
+              selectedLabels: ['feature', 'fix', 'refactor'],
+              activeStrategy: 'squash',
+            },
+          } as CollaborationData
         }
-      })}
-      <CollaborationWidget
-        key={'GROUNDRULE_COLLABORATION'}
-        widgetId={'GROUNDRULE_COLLABORATION'}
-        data={{
-          x: 800,
-          y: 400,
-          width: 850,
-          height: 600,
-          zIndex: 1,
-        }}
-      />
-      <CommunicationWidget
-        id="communication"
-        position={{ x: 800, y: 1200 }}
-        width={600}
-        onDelete={() => emitDeleteWidget('communication')}
-      />
+      >
+        <CollaborationWidget />
+      </WidgetFrame>
+
+      <WidgetFrame
+        widgetId={'COMMUNICATION'}
+        type={'COMMUNICATION'}
+        layout={{ x: 500, y: 500, zIndex: 0 }}
+        content={
+          {
+            communication: {
+              urgent: 'Phone',
+              sync: 'Slack',
+              async: 'Notion',
+              official: 'Email',
+            },
+            sla: {
+              responseTime: 24,
+            },
+          } as CommunicationData
+        }
+      >
+        <CommunicationWidget />
+      </WidgetFrame>
     </>
   );
+}
+
+interface WidgetContentProps {
+  type: WidgetType;
+}
+
+function WidgetContent({ type }: WidgetContentProps) {
+  switch (type) {
+    case 'TECH_STACK':
+      return <TechStackWidget />;
+    case 'GIT_CONVENTION':
+      return <GitConventionWidget />;
+    default:
+      return null;
+  }
 }
 
 export default WidgetLayer;

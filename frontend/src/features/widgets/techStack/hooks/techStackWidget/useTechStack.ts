@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import type { DragEndEvent } from '@dnd-kit/core';
-import type { TechStack } from '../types/techStack';
-import type { TechStackContentDto } from '@/common/types/widgetData';
+import type { TechStack } from '../../types/techStack';
+import type { TechStackData } from '@/common/types/widgetData';
 
 interface UseTechStackProps {
-  data: TechStackContentDto;
-  onDataChange: (data: TechStackContentDto) => void;
+  data: TechStackData;
+  onDataChange: (data: TechStackData) => void;
 }
 
 export function useTechStack({ data, onDataChange }: UseTechStackProps) {
@@ -22,7 +22,6 @@ export function useTechStack({ data, onDataChange }: UseTechStackProps) {
     }
 
     onDataChange({
-      widgetType: 'TECH_STACK',
       selectedItems: newItems,
     });
   };
@@ -49,7 +48,6 @@ export function useTechStack({ data, onDataChange }: UseTechStackProps) {
           { id, name, category },
         ];
         onDataChange({
-          widgetType: 'TECH_STACK',
           selectedItems: newSelectedTechStacks,
         });
       }

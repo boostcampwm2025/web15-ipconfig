@@ -1,26 +1,16 @@
-import type {
-  WidgetContent,
-  WidgetData,
-  TechStackContentDto,
-  MoveWidgetData,
-} from '@/common/types/widgetData';
-import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
-import { LuLayers } from 'react-icons/lu';
+import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
-import { useTechStack } from '@/features/widgets/techStack/hooks/useTechStack';
+import { useTechStack } from '@/features/widgets/techStack/hooks/techStackWidget/useTechStack';
 import SelectedTechStackBox from './SelectedTechStackBox';
 import SelectInput from '@/common/components/SelectInput';
 import SubjectGuideline from './SubjectGuideline';
 import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
+import type { TechStackData } from '@/common/types/widgetData';
 
-interface TechStackWidgetProps {
-  widgetId: string;
-  data: WidgetData;
-}
-
-function TechStackWidget({ widgetId, data }: TechStackWidgetProps) {
-  const techStackContent = data.content as TechStackContentDto;
+function TechStackWidget() {
+  const { widgetId, type, layout, content } = useWidgetFrame();
+  const techStackContent = content as TechStackData;
 
   const { selectedTechStacks, isModalOpen, actions } = useTechStack({
     data: techStackContent,
@@ -35,42 +25,35 @@ function TechStackWidget({ widgetId, data }: TechStackWidgetProps) {
       collisionDetection={pointerWithin}
       onDragEnd={actions.handleDragEnd}
     >
-      <WidgetFrame
-        widgetId={widgetId}
-        data={data}
-        title="기술 스택"
-        icon={<LuLayers className="text-primary" size={18} />}
-      >
-        <section className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 font-bold">
-            <div className="shrink-0">주제 :</div>
-            <SelectInput
-              selectedValue={selectedSubject}
-              setSelectedValue={setSelectedSubject}
-            />
-          </div>
-
-          {parsedSubject && (
-            <SubjectGuideline
-              key={`${parsedSubject.category}-${parsedSubject.option}`}
-              category={parsedSubject.category}
-              option={parsedSubject.option}
-            />
-          )}
-
-          <SelectedTechStackBox
-            selectedTechStacks={selectedTechStacks}
-            setSelectedTechStacks={actions.setSelectedTechStacks}
-            setIsTechStackModalOpen={actions.openModal}
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center gap-2 font-bold">
+          <div className="shrink-0">주제 :</div>
+          <SelectInput
+            selectedValue={selectedSubject}
+            setSelectedValue={setSelectedSubject}
           />
-        </section>
-        {isModalOpen && (
-          <TechStackModal
-            isOpen={isModalOpen}
-            onModalClose={actions.closeModal}
+        </div>
+
+        {parsedSubject && (
+          <SubjectGuideline
+            key={`${parsedSubject.category}-${parsedSubject.option}`}
+            category={parsedSubject.category}
+            option={parsedSubject.option}
           />
         )}
-      </WidgetFrame>
+
+        <SelectedTechStackBox
+          selectedTechStacks={selectedTechStacks}
+          setSelectedTechStacks={actions.setSelectedTechStacks}
+          setIsTechStackModalOpen={actions.openModal}
+        />
+      </section>
+      {isModalOpen && (
+        <TechStackModal
+          isOpen={isModalOpen}
+          onModalClose={actions.closeModal}
+        />
+      )}
     </DndContext>
   );
 }

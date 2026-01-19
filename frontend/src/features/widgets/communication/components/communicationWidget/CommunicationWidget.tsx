@@ -9,41 +9,18 @@ import { CommunicationSection } from './CommunicationSection';
 import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
 import { MeetingSection } from './MeetingSection';
+import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
 
-interface CommunicationWidgetProps {
-  id: string;
-  position: { x: number; y: number };
-  width: number;
-  height?: number;
-}
+function CommunicationWidget() {
+  const { widgetId, type, layout } = useWidgetFrame();
 
-function CommunicationWidget({
-  id,
-  position,
-  width,
-  height,
-}: CommunicationWidgetProps) {
   const [data, setData] = useState<CommunicationData>(
     DEFAULT_COMMUNICATION_DATA,
   );
 
   return (
-    <WidgetFrame
-      widgetId={id}
-      data={{
-        x: position.x,
-        y: position.y,
-        width: width,
-        height: height,
-        content: {
-          widgetType: 'COMMUNICATION',
-          data: data,
-        },
-      }}
-      title="커뮤니케이션"
-      icon={<LuUsers className="text-primary" size={18} />}
-    >
-      <div className="flex flex-col gap-6 p-4">
+    <>
+      <div className="flex w-[550px] flex-col gap-6 p-4">
         <CommunicationSection
           data={data.communication}
           onChange={(key, value) =>
@@ -89,7 +66,7 @@ function CommunicationWidget({
           }
         />
       </div>
-    </WidgetFrame>
+    </>
   );
 }
 
