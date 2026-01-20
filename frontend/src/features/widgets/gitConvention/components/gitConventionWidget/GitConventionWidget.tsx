@@ -1,12 +1,22 @@
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
-import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
 import { useGitConvention } from '@/features/widgets/gitConvention/hooks/useGitConvention';
 import { StrategySelector } from './StrategySelector';
 import { BranchRules } from './BranchRules';
 import { CommitStyle } from './CommitStyle';
+import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useShallow } from 'zustand/react/shallow';
+import { emitUpdateWidget } from '@/common/api/socket';
 
 function GitConventionWidget() {
-  const { widgetId, type, layout, content } = useWidgetFrame();
+  const { widgetId } = useWidgetIdAndType();
+  const content = useWorkspaceWidgetStore(
+    useShallow(
+      (state) =>
+        state.widgetList.find((widget) => widget.widgetId === widgetId)
+          ?.content,
+    ),
+  );
   // GitConventionContentDto 임을 명시하고, 이후에 data 사용
   const gitConventionContent = content as GitConventionData;
 
@@ -14,10 +24,7 @@ function GitConventionWidget() {
     useGitConvention({
       data: gitConventionContent,
       onDataChange: (nextData) => {
-        // emitUpdateWidget(widgetId, {
-        //   widgetType: 'GIT_CONVENTION',
-        //   data: nextData,
-        // });
+        emitUpdateWidget(widgetId, nextData);
       },
     });
 

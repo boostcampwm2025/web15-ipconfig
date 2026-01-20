@@ -1,7 +1,5 @@
 // import WidgetContainer from '@/common/components/widgetFrame/WidgetContainer';
 // import WidgetHeader from '@/common/components/widgetFrame/WidgetHeader';
-import { WidgetFrame } from '@/common/components/widgetFrame';
-import { LuUsers } from 'react-icons/lu';
 import { useState } from 'react';
 import type { CommunicationData } from '../../types/communication';
 import { DEFAULT_COMMUNICATION_DATA } from '../../constants/communication';
@@ -9,10 +7,10 @@ import { CommunicationSection } from './CommunicationSection';
 import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
 import { MeetingSection } from './MeetingSection';
-import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
+import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 
 function CommunicationWidget() {
-  const { widgetId, type, layout } = useWidgetFrame();
+  const { widgetId } = useWidgetIdAndType();
 
   const [data, setData] = useState<CommunicationData>(
     DEFAULT_COMMUNICATION_DATA,

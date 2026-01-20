@@ -2,7 +2,9 @@ import { useState } from 'react';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
-import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
+import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useShallow } from 'zustand/react/shallow';
 
 export interface CollaborationData {
   prRules: {
@@ -23,7 +25,14 @@ export interface CollaborationData {
 }
 
 export default function CollaborationWidget() {
-  const { widgetId, type, layout, content } = useWidgetFrame();
+  const { widgetId } = useWidgetIdAndType();
+  const widgetData = useWorkspaceWidgetStore(
+    useShallow(
+      (state) =>
+        state.widgetList.find((widget) => widget.widgetId === widgetId)
+          ?.content,
+    ),
+  );
 
   const [prRules, setPrRules] = useState<CollaborationData['prRules']>({
     activeVersion: 'semantic',

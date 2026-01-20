@@ -1,68 +1,40 @@
-import type {
-  WidgetContent,
-  WidgetData,
-  WidgetType,
-} from '@/common/types/widgetData';
-import CollaborationWidget, {
-  type CollaborationData,
-} from '@/features/widgets/collaboration/components/CollaborationWidget';
+import { useMemo } from 'react';
+import type { WidgetType } from '@/common/types/widgetData';
+import CollaborationWidget from '@/features/widgets/collaboration/components/CollaborationWidget';
 import CommunicationWidget from '@/features/widgets/communication/components/communicationWidget/CommunicationWidget';
 import GitConventionWidget from '@/features/widgets/gitConvention/components/gitConventionWidget/GitConventionWidget';
 import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
 import WidgetFrame from './WidgetFrame';
-import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useShallow } from 'zustand/react/shallow';
 
 function WidgetLayer() {
-  const { widgetList } = useWorkspaceWidgetStore();
+  const widgetKeys = useWorkspaceWidgetStore(
+    useShallow((state) =>
+      state.widgetList.map((widget) => `${widget.widgetId}::${widget.type}`),
+    ),
+  );
+  const widgetIds = useMemo(
+    () =>
+      widgetKeys.map((key) => {
+        const [widgetId, type] = key.split('::') as [string, WidgetType];
+        return { widgetId, type };
+      }),
+    [widgetKeys],
+  );
   return (
     <>
-      {widgetList.map(({ widgetId, type, layout, content }) => (
-        <WidgetFrame
-          widgetId={widgetId}
-          type={type}
-          layout={layout}
-          content={content}
-        >
+      {widgetIds.map(({ widgetId, type }) => (
+        <WidgetFrame key={widgetId} widgetId={widgetId} type={type}>
           <WidgetContent type={type} />
         </WidgetFrame>
       ))}
 
-      <WidgetFrame
-        widgetId={'COLLABORATION'}
-        type={'COLLABORATION'}
-        layout={{ x: 500, y: 500, zIndex: 0 }}
-        content={
-          {
-            prRules: {
-              activeVersion: 'semantic',
-              selectedLabels: ['feature', 'fix', 'refactor'],
-              activeStrategy: 'squash',
-            },
-          } as CollaborationData
-        }
-      >
+      <WidgetFrame widgetId={'COLLABORATION'} type={'COLLABORATION'}>
         <CollaborationWidget />
       </WidgetFrame>
 
-      <WidgetFrame
-        widgetId={'COMMUNICATION'}
-        type={'COMMUNICATION'}
-        layout={{ x: 500, y: 500, zIndex: 0 }}
-        content={
-          {
-            communication: {
-              urgent: 'Phone',
-              sync: 'Slack',
-              async: 'Notion',
-              official: 'Email',
-            },
-            sla: {
-              responseTime: 24,
-            },
-          } as CommunicationData
-        }
-      >
+      <WidgetFrame widgetId={'COMMUNICATION'} type={'COMMUNICATION'}>
         <CommunicationWidget />
       </WidgetFrame>
     </>

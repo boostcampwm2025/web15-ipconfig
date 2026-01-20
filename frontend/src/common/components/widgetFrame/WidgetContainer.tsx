@@ -1,18 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
-import { useWidgetFrame } from './WidgetFrame';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useWidgetIdAndType } from './context/WidgetContext';
+import { emitUpdateWidgetLayout } from '@/common/api/socket';
 
 function WidgetContainer({ children }: PropsWithChildren) {
-  const { widgetId, type, layout } = useWidgetFrame();
-  const { x, y, width, height, zIndex } = layout;
+  const { widgetId } = useWidgetIdAndType();
+  const widgetData = useWorkspaceWidgetStore((state) =>
+    state.widgetList.find((widget) => widget.widgetId === widgetId),
+  );
+
+  const { x, y, width, height, zIndex } = widgetData?.layout ?? {
+    x: 400,
+    y: 400,
+  };
 
   // 드래그 중 로컬 위치 상태 (즉시 UI 업데이트용)
   const [localPosition, setLocalPosition] = useState({ x, y });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
 
+  // 스로틀링을 위한 ref
+  const lastEmitRef = useRef<number>(0);
+
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // 헤더 영역이 아닌 곳에서는 드래그 시작하지 않음
+    const target = e.target as HTMLElement;
+    const isHeader = target.closest('[data-widget-header="true"]');
+    if (!isHeader) return;
+
     // 캔버스 패닝으로 이벤트가 전파되지 않도록 중단
     e.stopPropagation();
     e.preventDefault();
@@ -30,7 +47,6 @@ function WidgetContainer({ children }: PropsWithChildren) {
     const handlePointerMove = (e: PointerEvent) => {
       e.preventDefault();
 
-      // 실제 받는 x, y 위치 계산 (캔버스 좌표계)
       const actualX = e.clientX - dragOffset.x;
       const actualY = e.clientY - dragOffset.y;
 
@@ -39,6 +55,13 @@ function WidgetContainer({ children }: PropsWithChildren) {
         x: actualX,
         y: actualY,
       });
+
+      // 스로틀링으로 이벤트 전송
+      const now = performance.now();
+      if (now - lastEmitRef.current < 30) return;
+      lastEmitRef.current = now;
+
+      emitUpdateWidgetLayout(widgetId, { x: actualX, y: actualY });
     };
 
     const handlePointerUp = () => {

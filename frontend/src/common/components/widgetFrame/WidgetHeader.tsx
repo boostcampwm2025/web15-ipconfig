@@ -5,34 +5,33 @@ import {
   LuMessageSquare,
   LuTrash2,
   LuUsers,
-  LuListChecks,
 } from 'react-icons/lu';
-import { useWidgetFrame } from './WidgetFrame';
+import { useWidgetIdAndType } from './context/WidgetContext';
+import { emitDeleteWidget } from '@/common/api/socket';
 
 const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
   TECH_STACK: {
-    title: 'Tech Stack',
-    icon: <LuLayers />,
+    title: '기술 스택',
+    icon: <LuLayers className="text-blue-500" />,
   },
   GIT_CONVENTION: {
-    title: 'Git Convention',
-    icon: <LuGitBranch />,
+    title: 'Git 컨벤션',
+    icon: <LuGitBranch className="text-green-500" />,
   },
   COLLABORATION: {
-    title: 'Collaboration',
-    icon: <LuUsers />,
+    title: '작업 및 협업',
+    icon: <LuUsers className="text-purple-500" />,
   },
   COMMUNICATION: {
-    title: 'Communication',
-    icon: <LuMessageSquare />,
+    title: '커뮤니케이션',
+    icon: <LuMessageSquare className="text-yellow-500" />,
   },
 };
 
 function WidgetHeader() {
-  const { type } = useWidgetFrame();
+  const { widgetId, type } = useWidgetIdAndType();
 
   const { icon, title } = WIDGET_TITLE_ICON[type];
-
   return (
     <div
       className="mb-4 flex cursor-move items-center justify-between border-b border-gray-700 pb-2 select-none"
@@ -45,7 +44,12 @@ function WidgetHeader() {
         onMouseDown={(e) => e.stopPropagation()}
         className="text-gray-500 transition-colors hover:text-red-400"
       >
-        <LuTrash2 size={16} onClick={() => {}} />
+        <LuTrash2
+          size={16}
+          onClick={() => {
+            emitDeleteWidget(widgetId);
+          }}
+        />
       </button>
     </div>
   );

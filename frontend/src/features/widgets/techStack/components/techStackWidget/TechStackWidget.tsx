@@ -1,4 +1,3 @@
-import { useWidgetFrame } from '@/common/components/widgetFrame/WidgetFrame';
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
 import { useTechStack } from '@/features/widgets/techStack/hooks/techStackWidget/useTechStack';
@@ -7,18 +6,36 @@ import SelectInput from '@/common/components/SelectInput';
 import SubjectGuideline from './SubjectGuideline';
 import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
 import type { TechStackData } from '@/common/types/widgetData';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
+import { emitUpdateWidget } from '@/common/api/socket';
+import { useShallow } from 'zustand/react/shallow';
+
+// 컴포넌트 외부로 빼서 참조 고정
+const DEFAULT_WIDGET_DATA = {
+  type: 'TECH_STACK',
+  layout: { x: 100, y: 100 },
+  content: { selectedItems: [] },
+};
 
 function TechStackWidget() {
-  const { widgetId, type, layout, content } = useWidgetFrame();
-  const techStackContent = content as TechStackData;
+  const { widgetId } = useWidgetIdAndType();
+  const content = useWorkspaceWidgetStore(
+    (state) =>
+      state.widgetList.find((widget) => widget.widgetId === widgetId)?.content,
+  );
 
+  // const { type, layout, content } = widgetData ?? DEFAULT_WIDGET_DATA;
+
+  const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
+
+  const techStackContent = content as TechStackData;
   const { selectedTechStacks, isModalOpen, actions } = useTechStack({
     data: techStackContent,
     onDataChange: (nextData) => {
-      // emitUpdateWidget(widgetId, nextData);
+      emitUpdateWidget(widgetId, nextData);
     },
   });
-  const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
 
   return (
     <DndContext

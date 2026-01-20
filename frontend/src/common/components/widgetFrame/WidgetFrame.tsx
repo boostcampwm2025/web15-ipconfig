@@ -1,24 +1,21 @@
-/* eslint-disable react-refresh/only-export-components */
 import type { PropsWithChildren } from 'react';
-import type { WidgetData } from '@/common/types/widgetData';
 import WidgetContainer from './WidgetContainer';
 import WidgetHeader from './WidgetHeader';
-import { createContext } from '@/common/contexts/createContext';
+import { WidgetProvider } from './context/WidgetContext';
+import type { WidgetIdAndType } from './context/WidgetContext';
 
-export const [WidgetFrameProvider, useWidgetFrame] = createContext<WidgetData>({
-  contextName: 'WidgetFrameContext',
-  hookName: 'useWidgetFrame',
-  providerName: 'WidgetFrameProvider',
-});
-
-function WidgetFrame({ children, ...props }: PropsWithChildren<WidgetData>) {
+function WidgetFrame({
+  children,
+  widgetId,
+  type,
+}: PropsWithChildren<WidgetIdAndType>) {
   return (
-    <WidgetFrameProvider value={props}>
+    <WidgetProvider widgetId={widgetId} type={type}>
       <WidgetContainer>
         <WidgetHeader />
         {children}
       </WidgetContainer>
-    </WidgetFrameProvider>
+    </WidgetProvider>
   );
 }
 
