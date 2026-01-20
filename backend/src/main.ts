@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi';
+import { CollaborationService } from './collaboration/collaboration.service';
+import { Server, IncomingMessage } from 'http';
+import { Duplex } from 'stream';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -52,6 +55,21 @@ async function bootstrap() {
   await AsyncApiModule.setup('asyncapi', app, asyncapiDocument);
 
   await app.listen(process.env.PORT ?? 3000);
+
+  // CollaborationService를 통해 Hocuspocus WebSocket 연결 처리
+  const collaborationService = app.get(CollaborationService);
+  const httpServer = app.getHttpServer() as Server;
+
+  // Upgrade 요청 처리 (Socket.IO와 Hocuspocus 공존)
+  httpServer.on(
+    'upgrade',
+    (request: IncomingMessage, socket: Duplex, head: Buffer) => {
+      // '/collaboration' 경로로 시작하는 WebSocket 요청만 Hocuspocus가 처리
+      if (collaborationService.isCollaborationPath(request.url)) {
+        collaborationService.handleUpgrade(request, socket, head);
+      }
+    },
+  );
 }
 
 bootstrap().catch((err) => {
