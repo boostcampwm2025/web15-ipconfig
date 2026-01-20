@@ -15,11 +15,17 @@ import {
 } from '../lib/positionTransform';
 import { emitCursorMove } from '@/common/api/socket';
 import { cn } from '@/common/lib/utils';
+import { useThrottledCallback } from '@/common/hooks/useThrottleCllback';
 
 export function CanvasWrapper({ children }: PropsWithChildren) {
   const { camera, setCamera, frameRef, getFrameInfo } = useCanvas();
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePos = useRef<Position | null>(null);
+
+  const throttledEmitCursorMove = useThrottledCallback(
+    (x: number, y: number) => emitCursorMove(x, y),
+    30,
+  );
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
@@ -48,9 +54,8 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
 
   const handlePointerMove = (e: React.PointerEvent) => {
     const mousePositionInCanvas = getMousePosition(e);
-    emitCursorMove(mousePositionInCanvas.x, mousePositionInCanvas.y);
+    throttledEmitCursorMove(mousePositionInCanvas.x, mousePositionInCanvas.y);
 
-    // TODO: 쓰로틀링 적용하기
     if (!lastMousePos.current) return;
 
     const dx = e.clientX - lastMousePos.current.x;
