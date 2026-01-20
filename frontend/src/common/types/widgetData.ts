@@ -40,28 +40,3 @@ export interface WidgetLayout {
 }
 
 export type WidgetList = WidgetData[];
-
-// export interface CreateWidgetData {
-//   data: WidgetData;
-// }
-
-// export interface UpdateWidgetData {
-//   widgetId: string;
-//   data: {
-//     // 임시로 이렇게 할게요...
-//     content: WidgetContent;
-//   };
-// }
-
-// export interface MoveWidgetData {
-//   x?: number;
-//   y?: number;
-//   width?: number;
-//   height?: number;
-//   zIndex?: number;
-// }
-
-// export interface UpdateWidgetLayoutData {
-//   widgetId: string;
-//   data: MoveWidgetData;
-// }
