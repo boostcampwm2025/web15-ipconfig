@@ -31,7 +31,7 @@ export interface WidgetMetaData {
   icon: React.ReactNode;
 }
 
-interface WidgetLayout {
+export interface WidgetLayout {
   x: number;
   y: number;
   width?: number;

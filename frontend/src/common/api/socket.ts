@@ -7,7 +7,12 @@ import {
 } from '@/common/store/workspace';
 
 import useUserStore from '@/common/store/user';
-import type { WidgetData } from '../types/widgetData';
+import type {
+  WidgetContent,
+  WidgetData,
+  WidgetLayout,
+  WidgetType,
+} from '../types/widgetData';
 import useCursorStore from '../store/cusor';
 import type { Cursor } from '../types/cursor';
 import { CURSOR_INITIAL_POSITION } from '../components/cursor/constants';
@@ -60,7 +65,11 @@ socket.on('user:left', (userId) => {
 // 워크스페이스 유저 입장
 interface UserJoinedPayload {
   allUsers: User[];
-  allWidgets: WidgetData[];
+  allWidgets: {
+    widgetId: string;
+    type: WidgetType;
+    data: { content: WidgetContent } & WidgetLayout;
+  }[];
 }
 
 socket.on('user:joined', (payload: UserJoinedPayload) => {
@@ -75,7 +84,19 @@ socket.on('user:joined', (payload: UserJoinedPayload) => {
       y: CURSOR_INITIAL_POSITION.y,
     })),
   );
-  setWidgetList(payload.allWidgets);
+  setWidgetList(
+    payload.allWidgets.map((widget) => {
+      const { widgetId, type, data } = widget;
+      const { content, ...layout } = data;
+
+      return {
+        widgetId,
+        type,
+        layout,
+        content,
+      };
+    }),
+  );
 });
 
 /**
@@ -95,42 +116,89 @@ export function emitCursorMove(x: number, y: number) {
   });
 }
 
-// /**
-//  * 위젯 생성
-//  * @param handler 핸들러
-//  */
-// export function onWidgetCreated(handler: (payload: CreateWidgetData) => void) {
-//   socket.on('widget:created', handler);
-// }
+// 위젯 생성 함수
+export function emitCreateWidget(widgetData: WidgetData) {
+  const { widgetId, type, layout, content } = widgetData;
+  const data = { ...layout, content };
+  socket.emit('widget:create', {
+    widgetId,
+    type,
+    data,
+  });
+}
 
-// /**
-//  * 위젯 업데이트
-//  * @param handler 핸들러
-//  */
-// export function onWidgetUpdated(handler: (payload: UpdateWidgetData) => void) {
-//   socket.on('widget:updated', handler);
-// }
+// 다른 유저의 위젯 생성 반영
+socket.on(
+  'widget:created',
+  (payload: {
+    widgetId: string;
+    type: WidgetType;
+    data: WidgetLayout & { content: WidgetContent };
+  }) => {
+    const { createWidget } = useWorkspaceWidgetStore.getState();
+    const { widgetId, type, data } = payload;
+    const { content, ...layout } = data;
+    createWidget({ widgetId, type, layout, content });
+  },
+);
 
-// interface WidgetDeletedPayload {
-//   widgetId: string;
-// }
+// 위젯 업데이트
+/**
+ * 위젯 업데이트
+ * @param widgetId 위젯 ID
+ * @param payload 위젯 내용
+ */
+export function emitUpdateWidget(widgetId: string, payload: WidgetContent) {
+  socket.emit('widget:update', {
+    widgetId,
+    data: {
+      content: payload,
+    },
+  });
+  const { updateWidget } = useWorkspaceWidgetStore.getState();
+  updateWidget(widgetId, { content: payload });
+}
 
-// /**
-//  * 위젯 삭제
-//  * @param handler 핸들러
-//  */
-// export function onWidgetDeleted(
-//   handler: (payload: WidgetDeletedPayload) => void,
-// ) {
-//   socket.on('widget:deleted', handler);
-// }
+// 다른 유저의 위젯 업데이트 반영
+socket.on(
+  'widget:updated',
+  (payload: { widgetId: string; data: { content: WidgetContent } }) => {
+    const { updateWidget } = useWorkspaceWidgetStore.getState();
+    updateWidget(payload.widgetId, { content: payload.data.content });
+  },
+);
 
-// /**
-//  * 위젯 레이아웃 업데이트
-//  * @param handler 핸들러
-//  */
-// export function onWidgetMoved(
-//   handler: (payload: UpdateWidgetLayoutData) => void,
-// ) {
-//   socket.on('widget:moved', handler);
-// }
+// 위젯 레이아웃 업데이트
+export function emitUpdateWidgetLayout(
+  widgetId: string,
+  payload: WidgetLayout,
+) {
+  socket.emit('widget:move', {
+    widgetId,
+    data: payload,
+  });
+  const { updateWidget } = useWorkspaceWidgetStore.getState();
+  updateWidget(widgetId, { layout: payload });
+}
+
+// 다른 유저의 위젯 레이아웃 업데이트 반영
+socket.on(
+  'widget:moved',
+  (payload: { widgetId: string; data: WidgetLayout }) => {
+    const { updateWidget } = useWorkspaceWidgetStore.getState();
+    updateWidget(payload.widgetId, { layout: payload.data });
+  },
+);
+
+// 위젯 삭제
+export function emitDeleteWidget(widgetId: string) {
+  socket.emit('widget:delete', {
+    widgetId,
+  });
+}
+
+// 다른 유저의 위젯 삭제 반영
+socket.on('widget:deleted', (payload: { widgetId: string }) => {
+  const { deleteWidget } = useWorkspaceWidgetStore.getState();
+  deleteWidget(payload.widgetId);
+});
