@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CollaborationState } from './CollaborationWidget';
+import type { CollaborationData } from './CollaborationWidget';
 import {
   Select,
   SelectContent,
@@ -12,10 +12,10 @@ import CounterInput from './CounterInput';
 import { platforms } from '../constants/options';
 
 interface TaskWorkflowProps {
-  data: CollaborationState['workflow'];
-  onUpdate: <K extends keyof CollaborationState['workflow']>(
+  data: CollaborationData['workflow'];
+  onUpdate: <K extends keyof CollaborationData['workflow']>(
     key: K,
-    value: CollaborationState['workflow'][K],
+    value: CollaborationData['workflow'][K],
   ) => void;
 }
 

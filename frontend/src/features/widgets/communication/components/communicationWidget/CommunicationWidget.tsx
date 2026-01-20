@@ -7,11 +7,8 @@ import { CommunicationSection } from './CommunicationSection';
 import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
 import { MeetingSection } from './MeetingSection';
-import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 
 function CommunicationWidget() {
-  const { widgetId } = useWidgetIdAndType();
-
   const [data, setData] = useState<CommunicationData>(
     DEFAULT_COMMUNICATION_DATA,
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { CollaborationState } from './CollaborationWidget';
+import type { CollaborationData } from './CollaborationWidget';
 import {
   labelCandidates,
   strategies,
@@ -8,10 +8,10 @@ import {
 } from '../constants/options';
 
 interface PRRulesProps {
-  data: CollaborationState['prRules'];
-  onUpdate: <K extends keyof CollaborationState['prRules']>(
+  data: CollaborationData['prRules'];
+  onUpdate: <K extends keyof CollaborationData['prRules']>(
     key: K,
-    value: CollaborationState['prRules'][K],
+    value: CollaborationData['prRules'][K],
   ) => void;
 }
 
