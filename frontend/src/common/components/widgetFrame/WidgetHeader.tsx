@@ -34,7 +34,7 @@ function WidgetHeader() {
   const { icon, title } = WIDGET_TITLE_ICON[type];
   return (
     <div
-      className="mb-4 flex cursor-move items-center justify-between border-b border-gray-700 pb-2 select-none"
+      className="mb-4 flex cursor-grabbing items-center justify-between border-b border-gray-700 pb-2 select-none"
       data-widget-header="true"
     >
       <h4 className="flex items-center gap-2 font-bold text-white">

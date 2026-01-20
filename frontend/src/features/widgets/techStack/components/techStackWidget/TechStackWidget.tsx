@@ -9,14 +9,6 @@ import type { TechStackData } from '@/common/types/widgetData';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 import { emitUpdateWidget } from '@/common/api/socket';
-import { useShallow } from 'zustand/react/shallow';
-
-// 컴포넌트 외부로 빼서 참조 고정
-const DEFAULT_WIDGET_DATA = {
-  type: 'TECH_STACK',
-  layout: { x: 100, y: 100 },
-  content: { selectedItems: [] },
-};
 
 function TechStackWidget() {
   const { widgetId } = useWidgetIdAndType();
@@ -24,8 +16,6 @@ function TechStackWidget() {
     (state) =>
       state.widgetList.find((widget) => widget.widgetId === widgetId)?.content,
   );
-
-  // const { type, layout, content } = widgetData ?? DEFAULT_WIDGET_DATA;
 
   const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
 
