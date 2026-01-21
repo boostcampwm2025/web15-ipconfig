@@ -34,6 +34,14 @@ const defaultBackendConvention: BackendNamingConvention = {
 };
 
 export const FrontendSection: Story = {
+  args: {
+    category: 'frontend',
+    title: 'Frontend',
+    titleColor: 'text-indigo-400',
+    convention: defaultFrontendConvention,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [convention, setConvention] = useState<FrontendNamingConvention>(
       defaultFrontendConvention,
@@ -64,6 +72,14 @@ export const FrontendSection: Story = {
 };
 
 export const BackendSection: Story = {
+  args: {
+    category: 'backend',
+    title: 'Backend',
+    titleColor: 'text-green-400',
+    convention: defaultBackendConvention,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [convention, setConvention] = useState<BackendNamingConvention>(
       defaultBackendConvention,
@@ -93,7 +109,15 @@ export const BackendSection: Story = {
   },
 };
 
-export const BothSections: Story = {
+export const BothSections = {
+  args: {
+    category: 'frontend',
+    title: 'Frontend',
+    titleColor: 'text-indigo-400',
+    convention: defaultFrontendConvention,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [frontendConvention, setFrontendConvention] =
       useState<FrontendNamingConvention>(defaultFrontendConvention);
@@ -135,6 +159,14 @@ export const BothSections: Story = {
 };
 
 export const WithCustomValues: Story = {
+  args: {
+    category: 'frontend',
+    title: 'Frontend',
+    titleColor: 'text-indigo-400',
+    convention: defaultFrontendConvention,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [convention, setConvention] = useState<FrontendNamingConvention>({
       variable: 'snake_case',
