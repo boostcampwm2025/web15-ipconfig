@@ -46,9 +46,7 @@ export const FrontendSection: Story = {
       }));
     };
 
-    const handleHover = (key: string) => {
-      console.log(`Hovered: ${key}`);
-    };
+    const handleHover = () => {};
 
     return (
       <div className="w-[500px] rounded-lg bg-gray-900 p-4">
@@ -78,9 +76,7 @@ export const BackendSection: Story = {
       }));
     };
 
-    const handleHover = (key: string) => {
-      console.log(`Hovered: ${key}`);
-    };
+    const handleHover = () => {};
 
     return (
       <div className="w-[500px] rounded-lg bg-gray-900 p-4">
@@ -117,7 +113,7 @@ export const BothSections: Story = {
               [key]: value,
             }));
           }}
-          onHover={(key) => console.log(`Frontend hovered: ${key}`)}
+          onHover={() => {}}
         />
         <div className="my-4 border-t border-gray-700" />
         <ConventionSection
@@ -131,7 +127,7 @@ export const BothSections: Story = {
               [key]: value,
             }));
           }}
-          onHover={(key) => console.log(`Backend hovered: ${key}`)}
+          onHover={() => {}}
         />
       </div>
     );

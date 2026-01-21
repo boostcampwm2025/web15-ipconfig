@@ -25,7 +25,7 @@ export const Default: Story = {
           label="Variable"
           value={value}
           onChange={setValue}
-          onHover={() => console.log('Hovered')}
+          onHover={() => {}}
         />
       </div>
     );
