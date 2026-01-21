@@ -16,6 +16,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: {
+    label: 'Variable',
+    value: 'camelCase' as NamingCase,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [value, setValue] = useState<NamingCase>('camelCase');
 
@@ -33,6 +39,12 @@ export const Default: Story = {
 };
 
 export const AllNamingCases: Story = {
+  args: {
+    label: 'Variable',
+    value: 'camelCase' as NamingCase,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const [variable, setVariable] = useState<NamingCase>('camelCase');
     const [functionName, setFunctionName] = useState<NamingCase>('camelCase');
@@ -71,6 +83,12 @@ export const AllNamingCases: Story = {
 };
 
 export const WithDifferentValues: Story = {
+  args: {
+    label: 'Variable',
+    value: 'camelCase' as NamingCase,
+    onChange: () => {},
+    onHover: () => {},
+  },
   render: () => {
     const cases: NamingCase[] = [
       'camelCase',

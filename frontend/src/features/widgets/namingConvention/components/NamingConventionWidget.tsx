@@ -80,7 +80,7 @@ export default function NamingConventionWidget() {
         titleColor="text-indigo-400"
         convention={namingState.frontend}
         onChange={(key, value) => updateNamingState('frontend', key, value)}
-        onHover={(key) => handleHover('frontend', key)}
+        onHover={(key, label) => handleHover('frontend', key, label)}
       />
       <Separator className="my-2 bg-gray-700" />
       <ConventionSection
