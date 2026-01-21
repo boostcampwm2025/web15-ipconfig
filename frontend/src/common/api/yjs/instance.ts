@@ -14,8 +14,11 @@ export const connectProvider = (workspaceId: string, token?: string) => {
     provider.destroy(); // 기존 연결 끊기
   }
 
+  const url =
+    import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3000/collaboration';
+
   provider = new HocuspocusProvider({
-    url: process.env.NEXT_PUBLIC_HOCUSPOCUS_URL || 'ws://localhost:1234',
+    url,
     name: `workspace:${workspaceId}`, // 방 이름
     document: doc,
     onConnect: () => {
