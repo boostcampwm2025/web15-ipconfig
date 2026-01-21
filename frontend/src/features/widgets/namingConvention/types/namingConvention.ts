@@ -2,6 +2,8 @@ export interface NamingConventionData {
   widgetType: 'NAMING_CONVENTION';
   frontend: FrontendNamingConvention;
   backend: BackendNamingConvention;
+  database: DatabaseNamingConvention;
+  common: CommonNamingConvention;
 }
 
 export interface FrontendNamingConvention {
@@ -16,6 +18,20 @@ export interface BackendNamingConvention {
   function: NamingCase;
   class: NamingCase;
   constant: NamingCase;
+}
+
+export interface DatabaseNamingConvention {
+  table: NamingCase;
+  column: NamingCase;
+  index: NamingCase;
+  constraint: NamingCase;
+}
+
+export interface CommonNamingConvention {
+  utility: NamingCase;
+  constant: NamingCase;
+  type: NamingCase;
+  enum: NamingCase;
 }
 
 export type NamingCase =

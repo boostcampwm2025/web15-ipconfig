@@ -8,9 +8,14 @@ import type {
 import { GuidelineBox } from './GuidelineBox';
 import { ConventionSection } from './ConventionSection';
 import { NAMING_INFO } from '../constants/namingInfo';
-import { FileCodeIcon, ServerIcon } from 'lucide-react';
+import {
+  FileCodeIcon,
+  ServerIcon,
+  DatabaseIcon,
+  WrenchIcon,
+} from 'lucide-react';
 
-type Category = 'frontend' | 'backend';
+type Category = 'frontend' | 'backend' | 'database' | 'common';
 
 interface CategoryConfig {
   id: Category;
@@ -40,6 +45,24 @@ const CATEGORIES: CategoryConfig[] = [
     description:
       '백엔드에서는 언어 특성에 따라 camelCase 또는 snake_case를 사용하며, 클래스명은 PascalCase를 사용합니다.',
   },
+  {
+    id: 'database',
+    label: 'Database',
+    title: 'Database',
+    titleColor: 'text-blue-400',
+    icon: <DatabaseIcon className="size-4" />,
+    description:
+      '데이터베이스에서는 테이블명과 컬럼명에 snake_case를 사용하며, 명확하고 일관된 네이밍을 유지합니다.',
+  },
+  {
+    id: 'common',
+    label: 'Common/Utils',
+    title: 'Common/Utils',
+    titleColor: 'text-purple-400',
+    icon: <WrenchIcon className="size-4" />,
+    description:
+      '공통 유틸리티와 타입 정의는 camelCase 또는 PascalCase를 사용하며, 재사용 가능한 코드의 일관성을 유지합니다.',
+  },
 ];
 
 export default function NamingConventionWidget2() {
@@ -51,7 +74,7 @@ export default function NamingConventionWidget2() {
 
   // State 분리하는 게 나을까요?
   const [namingState, setNamingState] = useState<
-    Pick<NamingConventionData, 'frontend' | 'backend'>
+    Pick<NamingConventionData, 'frontend' | 'backend' | 'database' | 'common'>
   >({
     frontend: {
       variable: 'camelCase' as NamingCase,
@@ -65,10 +88,22 @@ export default function NamingConventionWidget2() {
       class: 'PascalCase' as NamingCase,
       constant: 'UPPER_SNAKE_CASE' as NamingCase,
     },
+    database: {
+      table: 'snake_case' as NamingCase,
+      column: 'snake_case' as NamingCase,
+      index: 'snake_case' as NamingCase,
+      constraint: 'snake_case' as NamingCase,
+    },
+    common: {
+      utility: 'camelCase' as NamingCase,
+      constant: 'UPPER_SNAKE_CASE' as NamingCase,
+      type: 'PascalCase' as NamingCase,
+      enum: 'PascalCase' as NamingCase,
+    },
   });
 
   const updateNamingState = (
-    section: 'frontend' | 'backend',
+    section: Category,
     key: string,
     value: NamingCase,
   ) => {
@@ -84,11 +119,7 @@ export default function NamingConventionWidget2() {
     });
   };
 
-  const handleHover = (
-    section: 'frontend' | 'backend',
-    key: string,
-    label: string,
-  ) => {
+  const handleHover = (section: Category, key: string, label: string) => {
     const sectionInfo = NAMING_INFO[section];
     const desc = sectionInfo[key as keyof typeof sectionInfo] || '';
     setActiveTip({ category: `${section.toUpperCase()} - ${label}`, desc });
@@ -97,11 +128,10 @@ export default function NamingConventionWidget2() {
   const currentCategoryConfig = CATEGORIES.find(
     (cat) => cat.id === activeCategory,
   )!;
-  const currentConvention =
-    activeCategory === 'frontend' ? namingState.frontend : namingState.backend;
+  const currentConvention = namingState[activeCategory];
 
   return (
-    <div className="flex h-full w-[400px] flex-col overflow-y-auto p-4">
+    <div className="flex h-full w-[600px] flex-col overflow-y-auto p-4">
       {/* Category Buttons */}
       <div className="mb-4 flex gap-2">
         {CATEGORIES.map((category) => {

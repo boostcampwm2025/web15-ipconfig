@@ -17,4 +17,22 @@ export const NAMING_INFO = {
     class: '클래스명은 명사여야 하며 PascalCase를 사용하는 것이 일반적입니다.',
     constant: '환경 변수나 전역 상수는 대문자와 언더스코어를 사용합니다.',
   },
+  database: {
+    table:
+      '테이블명은 복수형 명사를 사용하며 snake_case를 권장합니다. (예: user_profiles)',
+    column:
+      '컬럼명은 snake_case를 사용하며 명확하고 간결하게 작성합니다. (예: created_at)',
+    index:
+      '인덱스명은 idx_ 접두어를 붙이고 snake_case를 사용합니다. (예: idx_user_email)',
+    constraint:
+      '제약조건명은 의미있는 이름을 사용하며 snake_case를 권장합니다. (예: fk_user_profile_id)',
+  },
+  common: {
+    utility:
+      '유틸리티 함수는 동사로 시작하는 camelCase를 사용합니다. (예: formatDate, validateEmail)',
+    constant:
+      '공통 상수는 UPPER_SNAKE_CASE를 사용하며 모듈별로 그룹화합니다. (예: API_BASE_URL)',
+    type: '타입 정의는 PascalCase를 사용하며 명사로 작성합니다. (예: UserProfile, ApiResponse)',
+    enum: '열거형은 PascalCase를 사용하며 단수형 명사로 작성합니다. (예: UserRole, OrderStatus)',
+  },
 };

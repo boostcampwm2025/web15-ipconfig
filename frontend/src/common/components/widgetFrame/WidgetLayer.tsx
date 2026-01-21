@@ -40,13 +40,13 @@ function WidgetLayer() {
         <CommunicationWidget />
       </WidgetFrame>
 
-      <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
-        <NamingConventionWidget />
-      </WidgetFrame>
-
       {/* <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
-        <NamingConventionWidget2 />
+        <NamingConventionWidget />
       </WidgetFrame> */}
+
+      <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
+        <NamingConventionWidget2 />
+      </WidgetFrame>
     </>
   );
 }
