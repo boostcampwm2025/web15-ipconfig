@@ -20,7 +20,7 @@ function TechStackList({ keyword }: TechStackListProps) {
   }
 
   return (
-    <div className="flex flex-wrap gap-2 overflow-y-auto">
+    <div className="flex flex-wrap gap-2.5 overflow-y-auto py-1">
       {filteredStacks.map((tech) => (
         <DraggableTechStackItem key={tech.id} {...tech} />
       ))}
