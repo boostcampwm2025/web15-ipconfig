@@ -62,10 +62,14 @@ export default function NamingConventionWidget() {
     });
   };
 
-  const handleHover = (section: 'frontend' | 'backend', key: string) => {
+  const handleHover = (
+    section: 'frontend' | 'backend',
+    key: string,
+    label: string,
+  ) => {
     const sectionInfo = NAMING_INFO[section];
     const desc = sectionInfo[key as keyof typeof sectionInfo] || '';
-    setActiveTip({ category: `${section.toUpperCase()} - ${key}`, desc });
+    setActiveTip({ category: `${section.toUpperCase()} - ${label}`, desc });
   };
 
   return (
@@ -85,7 +89,7 @@ export default function NamingConventionWidget() {
         titleColor="text-green-400"
         convention={namingState.backend}
         onChange={(key, value) => updateNamingState('backend', key, value)}
-        onHover={(key) => handleHover('backend', key)}
+        onHover={(key, label) => handleHover('backend', key, label)}
       />
       <div className="mt-auto min-h-[100px]">
         {activeTip ? (

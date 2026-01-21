@@ -11,7 +11,7 @@ interface ConventionSectionProps {
   titleColor: string;
   convention: FrontendNamingConvention | BackendNamingConvention;
   onChange: (key: string, value: NamingCase) => void;
-  onHover: (key: string) => void;
+  onHover: (key: string, label: string) => void;
 }
 
 interface FrontendFieldMapping {
@@ -68,7 +68,7 @@ export function ConventionSection({
               label={field.label}
               value={value as NamingCase}
               onChange={(v) => onChange(field.key, v)}
-              onHover={() => onHover(field.key)}
+              onHover={() => onHover(field.key, field.label)}
             />
           );
         })}

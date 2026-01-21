@@ -46,7 +46,7 @@ export const FrontendSection: Story = {
       }));
     };
 
-    const handleHover = () => {};
+    const handleHover = (_key: string, _label: string) => {};
 
     return (
       <div className="w-[500px] rounded-lg bg-gray-900 p-4">
@@ -76,7 +76,7 @@ export const BackendSection: Story = {
       }));
     };
 
-    const handleHover = () => {};
+    const handleHover = (_key: string, _label: string) => {};
 
     return (
       <div className="w-[500px] rounded-lg bg-gray-900 p-4">
@@ -113,7 +113,7 @@ export const BothSections: Story = {
               [key]: value,
             }));
           }}
-          onHover={() => {}}
+          onHover={(_key, _label) => {}}
         />
         <div className="my-4 border-t border-gray-700" />
         <ConventionSection
@@ -127,7 +127,7 @@ export const BothSections: Story = {
               [key]: value,
             }));
           }}
-          onHover={() => {}}
+          onHover={(_key, _label) => {}}
         />
       </div>
     );
@@ -158,7 +158,7 @@ export const WithCustomValues: Story = {
           titleColor="text-indigo-400"
           convention={convention}
           onChange={handleChange}
-          onHover={() => {}}
+          onHover={(_key, _label) => {}}
         />
       </div>
     );
