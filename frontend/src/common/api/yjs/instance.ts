@@ -22,14 +22,9 @@ export const connectProvider = (workspaceId: string, token?: string) => {
     name: `workspace:${workspaceId}`, // 방 이름
     document: doc,
     onConnect: () => {
-      console.log('✅ Connected');
-      // 연결 성공 시 루트 구조 보장
       doc.transact(() => {
         initializeRoot(doc, workspaceId);
       });
-    },
-    onDisconnect: () => {
-      console.log('❌ Disconnected');
     },
   });
 
