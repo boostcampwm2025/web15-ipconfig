@@ -131,7 +131,7 @@ export default function NamingConventionWidget2() {
   const currentConvention = namingState[activeCategory];
 
   return (
-    <div className="flex h-full w-[600px] flex-col overflow-y-auto p-4">
+    <div className="flex h-full flex-col overflow-y-auto p-4">
       {/* Category Buttons */}
       <div className="mb-4 flex gap-2">
         {CATEGORIES.map((category) => {
