@@ -14,8 +14,29 @@ interface ConventionSectionProps {
   onHover: (key: string) => void;
 }
 
-const FRONTEND_FIELDS = ['변수', '함수', '컴포넌트', '상수'] as const;
-const BACKEND_FIELDS = ['변수', '함수', '클래스', '상수'] as const;
+interface FrontendFieldMapping {
+  label: string;
+  key: keyof FrontendNamingConvention;
+}
+
+interface BackendFieldMapping {
+  label: string;
+  key: keyof BackendNamingConvention;
+}
+
+const FRONTEND_FIELDS: FrontendFieldMapping[] = [
+  { label: '변수', key: 'variable' },
+  { label: '함수', key: 'function' },
+  { label: '컴포넌트', key: 'component' },
+  { label: '상수', key: 'constant' },
+] as const;
+
+const BACKEND_FIELDS: BackendFieldMapping[] = [
+  { label: '변수', key: 'variable' },
+  { label: '함수', key: 'function' },
+  { label: '클래스', key: 'class' },
+  { label: '상수', key: 'constant' },
+] as const;
 
 export function ConventionSection({
   category,
@@ -31,15 +52,26 @@ export function ConventionSection({
     <section className="mb-4">
       <h3 className={`${titleColor} mb-2 px-2 text-sm font-bold`}>{title}</h3>
       <div className="space-y-1">
-        {fields.map((field) => (
-          <ConventionRow
-            key={field}
-            label={field.charAt(0).toUpperCase() + field.slice(1)}
-            value={convention[field as keyof typeof convention] as NamingCase}
-            onChange={(v) => onChange(field, v)}
-            onHover={() => onHover(field)}
-          />
-        ))}
+        {fields.map((field) => {
+          const value =
+            category === 'frontend'
+              ? (convention as FrontendNamingConvention)[
+                  (field as FrontendFieldMapping).key
+                ]
+              : (convention as BackendNamingConvention)[
+                  (field as BackendFieldMapping).key
+                ];
+
+          return (
+            <ConventionRow
+              key={field.key}
+              label={field.label}
+              value={value as NamingCase}
+              onChange={(v) => onChange(field.key, v)}
+              onHover={() => onHover(field.key)}
+            />
+          );
+        })}
       </div>
     </section>
   );
