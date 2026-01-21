@@ -8,6 +8,7 @@ import WidgetFrame from './WidgetFrame';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
+import NamingConventionWidget2 from '@/features/widgets/namingConvention/components/NamingConventionWidget2';
 
 function WidgetLayer() {
   const widgetKeys = useWorkspaceWidgetStore(
@@ -42,6 +43,10 @@ function WidgetLayer() {
       <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
         <NamingConventionWidget />
       </WidgetFrame>
+
+      {/* <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
+        <NamingConventionWidget2 />
+      </WidgetFrame> */}
     </>
   );
 }
