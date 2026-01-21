@@ -17,8 +17,6 @@ import ToolBar from './components/toolbar/ToolBar';
 import { joinRoom, leaveRoom } from '@/common/api/socket';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { generateCurrentUser } from '@/common/lib/user';
-import { doc } from '@/common/api/yjs/instance';
-import { ensureRoot } from '@/common/api/yjs/schema';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
 
 function WorkSpacePage() {
@@ -28,7 +26,7 @@ function WorkSpacePage() {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const { workspaceId } = useWorkspaceInfoStore();
-  const { provider, doc } = useCollaboration(workspaceId);
+  useCollaboration(workspaceId);
 
   useEffect(() => {
     // 소켓 연결

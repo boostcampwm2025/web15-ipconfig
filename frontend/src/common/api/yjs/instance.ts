@@ -1,7 +1,7 @@
 // src/features/collab/yjs/instance.ts
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
-import { ensureRoot } from './schema';
+import { initializeRoot } from './utils/initializeRoot';
 
 // Doc은 앱 실행 시 바로 생성 (싱글톤)
 export const doc = new Y.Doc();
@@ -25,7 +25,7 @@ export const connectProvider = (workspaceId: string, token?: string) => {
       console.log('✅ Connected');
       // 연결 성공 시 루트 구조 보장
       doc.transact(() => {
-        ensureRoot(doc, workspaceId);
+        initializeRoot(doc, workspaceId);
       });
     },
     onDisconnect: () => {
