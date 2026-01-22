@@ -29,7 +29,9 @@ export class YjsDocReaderService {
     }
 
     // Hocuspocus Document 객체에서 Y.Doc 추출
-    const yjsDoc = (hocuspocusDoc as unknown as { document: Y.Doc }).document;
+    const yjsDoc =
+      (hocuspocusDoc as unknown as { document?: Y.Doc }).document ??
+      (hocuspocusDoc as unknown as Y.Doc);
     const root = yjsDoc.getMap('root');
     const widgets = root.get('widgets') as Y.Map<Y.Map<unknown>> | undefined;
 
