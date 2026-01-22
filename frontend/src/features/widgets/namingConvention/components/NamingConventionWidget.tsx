@@ -1,6 +1,6 @@
 // frontend/src/features/widgets/namingConvention/NamingConventionWidget.tsx
 import { useState } from 'react';
-import { Separator } from '@/common/components/shadcn/separator';
+import { Button } from '@/common/components/shadcn/button';
 import type {
   NamingConventionData,
   NamingCase,
@@ -8,20 +8,65 @@ import type {
 import { GuidelineBox } from './GuidelineBox';
 import { ConventionSection } from './ConventionSection';
 import { NAMING_INFO } from '../constants/namingInfo';
-import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
-import { useShallow } from 'zustand/react/shallow';
+import {
+  FileCodeIcon,
+  ServerIcon,
+  DatabaseIcon,
+  WrenchIcon,
+} from 'lucide-react';
+
+type Category = 'frontend' | 'backend' | 'database' | 'common';
+
+interface CategoryConfig {
+  id: Category;
+  label: string;
+  title: string;
+  titleColor: string;
+  icon: React.ReactNode;
+  description: string;
+}
+
+const CATEGORIES: CategoryConfig[] = [
+  {
+    id: 'frontend',
+    label: 'Frontend',
+    title: 'Frontend',
+    titleColor: 'text-indigo-400',
+    icon: <FileCodeIcon className="size-4" />,
+    description:
+      'React 컴포넌트는 일반적으로 PascalCase를 사용하고, prop이나 함수 이름은 주로 camelCase를 사용합니다.',
+  },
+  {
+    id: 'backend',
+    label: 'Backend',
+    title: 'Backend',
+    titleColor: 'text-green-400',
+    icon: <ServerIcon className="size-4" />,
+    description:
+      '백엔드에서는 언어 특성에 따라 camelCase 또는 snake_case를 사용하며, 클래스명은 PascalCase를 사용합니다.',
+  },
+  {
+    id: 'database',
+    label: 'Database',
+    title: 'Database',
+    titleColor: 'text-blue-400',
+    icon: <DatabaseIcon className="size-4" />,
+    description:
+      '데이터베이스에서는 테이블명과 컬럼명에 snake_case를 사용하며, 명확하고 일관된 네이밍을 유지합니다.',
+  },
+  {
+    id: 'common',
+    label: 'Common/Utils',
+    title: 'Common/Utils',
+    titleColor: 'text-purple-400',
+    icon: <WrenchIcon className="size-4" />,
+    description:
+      '공통 유틸리티와 타입 정의는 camelCase 또는 PascalCase를 사용하며, 재사용 가능한 코드의 일관성을 유지합니다.',
+  },
+];
 
 export default function NamingConventionWidget() {
-  const { widgetId } = useWidgetIdAndType();
-  const widgetData = useWorkspaceWidgetStore(
-    useShallow(
-      (state) =>
-        state.widgetList.find((widget) => widget.widgetId === widgetId)
-          ?.content,
-    ),
-  );
-
+  const [activeCategory, setActiveCategory] = useState<Category>('frontend');
   const [activeTip, setActiveTip] = useState<{
     category: string;
     desc: string;
@@ -29,7 +74,7 @@ export default function NamingConventionWidget() {
 
   // State 분리하는 게 나을까요?
   const [namingState, setNamingState] = useState<
-    Pick<NamingConventionData, 'frontend' | 'backend'>
+    Pick<NamingConventionData, 'frontend' | 'backend' | 'database' | 'common'>
   >({
     frontend: {
       variable: 'camelCase' as NamingCase,
@@ -43,10 +88,22 @@ export default function NamingConventionWidget() {
       class: 'PascalCase' as NamingCase,
       constant: 'UPPER_SNAKE_CASE' as NamingCase,
     },
+    database: {
+      table: 'snake_case' as NamingCase,
+      column: 'snake_case' as NamingCase,
+      index: 'snake_case' as NamingCase,
+      constraint: 'snake_case' as NamingCase,
+    },
+    common: {
+      utility: 'camelCase' as NamingCase,
+      constant: 'UPPER_SNAKE_CASE' as NamingCase,
+      type: 'PascalCase' as NamingCase,
+      enum: 'PascalCase' as NamingCase,
+    },
   });
 
   const updateNamingState = (
-    section: 'frontend' | 'backend',
+    section: Category,
     key: string,
     value: NamingCase,
   ) => {
@@ -62,35 +119,60 @@ export default function NamingConventionWidget() {
     });
   };
 
-  const handleHover = (
-    section: 'frontend' | 'backend',
-    key: string,
-    label: string,
-  ) => {
+  const handleHover = (section: Category, key: string, label: string) => {
     const sectionInfo = NAMING_INFO[section];
     const desc = sectionInfo[key as keyof typeof sectionInfo] || '';
     setActiveTip({ category: `${section.toUpperCase()} - ${label}`, desc });
   };
 
+  const currentCategoryConfig = CATEGORIES.find(
+    (cat) => cat.id === activeCategory,
+  )!;
+  const currentConvention = namingState[activeCategory];
+
   return (
-    <div className="flex h-full w-[400px] flex-col overflow-y-auto p-4">
-      <ConventionSection
-        category="frontend"
-        title="Frontend"
-        titleColor="text-indigo-400"
-        convention={namingState.frontend}
-        onChange={(key, value) => updateNamingState('frontend', key, value)}
-        onHover={(key, label) => handleHover('frontend', key, label)}
-      />
-      <Separator className="my-2 bg-gray-700" />
-      <ConventionSection
-        category="backend"
-        title="Backend"
-        titleColor="text-green-400"
-        convention={namingState.backend}
-        onChange={(key, value) => updateNamingState('backend', key, value)}
-        onHover={(key, label) => handleHover('backend', key, label)}
-      />
+    <div className="flex h-full flex-col overflow-y-auto p-4">
+      {/* Category Buttons */}
+      <div className="mb-4 flex gap-2">
+        {CATEGORIES.map((category) => {
+          const isActive = activeCategory === category.id;
+          return (
+            <Button
+              key={category.id}
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setActiveCategory(category.id);
+                setActiveTip(null);
+              }}
+              className={`flex items-center gap-2 border transition-all ${
+                isActive
+                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-md hover:border-indigo-700 hover:bg-indigo-700'
+                  : 'border-gray-700 bg-gray-800/50 text-gray-300 hover:border-gray-600 hover:bg-gray-700/50'
+              }`}
+            >
+              {category.icon}
+              {category.label}
+            </Button>
+          );
+        })}
+      </div>
+
+      {/* Configuration Section */}
+      <div className="mb-4">
+        <ConventionSection
+          category={activeCategory}
+          title={currentCategoryConfig.title}
+          titleColor={currentCategoryConfig.titleColor}
+          convention={currentConvention}
+          onChange={(key, value) =>
+            updateNamingState(activeCategory, key, value)
+          }
+          onHover={(key, label) => handleHover(activeCategory, key, label)}
+        />
+      </div>
+
+      {/* Guideline Box */}
       <div className="mt-auto min-h-[100px]">
         {activeTip ? (
           <GuidelineBox
@@ -98,9 +180,10 @@ export default function NamingConventionWidget() {
             description={activeTip.desc}
           />
         ) : (
-          <div className="mt-4 rounded-md border border-dashed border-gray-700 p-4 text-center text-sm text-gray-500 italic">
-            Hover over an item to see naming tips.
-          </div>
+          <GuidelineBox
+            category={`${currentCategoryConfig.label} Naming Strategy`}
+            description={currentCategoryConfig.description}
+          />
         )}
       </div>
     </div>
