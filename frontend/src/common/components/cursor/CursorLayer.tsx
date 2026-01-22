@@ -1,24 +1,12 @@
-import { useEffect } from 'react';
-import { updateLocalCursor } from '@/common/api/yjs/awareness';
 import CursorWithName from './CursorWithName';
 import useCursorStore from '@/common/store/cursor';
-import { useThrottledCallback } from '@/common/hooks/useThrottledCallback';
+import { useAwareness } from '@/common/hooks/useAwareness';
 
 function CursorLayer() {
-  // any 타입 방지를 위해 cursorList만 가져오는 거 명시하기
+  // Awareness change 이벤트 리스너 등록
+  useAwareness();
+
   const cursorList = useCursorStore((state) => state.cursorList);
-
-  const handleMouseMove = useThrottledCallback((e: MouseEvent) => {
-    updateLocalCursor(e.clientX, e.clientY);
-  }, 50);
-
-  useEffect(() => {
-    // 전체 문서에서 마우스 이동 감지
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [handleMouseMove]);
 
   return (
     <>

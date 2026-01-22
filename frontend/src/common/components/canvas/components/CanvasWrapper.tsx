@@ -13,6 +13,8 @@ import {
   zoomByDeltaAtPivot,
 } from '../lib/positionTransform';
 import { cn } from '@/common/lib/utils';
+import { updateLocalCursor } from '@/common/api/yjs/awareness';
+import { useThrottledCallback } from '@/common/hooks/useThrottledCallback';
 
 export function CanvasWrapper({ children }: PropsWithChildren) {
   const { camera, setCamera, frameRef, getFrameInfo } = useCanvas();
@@ -68,6 +70,10 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
     lastMousePos.current = null;
   };
 
+  const handleMouseMove = useThrottledCallback((e: React.MouseEvent) => {
+    updateLocalCursor(e.clientX, e.clientY);
+  }, 50);
+
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
@@ -90,6 +96,7 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
+      onMouseMove={handleMouseMove}
     >
       {/* 캔버스 이동 이벤트 감지용 */}
       <div
