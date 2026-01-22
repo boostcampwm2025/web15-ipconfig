@@ -1,9 +1,6 @@
 import * as Y from 'yjs';
-import type {
-  WidgetContent,
-  WidgetData,
-  WidgetType,
-} from '../../../types/yjsDoc';
+import type { WidgetData, WidgetType } from '../../../types/yjsDoc';
+import type { WidgetContent } from '@/common/types/yjsWidgetContent';
 
 /**
  * JS 객체/배열을 재귀적으로 Yjs 타입으로 변환
@@ -17,7 +14,16 @@ import type {
  * @param value - 변환할 JavaScript 값 (객체, 배열, 원시값 등)
  * @returns Yjs 호환 타입 (Y.Map, Y.Array, 원시값)
  */
-export const toYType = (value: unknown): unknown => {
+type YValue =
+  | Y.Map<unknown>
+  | Y.Array<unknown>
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
+
+export const toYType = (value: unknown): YValue => {
   if (value === null || value === undefined) return value;
 
   // 배열 -> Y.Array
@@ -41,7 +47,7 @@ export const toYType = (value: unknown): unknown => {
   }
 
   // 기본 타입은 그대로 반환
-  return value;
+  return value as YValue;
 };
 
 /**

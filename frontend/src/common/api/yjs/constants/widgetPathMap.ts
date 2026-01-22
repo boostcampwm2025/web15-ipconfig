@@ -1,0 +1,53 @@
+// [위젯 타입] -> [필드 키] -> [실제 Yjs 경로]
+/**
+ * 위젯 타입별 필드와 실제 Yjs 데이터 구조 내 경로를 매핑한 객체입니다.
+ *
+ * 구조:
+ * {
+ *   [WIDGET_TYPE]: {
+ *     [fieldKey]: ['path', 'to', 'property']
+ *   }
+ * }
+ *
+ * - fieldKey: 클라이언트(UI)에서 사용하는 추상화된 필드 이름
+ * - value(배열): Yjs Y.Map 구조에서 해당 데이터를 찾아가기 위한 키들의 순서
+ */
+export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
+  GIT_CONVENTION: {
+    // 1. Primitive Fields (값 수정용)
+    mainBranch: ['branchRules', 'mainBranch'],
+    developBranch: ['branchRules', 'developBranch'],
+    useGitmoji: ['commitConvention', 'useGitmoji'],
+
+    // 2. Selectors (옵션 선택용)
+    strategy: ['strategy'],
+    prefixes: ['branchRules', 'prefixes'],
+    commitTypes: ['commitConvention', 'commitTypes'],
+  },
+  TECH_STACK: {
+    subject: ['subject'],
+    techItems: ['techItems'], // 배열이지만 여기선 경로만 정의
+  },
+  COMMUNICATION: {
+    urgent: ['communication', 'urgent'],
+    sync: ['communication', 'sync'],
+    async: ['communication', 'async'],
+    official: ['communication', 'official'],
+    responseTime: ['sla', 'responseTime'],
+    coreTimeStart: ['timeManagement', 'coreTimeStart'],
+    coreTimeEnd: ['timeManagement', 'coreTimeEnd'],
+    noMeetingDay: ['meeting', 'noMeetingDay'],
+    feedbackStyle: ['meeting', 'feedbackStyle'],
+  },
+  GROUNDRULE_COLLABORATION: {
+    approves: ['reviewPolicy', 'approves'],
+    maxReviewHours: ['reviewPolicy', 'maxReviewHours'],
+    blockMerge: ['reviewPolicy', 'blockMerge'],
+    activeVersion: ['prRules', 'activeVersion'],
+    labelRules: ['prRules', 'labelRules'],
+    activeStrategy: ['prRules', 'activeStrategy'],
+    platform: ['workflow', 'platform'],
+    cycleValue: ['workflow', 'cycleValue'],
+    cycleUnit: ['workflow', 'cycleUnit'],
+  },
+};
