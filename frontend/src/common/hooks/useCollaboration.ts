@@ -4,11 +4,10 @@ import { bindYjsToZustand } from '../api/yjs/sync';
 
 import { setLocalUser } from '../api/yjs/awareness';
 import type { User } from '../types/user';
+import useUserStore from '../store/user';
 
-export const useCollaboration = (
-  documentName: string,
-  user: User | null | undefined,
-) => {
+export const useCollaboration = (documentName: string) => {
+  const user = useUserStore((state) => state.user);
   useEffect(() => {
     if (!documentName) return;
 

@@ -10,29 +10,37 @@ let provider: HocuspocusProvider | null = null;
 let currentWorkspaceId: string | null = null;
 
 export const connectProvider = (workspaceId: string) => {
+  // 같은 workspaceId면 재연결하지 않음
   if (provider && currentWorkspaceId === workspaceId) {
-    return provider; // ✅ 재사용
+    return provider;
   }
 
+  // 기존 Provider가 있으면 정리
   if (provider) {
-    provider.destroy(); // workspace 변경 시만
+    provider.destroy();
+    provider = null;
+    currentWorkspaceId = null;
   }
-
-  currentWorkspaceId = workspaceId;
 
   const url =
     import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3000/collaboration';
 
-  provider = new HocuspocusProvider({
-    url,
-    name: `workspace:${workspaceId}`,
-    document: doc,
-    onConnect: () => {
-      doc.transact(() => {
-        initializeRoot(doc, workspaceId);
-      });
-    },
-  });
+  try {
+    provider = new HocuspocusProvider({
+      url,
+      name: `workspace:${workspaceId}`, // 방 이름
+      document: doc,
+      onConnect: () => {
+        doc.transact(() => {
+          initializeRoot(doc, workspaceId);
+        });
+      },
+    });
+    currentWorkspaceId = workspaceId;
+  } catch (error) {
+    provider = null;
+    currentWorkspaceId = null;
+  }
 
   return provider;
 };

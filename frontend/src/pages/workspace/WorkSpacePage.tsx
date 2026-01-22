@@ -34,7 +34,7 @@ function WorkSpacePage() {
     setUser(currentUser);
   }, [currentUser, setUser]);
 
-  useCollaboration(workspaceId, currentUser);
+  useCollaboration(workspaceId);
 
   useEffect(() => {
     // 소켓 연결
