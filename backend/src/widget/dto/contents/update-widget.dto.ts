@@ -12,14 +12,20 @@ import {
   PartialPostItContentDto,
   PartialTechStackContentDto,
   PartialGitConventionContentDto,
+  PartialCollaborationContentDto,
+  PartialCommunicationContentDto,
+  PartialNamingConventionContentDto,
   WidgetType,
-} from './widget-content.dto';
+} from '../widget-content.dto';
 
 @ApiExtraModels(
   PartialTechStackContentDto,
   PartialPostItContentDto,
   PartialGroundRuleContentDto,
   PartialGitConventionContentDto,
+  PartialCollaborationContentDto,
+  PartialCommunicationContentDto,
+  PartialNamingConventionContentDto,
 )
 class UpdateWidgetContentData {
   @ApiProperty({
@@ -29,6 +35,9 @@ class UpdateWidgetContentData {
       { $ref: getSchemaPath(PartialPostItContentDto) },
       { $ref: getSchemaPath(PartialGroundRuleContentDto) },
       { $ref: getSchemaPath(PartialGitConventionContentDto) },
+      { $ref: getSchemaPath(PartialCollaborationContentDto) },
+      { $ref: getSchemaPath(PartialCommunicationContentDto) },
+      { $ref: getSchemaPath(PartialNamingConventionContentDto) },
     ],
   })
   @IsOptional()
@@ -46,6 +55,18 @@ class UpdateWidgetContentData {
           value: PartialGitConventionContentDto,
           name: WidgetType.GIT_CONVENTION,
         },
+        {
+          value: PartialCollaborationContentDto,
+          name: WidgetType.COLLABORATION,
+        },
+        {
+          value: PartialCommunicationContentDto,
+          name: WidgetType.COMMUNICATION,
+        },
+        {
+          value: PartialNamingConventionContentDto,
+          name: WidgetType.NAMING_CONVENTION,
+        },
       ],
     },
   })
@@ -53,7 +74,10 @@ class UpdateWidgetContentData {
     | PartialTechStackContentDto
     | PartialPostItContentDto
     | PartialGroundRuleContentDto
-    | PartialGitConventionContentDto;
+    | PartialGitConventionContentDto
+    | PartialCollaborationContentDto
+    | PartialCommunicationContentDto
+    | PartialNamingConventionContentDto;
 }
 
 export class UpdateWidgetDto {

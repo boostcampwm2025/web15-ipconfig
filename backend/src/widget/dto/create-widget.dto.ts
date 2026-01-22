@@ -14,6 +14,9 @@ import {
   PostItContentDto,
   GroundRuleContentDto,
   GitConventionContentDto,
+  CollaborationContentDto,
+  CommunicationContentDto,
+  NamingConventionContentDto,
   BaseContentDto,
 } from './widget-content.dto';
 
@@ -23,6 +26,9 @@ import {
   PostItContentDto,
   GroundRuleContentDto,
   GitConventionContentDto,
+  CollaborationContentDto,
+  CommunicationContentDto,
+  NamingConventionContentDto,
 )
 export class WidgetData {
   @ApiProperty({ description: 'X 좌표 (Canvas 기준)', example: 100 })
@@ -52,6 +58,9 @@ export class WidgetData {
       { $ref: getSchemaPath(PostItContentDto) },
       { $ref: getSchemaPath(GroundRuleContentDto) },
       { $ref: getSchemaPath(GitConventionContentDto) },
+      { $ref: getSchemaPath(CollaborationContentDto) },
+      { $ref: getSchemaPath(CommunicationContentDto) },
+      { $ref: getSchemaPath(NamingConventionContentDto) },
     ],
   })
   @IsObject()
@@ -65,6 +74,12 @@ export class WidgetData {
         { value: PostItContentDto, name: WidgetType.POST_IT },
         { value: GroundRuleContentDto, name: WidgetType.GROUND_RULE },
         { value: GitConventionContentDto, name: WidgetType.GIT_CONVENTION },
+        { value: CollaborationContentDto, name: WidgetType.COLLABORATION },
+        { value: CommunicationContentDto, name: WidgetType.COMMUNICATION },
+        {
+          value: NamingConventionContentDto,
+          name: WidgetType.NAMING_CONVENTION,
+        },
       ],
     },
   })
@@ -72,7 +87,10 @@ export class WidgetData {
     | TechStackContentDto
     | PostItContentDto
     | GroundRuleContentDto
-    | GitConventionContentDto;
+    | GitConventionContentDto
+    | CollaborationContentDto
+    | CommunicationContentDto
+    | NamingConventionContentDto;
 }
 
 // 최종 생성 DTO
