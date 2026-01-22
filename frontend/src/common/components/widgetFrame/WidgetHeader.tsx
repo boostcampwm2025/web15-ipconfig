@@ -8,6 +8,7 @@ import {
 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { emitDeleteWidget } from '@/common/api/socket';
+import { RiFontSizeAi } from 'react-icons/ri';
 
 const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
   TECH_STACK: {
@@ -25,6 +26,10 @@ const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
   COMMUNICATION: {
     title: '커뮤니케이션',
     icon: <LuMessageSquare className="text-yellow-500" />,
+  },
+  NAMING_CONVENTION: {
+    title: '네이밍 컨벤션',
+    icon: <RiFontSizeAi className="text-white-500" />,
   },
 };
 

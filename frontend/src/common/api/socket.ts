@@ -153,7 +153,9 @@ export function emitUpdateWidget(widgetId: string, payload: WidgetContent) {
   const widgetType = useWorkspaceWidgetStore
     .getState()
     .widgetList.find((widget) => widget.widgetId === widgetId)?.type;
-  const content = widgetType ? { ...payload, widgetType } : payload;
+  const content = widgetType
+    ? ({ ...payload, widgetType } as WidgetContent)
+    : payload;
 
   socket.emit('widget:update', {
     widgetId,
