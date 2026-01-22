@@ -1,5 +1,5 @@
 import CursorWithName from './CursorWithName';
-import useCursorStore from '@/common/store/cusor';
+import useCursorStore from '@/common/store/cursor';
 
 function CursorLayer() {
   const { cursorList } = useCursorStore();

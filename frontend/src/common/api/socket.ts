@@ -13,7 +13,7 @@ import type {
   WidgetLayout,
   WidgetType,
 } from '../types/widgetData';
-import useCursorStore from '../store/cusor';
+import useCursorStore from '../store/cursor';
 import type { Cursor } from '../types/cursor';
 import { CURSOR_INITIAL_POSITION } from '../components/cursor/constants';
 
