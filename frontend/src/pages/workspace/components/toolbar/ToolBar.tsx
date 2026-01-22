@@ -1,8 +1,7 @@
 import ToolButton from './ToolButton';
 import { LuMousePointer2, LuGitBranch } from 'react-icons/lu';
 import { LuLayers } from 'react-icons/lu';
-import type { TechStackData } from '@/common/types/widgetData';
-import { emitCreateWidget } from '@/common/api/socket';
+import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 
 function ToolBar() {
   return (
@@ -20,11 +19,11 @@ function ToolBar() {
           label="기술 스택"
           onClick={() => {
             const widgetId = crypto.randomUUID();
-            emitCreateWidget({
+            createWidgetAction({
               widgetId,
               type: 'TECH_STACK',
               layout: { x: 200, y: 200, width: 500 },
-              content: { selectedItems: [] } as TechStackData,
+              content: { selectedItems: [] },
             });
           }}
         />
@@ -33,7 +32,7 @@ function ToolBar() {
           label="Git Convention"
           onClick={() => {
             const widgetId = crypto.randomUUID();
-            emitCreateWidget({
+            createWidgetAction({
               widgetId,
               type: 'GIT_CONVENTION',
               layout: { x: 500, y: 500, width: 500 },
