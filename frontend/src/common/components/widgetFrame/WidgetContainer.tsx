@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { emitUpdateWidgetLayout } from '@/common/api/socket';
+import { useCanvas } from '../canvas/context/CanvasProvider';
 
 function WidgetContainer({ children }: PropsWithChildren) {
   const { widgetId } = useWidgetIdAndType();
+  const { camera } = useCanvas();
   const widgetData = useWorkspaceWidgetStore((state) =>
     state.widgetList.find((widget) => widget.widgetId === widgetId),
   );
@@ -16,9 +18,14 @@ function WidgetContainer({ children }: PropsWithChildren) {
     y: 400,
   };
 
-  // 드래그 중 로컬 위치 상태 (즉시 UI 업데이트용)
-  const [localPosition, setLocalPosition] = useState({ x, y });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  // 드래그 시작 시점의 데이터 저장
+  const dragStartRef = useRef({
+    mouseX: 0,
+    mouseY: 0,
+    widgetX: 0,
+    widgetY: 0,
+  });
+
   const [isDragging, setIsDragging] = useState(false);
 
   // 스로틀링을 위한 ref
@@ -35,10 +42,14 @@ function WidgetContainer({ children }: PropsWithChildren) {
     e.preventDefault();
 
     setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - x,
-      y: e.clientY - y,
-    });
+
+    // 시작 시점의 위치 정보 저장
+    dragStartRef.current = {
+      mouseX: e.clientX, // 현재 브라우저에서 마우스 좌표
+      mouseY: e.clientY, // 현재 브라우저에서 마우스 좌표
+      widgetX: x, // 현재 위젯 위치
+      widgetY: y, // 현재 위젯 위치
+    };
   };
 
   useEffect(() => {
@@ -47,14 +58,15 @@ function WidgetContainer({ children }: PropsWithChildren) {
     const handlePointerMove = (e: PointerEvent) => {
       e.preventDefault();
 
-      const actualX = e.clientX - dragOffset.x;
-      const actualY = e.clientY - dragOffset.y;
+      const { mouseX, mouseY, widgetX, widgetY } = dragStartRef.current;
 
-      // 즉시 UI 업데이트
-      setLocalPosition({
-        x: actualX,
-        y: actualY,
-      });
+      // 마우스 이동 거리 계산 (scale 보정)
+      const deltaX = (e.clientX - mouseX) / camera.scale;
+      const deltaY = (e.clientY - mouseY) / camera.scale;
+
+      // 실제 위젯 위치 계산
+      const actualX = widgetX + deltaX;
+      const actualY = widgetY + deltaY;
 
       // 스로틀링으로 이벤트 전송
       const now = performance.now();
@@ -75,26 +87,21 @@ function WidgetContainer({ children }: PropsWithChildren) {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [isDragging, dragOffset, widgetId]);
-
-  // 화면에 그릴 위치: 드래그 중이면 로컬 상태, 아니면 서버에서 받은 실제 위치 사용
-  const displayPosition = isDragging ? localPosition : { x, y };
+  }, [isDragging, widgetId, camera.scale]);
 
   return (
     <div
-      className="animate-pop-in pointer-events-auto absolute w-fit rounded-xl shadow-2xl"
+      className="pointer-events-auto absolute w-fit rounded-xl border border-gray-700 bg-gray-800"
       style={{
-        left: displayPosition.x,
-        top: displayPosition.y,
+        left: x,
+        top: y,
         width: width ?? 'auto',
         height: height ?? 'auto',
         zIndex: zIndex ?? 1,
       }}
       onPointerDown={handlePointerDown}
     >
-      <div className="cursor-auto rounded-xl border border-gray-700 bg-gray-800 p-5">
-        {children}
-      </div>
+      <div className="cursor-auto rounded-xl p-5">{children}</div>
     </div>
   );
 }

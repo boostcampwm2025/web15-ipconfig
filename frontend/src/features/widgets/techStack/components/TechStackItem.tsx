@@ -32,7 +32,7 @@ export function TechStackItem({ techName }: { techName: string }) {
   return (
     <Badge
       variant="outline"
-      className="hover:border-primary flex h-25 w-25 flex-col items-center justify-center gap-2 rounded-lg border-gray-700 px-2 py-1 transition-colors select-none hover:bg-gray-700"
+      className="hover:border-primary flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg bg-gray-700 px-2 py-1 transition-colors select-none hover:bg-gray-700"
     >
       <TechIcon name={techName} />
       <div className="text-center text-xs font-medium text-wrap text-gray-300">

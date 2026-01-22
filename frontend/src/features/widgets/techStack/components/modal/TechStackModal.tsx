@@ -67,7 +67,7 @@ function TechStackModal({
     <ReactPortal portalTargetId={modalRootId}>
       <dialog
         style={{ left: position.x, top: position.y }}
-        className="fixed z-999 flex h-150 w-100 flex-col overflow-hidden rounded-xl border border-gray-600 bg-gray-800 shadow-2xl"
+        className="fixed flex h-150 w-100 flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
       >
         {/* 헤더를 드래그 핸들로 사용 */}
         <ModalHeader
@@ -78,7 +78,7 @@ function TechStackModal({
         />
 
         {/* 내부 컨텐츠 */}
-        <div className="flex flex-1 flex-col overflow-hidden px-7 py-4">
+        <div className="flex flex-1 flex-col overflow-hidden px-6.5 pt-2 pb-4">
           <SearchBar search={search} setSearch={setSearch} />
           <TechStackList keyword={debouncedSearch} />
         </div>

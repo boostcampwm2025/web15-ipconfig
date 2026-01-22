@@ -17,6 +17,7 @@ import ToolBar from './components/toolbar/ToolBar';
 import { joinRoom, leaveRoom } from '@/common/api/socket';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { generateCurrentUser } from '@/common/lib/user';
+import { useCollaboration } from '@/common/hooks/useCollaboration';
 
 function WorkSpacePage() {
   // UI State
@@ -25,6 +26,7 @@ function WorkSpacePage() {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const { workspaceId } = useWorkspaceInfoStore();
+  useCollaboration(workspaceId);
 
   useEffect(() => {
     // 소켓 연결
