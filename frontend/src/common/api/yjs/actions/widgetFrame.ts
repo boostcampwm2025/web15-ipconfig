@@ -80,12 +80,8 @@ export const deleteWidgetAction = (widgetId: string) => {
       widgetsMap.delete(widgetId);
     }
 
-    // 순서 배열에서 삭제
-    let index = -1;
-    widgetOrder.forEach((id, i) => {
-      if (id === widgetId) index = i;
-    });
-    if (index !== -1) {
+    const index = widgetOrder.toArray().indexOf(widgetId);
+    if (index > -1) {
       widgetOrder.delete(index, 1);
     }
   });
