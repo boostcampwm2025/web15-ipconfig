@@ -155,7 +155,7 @@ export default function NamingConventionWidget() {
           return (
             <Button
               key={category.id}
-              variant="ghost"
+              variant="default"
               size="sm"
               onClick={() => {
                 setActiveCategory(category.id);
