@@ -1,6 +1,6 @@
 import CursorWithName from './CursorWithName';
 import useCursorStore from '@/common/store/cursor';
-import { useAwareness } from '@/common/hooks/useAwareness';
+import { useAwareness } from '@/common/hooks/useCursorAwareness';
 
 function CursorLayer() {
   // Awareness change 이벤트 리스너 등록
