@@ -42,7 +42,9 @@ export function ConventionRow({
         <SelectContent>
           {NAMING_LIST.map((opt) => (
             <SelectItem key={opt} value={opt}>
-              <span className="font-mono">{opt}</span>
+              <span className="font-mono">
+                {opt === 'none' ? '컨벤션 정의 안함' : opt}
+              </span>
             </SelectItem>
           ))}
         </SelectContent>
