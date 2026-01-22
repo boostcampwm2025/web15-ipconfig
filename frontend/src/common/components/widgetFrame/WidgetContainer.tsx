@@ -136,11 +136,6 @@ function WidgetContainer({ children }: PropsWithChildren) {
     return { x, y };
   }, [isDragging, dragPos, remoteInteraction, x, y]);
 
-  // 다른 사람이 드래그 중일 때 스타일 처리
-  const isRemoteMoving = !!remoteInteraction;
-  const remoteColor = remoteInteraction?.user.color;
-  const remoteNickname = remoteInteraction?.user.nickname;
-
   return (
     <div
       className="pointer-events-auto absolute w-fit rounded-xl border border-gray-700 bg-gray-800 transition-shadow duration-200"
