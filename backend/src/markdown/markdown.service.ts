@@ -6,6 +6,7 @@ import type {
   YjsTechStackContent,
   YjsPostItContent,
   YjsCollaborationContent,
+  YjsCommunicationContent,
 } from '../collaboration/types/yjs-widget.types';
 import {
   getSelectedValue,
@@ -195,6 +196,52 @@ export class MarkdownService {
     return lines;
   }
 
+  private buildCommunicationSection(widgets: YjsWidgetData[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
+
+    const lines: string[] = [];
+    lines.push('## 💬 커뮤니케이션');
+
+    widgets.forEach((widget) => {
+      const content = widget.content as unknown as YjsCommunicationContent;
+
+      // 커뮤니케이션 수단 섹션
+      lines.push('### 커뮤니케이션 수단');
+      lines.push('| 긴급 | 동기 | 비동기 | 공식 |');
+      lines.push('| :--- | :--- | :--- | :--- |');
+      const urgent = content.communication?.urgent || '-';
+      const sync = content.communication?.sync || '-';
+      const async = content.communication?.async || '-';
+      const official = content.communication?.official || '-';
+      lines.push(`| ${urgent} | ${sync} | ${async} | ${official} |`);
+      lines.push('');
+
+      // SLA 섹션
+      lines.push('### 응답 시간');
+      const responseTime = content.sla?.responseTime ?? 0;
+      lines.push(`- 최대 응답 시간: ${responseTime}시간 이내`);
+      lines.push('');
+
+      // 코어 타임 섹션
+      lines.push('### 코어 타임');
+      const coreStart = content.timeManagement?.coreTimeStart || '-';
+      const coreEnd = content.timeManagement?.coreTimeEnd || '-';
+      lines.push(`- ${coreStart} ~ ${coreEnd}`);
+      lines.push('');
+
+      // 미팅 섹션
+      lines.push('### 미팅');
+      const noMeetingDay = content.meeting?.noMeetingDay || '-';
+      const feedbackStyle = content.meeting?.feedbackStyle || '-';
+      lines.push(`| 미팅 없는 날 | 피드백 스타일 |`);
+      lines.push(`| :--- | :--- |`);
+      lines.push(`| ${noMeetingDay} | ${feedbackStyle} |`);
+      lines.push('');
+    });
+
+    return lines;
+  }
+
   private buildElseSection(widgets: YjsWidgetData[]): string[] {
     if (!widgets || widgets.length === 0) return [];
 
@@ -243,6 +290,11 @@ export class MarkdownService {
     );
     markdownParts.push(...this.buildCollaborationSection(collaborationWidgets));
 
+    const communicationWidgets = allWidgets.filter(
+      (widget) => widget.type === 'COMMUNICATION',
+    );
+    markdownParts.push(...this.buildCommunicationSection(communicationWidgets));
+
     const techStackWidgets = allWidgets.filter(
       (widget) => widget.type === 'TECH_STACK',
     );
@@ -256,6 +308,7 @@ export class MarkdownService {
     if (
       groundRuleWidgets.length === 0 &&
       collaborationWidgets.length === 0 &&
+      communicationWidgets.length === 0 &&
       techStackWidgets.length === 0 &&
       postItWidgets.length === 0
     ) {
