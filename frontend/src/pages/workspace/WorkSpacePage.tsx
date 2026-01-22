@@ -27,22 +27,16 @@ function WorkSpacePage() {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const { workspaceId } = useWorkspaceInfoStore();
-  const setUser = useUserStore((s) => s.setUser);
-  const [currentUser] = useState(() => generateCurrentUser());
-
-  useEffect(() => {
-    setUser(currentUser);
-  }, [currentUser, setUser]);
 
   useCollaboration(workspaceId);
 
   useEffect(() => {
     // 소켓 연결
-    joinRoom(currentUser);
+    joinRoom(generateCurrentUser());
     return () => {
       leaveRoom();
     };
-  }, [currentUser]);
+  }, []);
 
   // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
