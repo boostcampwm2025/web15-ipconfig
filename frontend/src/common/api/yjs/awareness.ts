@@ -22,21 +22,12 @@ export const updateLocalCursor = (x: number, y: number) => {
 };
 
 // 위젯 편집 시작/진행 (드래그 중 - 실시간 프리뷰 공유)
-export function updateEditingState(editing: EditingState) {
+export const updateEditingState = (state: EditingState) => {
   const provider = getProvider();
-  if (!provider?.awareness) return;
-
-  provider.awareness.setLocalStateField('editing', {
-    widgetId: editing.widgetId,
-    kind: editing.kind,
-    preview: {
-      x: editing.preview.x,
-      y: editing.preview.y,
-      width: editing.preview.width,
-      height: editing.preview.height,
-    },
-  });
-}
+  if (provider && provider.awareness) {
+    provider.awareness.setLocalStateField('editing', state);
+  }
+};
 
 // 위젯 편집 종료 (드래그 끝 - 프리뷰 제거)
 export const clearEditingState = () => {
