@@ -1,4 +1,5 @@
 import type { WidgetContent } from './yjsWidgetContent';
+import type { WidgetType } from './widgetData';
 
 // Selector 공통 타입
 export interface OptionItem {
@@ -43,10 +44,5 @@ export interface WorkspaceData {
   };
 }
 
-// Widget Types
-export type WidgetType =
-  | 'TECH_STACK'
-  | 'POST_IT'
-  | 'GIT_CONVENTION'
-  | 'GROUNDRULE_COLLABORATION'
-  | 'COMMUNICATION';
+// Widget Types imported from common types
+export type { WidgetType } from './widgetData';

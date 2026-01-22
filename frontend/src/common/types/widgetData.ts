@@ -3,6 +3,13 @@ import type { CommunicationData } from '@/features/widgets/communication/types/c
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
+export type {
+  CollaborationData,
+  CommunicationData,
+  GitConventionData,
+  TechStack,
+};
+
 export type WidgetType =
   | 'TECH_STACK'
   | 'GIT_CONVENTION'
@@ -17,6 +24,7 @@ export type WidgetContent =
 
 export interface TechStackData {
   selectedItems: TechStack[];
+  subject?: string;
 }
 
 export interface WidgetData {

@@ -8,6 +8,7 @@ import {
 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { emitDeleteWidget } from '@/common/api/socket';
+import { deleteWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 
 const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
   TECH_STACK: {
@@ -47,7 +48,8 @@ function WidgetHeader() {
         <LuTrash2
           size={16}
           onClick={() => {
-            emitDeleteWidget(widgetId);
+            // emitDeleteWidget(widgetId);
+            deleteWidgetAction(widgetId);
           }}
         />
       </button>
