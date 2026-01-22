@@ -7,13 +7,27 @@ import type { NamingConventionData } from '@/features/widgets/namingConvention/t
 export type WidgetType =
   | 'TECH_STACK'
   | 'GIT_CONVENTION'
+  | 'POST_IT'
+  | 'GROUND_RULE'
   | 'COLLABORATION'
   | 'COMMUNICATION'
   | 'NAMING_CONVENTION';
 
+export interface PostItData {
+  text: string;
+  backgroundColor: string;
+  fontSize: number;
+}
+
+export interface GroundRuleData {
+  rules?: string[];
+}
+
 export type WidgetContent =
   | TechStackData
   | GitConventionData
+  | PostItData
+  | GroundRuleData
   | CommunicationData
   | CollaborationData
   | NamingConventionData;

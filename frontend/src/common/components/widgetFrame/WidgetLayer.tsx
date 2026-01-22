@@ -30,18 +30,6 @@ function WidgetLayer() {
           <WidgetContent type={type} />
         </WidgetFrame>
       ))}
-
-      <WidgetFrame widgetId={'COLLABORATION'} type={'COLLABORATION'}>
-        <CollaborationWidget />
-      </WidgetFrame>
-
-      <WidgetFrame widgetId={'COMMUNICATION'} type={'COMMUNICATION'}>
-        <CommunicationWidget />
-      </WidgetFrame>
-
-      <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
-        <NamingConventionWidget />
-      </WidgetFrame>
     </>
   );
 }
@@ -56,6 +44,18 @@ function WidgetContent({ type }: WidgetContentProps) {
       return <TechStackWidget />;
     case 'GIT_CONVENTION':
       return <GitConventionWidget />;
+    case 'COLLABORATION':
+      return <CollaborationWidget />;
+    case 'COMMUNICATION':
+      return <CommunicationWidget />;
+    case 'NAMING_CONVENTION':
+      return <NamingConventionWidget />;
+    case 'POST_IT':
+      // TODO: POST_IT 위젯 컴포넌트 구현 필요
+      return null;
+    case 'GROUND_RULE':
+      // TODO: GROUND_RULE 위젯 컴포넌트 구현 필요
+      return null;
     default:
       return null;
   }

@@ -16,7 +16,7 @@ import {
   PartialCommunicationContentDto,
   PartialNamingConventionContentDto,
   WidgetType,
-} from '../widget-content.dto';
+} from './widget-content.dto';
 
 @ApiExtraModels(
   PartialTechStackContentDto,

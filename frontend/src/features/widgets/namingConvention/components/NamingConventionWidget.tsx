@@ -14,6 +14,10 @@ import {
   DatabaseIcon,
   WrenchIcon,
 } from 'lucide-react';
+import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useShallow } from 'zustand/react/shallow';
+import { emitUpdateWidget } from '@/common/api/socket';
 
 type Category = 'frontend' | 'backend' | 'database' | 'common';
 
@@ -65,58 +69,70 @@ const CATEGORIES: CategoryConfig[] = [
   },
 ];
 
+const defaultNamingState: Pick<
+  NamingConventionData,
+  'frontend' | 'backend' | 'database' | 'common'
+> = {
+  frontend: {
+    variable: 'camelCase' as NamingCase,
+    function: 'camelCase' as NamingCase,
+    component: 'PascalCase' as NamingCase,
+    constant: 'UPPER_SNAKE_CASE' as NamingCase,
+  },
+  backend: {
+    variable: 'camelCase' as NamingCase,
+    function: 'camelCase' as NamingCase,
+    class: 'PascalCase' as NamingCase,
+    constant: 'UPPER_SNAKE_CASE' as NamingCase,
+  },
+  database: {
+    table: 'snake_case' as NamingCase,
+    column: 'snake_case' as NamingCase,
+    index: 'snake_case' as NamingCase,
+    constraint: 'snake_case' as NamingCase,
+  },
+  common: {
+    utility: 'camelCase' as NamingCase,
+    constant: 'UPPER_SNAKE_CASE' as NamingCase,
+    type: 'PascalCase' as NamingCase,
+    enum: 'PascalCase' as NamingCase,
+  },
+};
+
 export default function NamingConventionWidget() {
+  const { widgetId } = useWidgetIdAndType();
+  const content = useWorkspaceWidgetStore(
+    useShallow(
+      (state) =>
+        state.widgetList.find((widget) => widget.widgetId === widgetId)
+          ?.content,
+    ),
+  ) as NamingConventionData | undefined;
+
+  // content를 직접 사용 (동기화는 자동으로 됨)
+  const namingData = content ?? defaultNamingState;
+
   const [activeCategory, setActiveCategory] = useState<Category>('frontend');
   const [activeTip, setActiveTip] = useState<{
     category: string;
     desc: string;
   } | null>(null);
 
-  // State 분리하는 게 나을까요?
-  const [namingState, setNamingState] = useState<
-    Pick<NamingConventionData, 'frontend' | 'backend' | 'database' | 'common'>
-  >({
-    frontend: {
-      variable: 'camelCase' as NamingCase,
-      function: 'camelCase' as NamingCase,
-      component: 'PascalCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-    },
-    backend: {
-      variable: 'camelCase' as NamingCase,
-      function: 'camelCase' as NamingCase,
-      class: 'PascalCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-    },
-    database: {
-      table: 'snake_case' as NamingCase,
-      column: 'snake_case' as NamingCase,
-      index: 'snake_case' as NamingCase,
-      constraint: 'snake_case' as NamingCase,
-    },
-    common: {
-      utility: 'camelCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-      type: 'PascalCase' as NamingCase,
-      enum: 'PascalCase' as NamingCase,
-    },
-  });
-
   const updateNamingState = (
     section: Category,
     key: string,
     value: NamingCase,
   ) => {
-    setNamingState((prev) => {
-      const sectionState = prev[section];
-      return {
-        ...prev,
-        [section]: {
-          ...sectionState,
-          [key]: value,
-        },
-      };
-    });
+    const sectionState = namingData[section];
+    const updated = {
+      ...namingData,
+      [section]: {
+        ...sectionState,
+        [key]: value,
+      },
+    };
+    // 변경사항을 백엔드로 전송
+    emitUpdateWidget(widgetId, updated as NamingConventionData);
   };
 
   const handleHover = (section: Category, key: string, label: string) => {
@@ -128,7 +144,7 @@ export default function NamingConventionWidget() {
   const currentCategoryConfig = CATEGORIES.find(
     (cat) => cat.id === activeCategory,
   )!;
-  const currentConvention = namingState[activeCategory];
+  const currentConvention = namingData[activeCategory];
 
   return (
     <div className="flex h-full flex-col overflow-y-auto p-4">

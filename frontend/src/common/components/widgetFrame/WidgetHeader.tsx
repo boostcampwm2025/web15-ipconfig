@@ -5,6 +5,8 @@ import {
   LuMessageSquare,
   LuTrash2,
   LuUsers,
+  LuStickyNote,
+  LuFileCode,
 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { emitDeleteWidget } from '@/common/api/socket';
@@ -18,6 +20,14 @@ const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
   GIT_CONVENTION: {
     title: 'Git 컨벤션',
     icon: <LuGitBranch className="text-green-500" />,
+  },
+  POST_IT: {
+    title: '포스트잇',
+    icon: <LuStickyNote className="text-yellow-500" />,
+  },
+  GROUND_RULE: {
+    title: '그라운드 룰',
+    icon: <LuFileCode className="text-orange-500" />,
   },
   COLLABORATION: {
     title: '작업 및 협업',
