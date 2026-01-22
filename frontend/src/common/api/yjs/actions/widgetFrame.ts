@@ -131,13 +131,8 @@ export const updateWidgetLayoutAction = (
 export const bringToFrontAction = (widgetId: string) => {
   doc.transact(() => {
     const widgetOrder = getWidgetOrderArray();
-    let index = -1;
-
-    widgetOrder.forEach((id, i) => {
-      if (id === widgetId) index = i;
-    });
-
-    if (index !== -1) {
+    const index = widgetOrder.toArray().indexOf(widgetId);
+    if (index > -1) {
       widgetOrder.delete(index, 1);
       widgetOrder.push([widgetId]);
     }

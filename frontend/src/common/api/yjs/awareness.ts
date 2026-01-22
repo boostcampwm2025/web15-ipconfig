@@ -1,4 +1,4 @@
-import type { EditingState, UserState } from '../../types/yjsawarenessType';
+import type { EditingState, UserState } from '../../types/yjsawareness';
 import { getProvider } from './instance';
 
 // 내 정보 등록
