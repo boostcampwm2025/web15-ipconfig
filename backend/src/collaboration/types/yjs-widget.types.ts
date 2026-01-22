@@ -2,7 +2,7 @@ export type YjsWidgetType =
   | 'TECH_STACK'
   | 'POST_IT'
   | 'GIT_CONVENTION'
-  | 'GROUNDRULE_COLLABORATION'
+  | 'COLLABORATION'
   | 'COMMUNICATION';
 
 // Selector 공통 타입

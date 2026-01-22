@@ -286,7 +286,7 @@ export class MarkdownService {
     markdownParts.push(...this.buildGroundRuleSection(groundRuleWidgets));
 
     const collaborationWidgets = allWidgets.filter(
-      (widget) => widget.type === 'GROUNDRULE_COLLABORATION',
+      (widget) => widget.type === 'COLLABORATION',
     );
     markdownParts.push(...this.buildCollaborationSection(collaborationWidgets));
 
