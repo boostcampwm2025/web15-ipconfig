@@ -1,4 +1,3 @@
-// src/features/collab/yjs/instance.ts
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { initializeRoot } from './utils/initializeRoot';
