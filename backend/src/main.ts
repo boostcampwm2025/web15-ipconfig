@@ -11,39 +11,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const isProduction = process.env.NODE_ENV === 'production';
-  const hostUrl = process.env.HOST_URL;
-  const vercelProjectName = process.env.VERCEL_PROJECT_NAME;
-  const vercelUsername = process.env.VERCEL_USERNAME;
-
-  // Vercel preview 패턴: 프로젝트명-git-브랜치-유저명.vercel.app
-  const vercelPreviewPattern =
-    vercelProjectName && vercelUsername
-      ? new RegExp(
-          `^https://${vercelProjectName}-git-[a-z0-9-]+-${vercelUsername}\\.vercel\\.app$`,
-        )
-      : null;
-
-  const isAllowedOrigin = (origin: string | undefined | null): boolean => {
-    if (!isProduction) return true;
-    if (!origin) return true;
-    if (origin === hostUrl) return true;
-    if (vercelPreviewPattern?.test(origin)) return true;
-    return false;
-  };
+  const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
 
   app.enableCors({
-    origin: (
-      origin: string | undefined,
-      callback: (err: Error | null, origin?: boolean) => void,
-    ) => {
-      if (isAllowedOrigin(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    credentials: true, // 쿠키/인증 헤더 허용 시 필수
   });
 
   app.setGlobalPrefix('api');
