@@ -28,8 +28,11 @@ export const connectProvider = (workspaceId: string) => {
     currentWorkspaceId = null;
   }
 
-  const url =
-    import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3000/collaboration';
+  const url = `${
+    import.meta.env.MODE === 'production'
+      ? window.location.origin
+      : 'http://localhost:3000'
+  }/collaboration`;
 
   try {
     provider = new HocuspocusProvider({
