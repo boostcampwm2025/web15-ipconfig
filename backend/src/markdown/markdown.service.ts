@@ -32,7 +32,7 @@ export class MarkdownService {
       let strategyName = '';
       let description = '';
 
-      switch (content.data.strategy) {
+      switch (content.strategy) {
         case 'GITHUB_FLOW':
           strategyName = 'GitHub Flow';
           description = 'main 브랜치를 중심으로 feature 브랜치에서 작업';
@@ -68,11 +68,11 @@ export class MarkdownService {
     lines.push('| :--- | :--- | :--- |');
 
     gitConventionWidgets.forEach((content) => {
-      const mainBranch = content.data.branchRules.mainBranch || '-';
-      const developBranch = content.data.branchRules.developBranch || '-';
+      const mainBranch = content.branchRules.mainBranch || '-';
+      const developBranch = content.branchRules.developBranch || '-';
       const prefixes =
-        content.data.branchRules.prefixes.length > 0
-          ? content.data.branchRules.prefixes.join(', ')
+        content.branchRules.prefixes.length > 0
+          ? content.branchRules.prefixes.join(', ')
           : '-';
 
       lines.push(`| ${mainBranch} | ${developBranch} | ${prefixes} |`);
@@ -96,8 +96,8 @@ export class MarkdownService {
 
     gitConventionWidgets.forEach((content) => {
       const commitTypes =
-        content.data.commitConvention.commitTypes.length > 0
-          ? content.data.commitConvention.commitTypes.join(', ')
+        content.commitConvention.commitTypes.length > 0
+          ? content.commitConvention.commitTypes.join(', ')
           : '-';
 
       lines.push(`| ${commitTypes} |`);
