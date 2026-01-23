@@ -1,30 +1,20 @@
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
-import { useTechStack } from '@/features/widgets/techStack/hooks/techStackWidget/useTechStack';
+import { useTechStackYjs } from '@/features/widgets/techStack/hooks/techStackWidget/useTechStackYjs';
 import SelectedTechStackBox from './SelectedTechStackBox';
 import SelectInput from '@/common/components/SelectInput';
 import SubjectGuideline from './SubjectGuideline';
-import { useSubject } from '@/features/widgets/techStack/hooks/techStackWidget/useSubject';
-import type { TechStackData } from '@/common/types/widgetData';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { useSubjectYjs } from '@/features/widgets/techStack/hooks/techStackWidget/useSubjectYjs';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
-import { emitUpdateWidget } from '@/common/api/socket';
 
 function TechStackWidget() {
   const { widgetId } = useWidgetIdAndType();
-  const content = useWorkspaceWidgetStore(
-    (state) =>
-      state.widgetList.find((widget) => widget.widgetId === widgetId)?.content,
-  );
 
-  const { selectedSubject, setSelectedSubject, parsedSubject } = useSubject();
+  const { selectedSubject, setSelectedSubject, parsedSubject } =
+    useSubjectYjs(widgetId);
 
-  const techStackContent = content as TechStackData;
-  const { selectedTechStacks, isModalOpen, actions } = useTechStack({
-    data: techStackContent,
-    onDataChange: (nextData) => {
-      emitUpdateWidget(widgetId, nextData);
-    },
+  const { selectedTechStacks, isModalOpen, actions } = useTechStackYjs({
+    widgetId,
   });
 
   return (

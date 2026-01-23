@@ -166,3 +166,46 @@ export const removeOptionAction = (
     }
   });
 };
+
+// 배열 필드 전체 업데이트
+/**
+ * 배열 필드를 전체 교체합니다. (예: techItems)
+ *
+ * @param widgetId - 대상 위젯 ID
+ * @param type - 위젯 타입
+ * @param fieldKey - 배열이 위치한 필드 키
+ * @param newArray - 새로운 배열 값
+ */
+export const updateArrayFieldAction = <T>(
+  widgetId: string,
+  type: WidgetType,
+  fieldKey: string,
+  newArray: T[],
+) => {
+  doc.transact(() => {
+    const arrayPath = getMappedPath(type, fieldKey);
+    if (!arrayPath) return;
+
+    // 부모 경로와 타겟 키 분리
+    const parentPath = arrayPath.slice(0, -1);
+    const targetKey = arrayPath[arrayPath.length - 1];
+
+    // 부모 맵 또는 content 맵 찾기
+    let parentMap: Y.Map<unknown> | undefined;
+    if (parentPath.length === 0) {
+      // 경로가 ['techItems'] 같이 content 바로 아래인 경우
+      const widgetMap = getWidgetMap(widgetId);
+      parentMap = widgetMap?.get('content') as Y.Map<unknown> | undefined;
+    } else {
+      parentMap = getTargetMap(widgetId, parentPath) ?? undefined;
+    }
+
+    if (parentMap) {
+      const yArray = new Y.Array<unknown>();
+      for (const item of newArray) {
+        yArray.push([toYType(item)]);
+      }
+      parentMap.set(targetKey, yArray);
+    }
+  });
+};
