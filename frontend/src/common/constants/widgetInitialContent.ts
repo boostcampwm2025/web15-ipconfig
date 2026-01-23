@@ -68,7 +68,9 @@ export const COLLABORATION_INITIAL_CONTENT: CollaborationContent = {
       selectedId: '',
       options: {
         semantic: { value: 'Semantic Versioning', createdAt: 0 },
-        calver: { value: 'Calendar Versioning', createdAt: 0 },
+        calendar: { value: 'Calendar Versioning', createdAt: 0 },
+        conventional: { value: 'Conventional Commits', createdAt: 0 },
+        custom: { value: 'Custom Versioning', createdAt: 0 },
       },
     },
     activeStrategy: {
@@ -101,6 +103,7 @@ export const COLLABORATION_INITIAL_CONTENT: CollaborationContent = {
         github: { value: 'GitHub Projects', createdAt: 0 },
         jira: { value: 'Jira', createdAt: 0 },
         notion: { value: 'Notion', createdAt: 0 },
+        linear: { value: 'Linear', createdAt: 0 },
       },
     },
     cycleValue: 2,

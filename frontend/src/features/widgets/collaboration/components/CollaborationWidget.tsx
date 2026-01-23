@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
-import { useShallow } from 'zustand/react/shallow';
+import { useCollaborationYjs } from '../hooks/useCollaborationYjs';
 
+// 하위 컴포넌트 props 타입 호환을 위한 인터페이스
 export interface CollaborationData {
   prRules: {
     activeVersion: string;
@@ -26,32 +25,9 @@ export interface CollaborationData {
 
 export default function CollaborationWidget() {
   const { widgetId } = useWidgetIdAndType();
-  const widgetData = useWorkspaceWidgetStore(
-    useShallow(
-      (state) =>
-        state.widgetList.find((widget) => widget.widgetId === widgetId)
-          ?.content,
-    ),
-  );
 
-  const [prRules, setPrRules] = useState<CollaborationData['prRules']>({
-    activeVersion: 'semantic',
-    selectedLabels: ['feature', 'fix', 'refactor'],
-    activeStrategy: 'squash',
-  });
-
-  const [reviewPolicy, setReviewPolicy] = useState<
-    CollaborationData['reviewPolicy']
-  >({
-    approves: 2,
-    maxReviewHours: 24,
-    blockMerge: true,
-  });
-
-  const [workflow, setWorkflow] = useState<CollaborationData['workflow']>({
-    platform: '',
-    cycleValue: 2,
-    cycleUnit: 'week',
+  const { prRules, reviewPolicy, workflow, actions } = useCollaborationYjs({
+    widgetId,
   });
 
   return (
@@ -60,7 +36,10 @@ export default function CollaborationWidget() {
         <CodeReviewPolicy
           data={reviewPolicy}
           onUpdate={(key, value) =>
-            setReviewPolicy((prev) => ({ ...prev, [key]: value }))
+            actions.updateReviewPolicy(
+              key as keyof CollaborationData['reviewPolicy'],
+              value,
+            )
           }
         />
       </div>
@@ -68,7 +47,10 @@ export default function CollaborationWidget() {
         <PRRules
           data={prRules}
           onUpdate={(key, value) =>
-            setPrRules((prev) => ({ ...prev, [key]: value }))
+            actions.updatePRRules(
+              key as keyof CollaborationData['prRules'],
+              value,
+            )
           }
         />
       </div>
@@ -77,7 +59,10 @@ export default function CollaborationWidget() {
         <TaskWorkflow
           data={workflow}
           onUpdate={(key, value) =>
-            setWorkflow((prev) => ({ ...prev, [key]: value }))
+            actions.updateWorkflow(
+              key as keyof CollaborationData['workflow'],
+              value,
+            )
           }
         />
       </div>

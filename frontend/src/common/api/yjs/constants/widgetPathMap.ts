@@ -50,4 +50,15 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     cycleValue: ['workflow', 'cycleValue'],
     cycleUnit: ['workflow', 'cycleUnit'],
   },
+  COLLABORATION: {
+    approves: ['reviewPolicy', 'approves'],
+    maxReviewHours: ['reviewPolicy', 'maxReviewHours'],
+    blockMerge: ['reviewPolicy', 'blockMerge'],
+    activeVersion: ['prRules', 'activeVersion'],
+    labelRules: ['prRules', 'labelRules'],
+    activeStrategy: ['prRules', 'activeStrategy'],
+    platform: ['workflow', 'platform'],
+    cycleValue: ['workflow', 'cycleValue'],
+    cycleUnit: ['workflow', 'cycleUnit'],
+  },
 };
