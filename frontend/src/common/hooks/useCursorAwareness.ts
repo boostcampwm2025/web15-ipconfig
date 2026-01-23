@@ -1,24 +1,18 @@
 import { useEffect } from 'react';
-import { getProvider } from '../api/yjs/instance';
+import { onProviderReady } from '../api/yjs/instance';
 import type { Cursor } from '../types/cursor';
 import type { LocalState } from '../types/yjsawareness';
 import useCursorStore from '../store/cursor';
 
 let awarenessHandler: (() => void) | null = null;
 
-export const useAwareness = () => {
+export const useCursorAwareness = () => {
   useEffect(() => {
-    const setupAwarenessListener = () => {
-      const provider = getProvider();
-
-      // 기다리는 로직을 넣어서 Provider랑 타이밍 문제를 해결했습니다.
-      // 더 좋은 방법이 있나요?
-      if (!provider?.awareness) {
-        setTimeout(setupAwarenessListener, 100);
-        return;
-      }
-
+    onProviderReady((provider) => {
       const awareness = provider.awareness;
+
+      // awareness가 없으면 스킵
+      if (!awareness) return;
 
       // 이미 리스너가 등록되어 있으면 스킵
       if (awarenessHandler) return;
@@ -53,8 +47,6 @@ export const useAwareness = () => {
       // 초기 상태 로드 및 변경 이벤트 리스너 등록
       handleAwarenessChange();
       awareness.on('change', handleAwarenessChange);
-    };
-
-    setupAwarenessListener();
+    });
   }, []);
 };

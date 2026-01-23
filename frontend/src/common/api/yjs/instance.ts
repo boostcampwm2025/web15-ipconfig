@@ -8,6 +8,12 @@ export const doc = new Y.Doc();
 // Provider는 나중에 방(workspaceId)에 들어갈 때 초기화
 let provider: HocuspocusProvider | null = null;
 let currentWorkspaceId: string | null = null;
+let providerReadyCallbacks: Array<(p: HocuspocusProvider) => void> = [];
+
+export const onProviderReady = (cb: (p: HocuspocusProvider) => void) => {
+  if (provider) cb(provider);
+  else providerReadyCallbacks.push(cb);
+};
 
 export const connectProvider = (workspaceId: string) => {
   // 같은 workspaceId면 재연결하지 않음
@@ -34,6 +40,8 @@ export const connectProvider = (workspaceId: string) => {
         doc.transact(() => {
           initializeRoot(doc, workspaceId);
         });
+        providerReadyCallbacks.forEach((cb) => cb(provider!));
+        providerReadyCallbacks = [];
       },
     });
     currentWorkspaceId = workspaceId;

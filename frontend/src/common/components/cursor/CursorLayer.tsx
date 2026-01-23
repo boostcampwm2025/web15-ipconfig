@@ -1,10 +1,10 @@
 import CursorWithName from './CursorWithName';
 import useCursorStore from '@/common/store/cursor';
-import { useAwareness } from '@/common/hooks/useAwareness';
+import { useCursorAwareness } from '@/common/hooks/useCursorAwareness';
 
 function CursorLayer() {
   // Awareness change 이벤트 리스너 등록
-  useAwareness();
+  useCursorAwareness();
 
   const cursorList = useCursorStore((state) => state.cursorList);
 
