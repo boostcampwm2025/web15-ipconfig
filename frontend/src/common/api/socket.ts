@@ -13,9 +13,6 @@ import type {
   WidgetLayout,
   WidgetType,
 } from '../types/widgetData';
-import useCursorStore from '../store/cusor';
-import type { Cursor } from '../types/cursor';
-import { CURSOR_INITIAL_POSITION } from '../components/cursor/constants';
 
 const socketUrl =
   import.meta.env.VITE_BACKEND_URL ??
@@ -59,9 +56,7 @@ export function leaveRoom() {
 }
 
 // 워크스페이스에서 다른 유저 퇴장
-socket.on('user:left', (userId) => {
-  useCursorStore.getState().removeCursor(userId);
-});
+socket.on('user:left', () => {});
 
 // 워크스페이스 유저 입장
 interface UserJoinedPayload {
@@ -74,17 +69,8 @@ interface UserJoinedPayload {
 }
 
 socket.on('user:joined', (payload: UserJoinedPayload) => {
-  const { setCursorList } = useCursorStore.getState();
   const { setWidgetList } = useWorkspaceWidgetStore.getState();
-  setCursorList(
-    payload.allUsers.map((user) => ({
-      userId: user.id,
-      nickname: user.nickname,
-      color: user.color,
-      x: CURSOR_INITIAL_POSITION.x,
-      y: CURSOR_INITIAL_POSITION.y,
-    })),
-  );
+  // 커서는 awareness로 처리되므로 여기서는 위젯만 설정
   setWidgetList(
     payload.allWidgets.map((widget) => {
       const { widgetId, type, data } = widget;
@@ -99,23 +85,6 @@ socket.on('user:joined', (payload: UserJoinedPayload) => {
     }),
   );
 });
-
-/**
- * 마우스 커서 관련 소켓 이벤트
- */
-// 커서 이동
-socket.on('cursor:moved', (payload: Pick<Cursor, 'userId' | 'x' | 'y'>) => {
-  const { userId, ...cursorPosition } = payload;
-  const { updateCursorPosition } = useCursorStore.getState();
-  updateCursorPosition(userId, cursorPosition);
-});
-
-export function emitCursorMove(x: number, y: number) {
-  socket.emit('cursor:move', {
-    userId: useUserStore.getState().user?.id,
-    moveData: { x, y },
-  });
-}
 
 // 위젯 생성 함수
 export function emitCreateWidget(widgetData: WidgetData) {
