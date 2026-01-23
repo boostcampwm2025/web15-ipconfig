@@ -1,4 +1,4 @@
-import { useSyncExternalStore, useCallback } from 'react';
+import { useSyncExternalStore, useCallback, useRef } from 'react';
 import * as Y from 'yjs';
 import { getWidgetMap } from '../utils/getMaps';
 import type { WidgetContent } from '@/common/types/yjsWidgetContent';
@@ -21,6 +21,13 @@ const yMapToJSON = (yValue: unknown): unknown => {
 };
 
 /**
+ * 두 값을 JSON 문자열로 비교하여 동일한지 확인
+ */
+const isEqual = (a: unknown, b: unknown): boolean => {
+  return JSON.stringify(a) === JSON.stringify(b);
+};
+
+/**
  * Yjs 위젯 Content를 읽어오는 훅
  *
  * @param widgetId - 위젯 ID
@@ -34,6 +41,8 @@ const yMapToJSON = (yValue: unknown): unknown => {
 export function useYjsWidgetContent<T extends WidgetContent = WidgetContent>(
   widgetId: string,
 ): T | null {
+  const cachedValueRef = useRef<T | null>(null);
+
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
       const widgetMap = getWidgetMap(widgetId);
@@ -62,7 +71,15 @@ export function useYjsWidgetContent<T extends WidgetContent = WidgetContent>(
     if (!contentMap) {
       return null;
     }
-    return yMapToJSON(contentMap) as T;
+    const newValue = yMapToJSON(contentMap) as T;
+
+    // 캐시된 값과 동일하면 캐시된 참조를 반환 (무한 루프 방지)
+    if (isEqual(cachedValueRef.current, newValue)) {
+      return cachedValueRef.current;
+    }
+
+    cachedValueRef.current = newValue;
+    return newValue;
   }, [widgetId]);
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
@@ -79,6 +96,8 @@ export function useYjsWidgetField<T = unknown>(
   widgetId: string,
   fieldKey: string,
 ): T | null {
+  const cachedValueRef = useRef<T | null>(null);
+
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
       const widgetMap = getWidgetMap(widgetId);
@@ -108,7 +127,15 @@ export function useYjsWidgetField<T = unknown>(
       return null;
     }
     const value = contentMap.get(fieldKey);
-    return yMapToJSON(value) as T;
+    const newValue = yMapToJSON(value) as T;
+
+    // 캐시된 값과 동일하면 캐시된 참조를 반환 (무한 루프 방지)
+    if (isEqual(cachedValueRef.current, newValue)) {
+      return cachedValueRef.current;
+    }
+
+    cachedValueRef.current = newValue;
+    return newValue;
   }, [widgetId, fieldKey]);
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
