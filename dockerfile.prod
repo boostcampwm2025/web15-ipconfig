@@ -17,7 +17,7 @@ WORKDIR /app
 
 # 환경변수 주입
 ARG VITE_WEBSOCKET_URL
-ENV VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL
+RUN echo "VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL" > frontend/.env
 
 # 프론트엔드 소스 복사
 COPY frontend ./frontend
