@@ -23,7 +23,7 @@ export const TECH_STACK_INITIAL_CONTENT: TechStackContent = {
 // GIT_CONVENTION 초기값
 export const GIT_CONVENTION_INITIAL_CONTENT: GitConventionContent = {
   strategy: {
-    selectedId: '',
+    selectedId: 'github_flow',
     options: {
       github_flow: { value: 'GITHUB_FLOW', createdAt: 0 },
       git_flow: { value: 'GIT_FLOW', createdAt: 0 },

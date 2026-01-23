@@ -30,17 +30,22 @@ export function useGitConventionYjs({ widgetId }: UseGitConventionYjsProps) {
   const content = useYjsWidgetContent<GitConventionContent>(widgetId);
 
   // Yjs Selector → 단순 string 변환
-  const strategy = useMemo<GitStrategy>(
-    () => (content?.strategy?.selectedId as GitStrategy) || 'GITHUB_FLOW',
-    [content?.strategy?.selectedId],
-  );
+  // selectedId는 소문자('github_flow'), options[selectedId].value는 대문자('GITHUB_FLOW')
+  const strategy = useMemo<GitStrategy>(() => {
+    const selectedId = content?.strategy?.selectedId;
+    if (!selectedId) return 'GITHUB_FLOW';
+    const optionValue = content?.strategy?.options?.[selectedId]?.value;
+    return (optionValue as GitStrategy) || 'GITHUB_FLOW';
+  }, [content?.strategy]);
 
   // Yjs MultiSelector → string[] 변환
   const branchRules = useMemo<BranchRuleState>(() => {
     const prefixSelector = content?.branchRules?.prefixes;
+    // developBranch가 Yjs에 존재하지 않거나 빈 문자열이면 undefined로 처리
+    const developBranchValue = content?.branchRules?.developBranch;
     return {
       mainBranch: content?.branchRules?.mainBranch ?? 'main',
-      developBranch: content?.branchRules?.developBranch ?? '',
+      developBranch: developBranchValue || undefined,
       prefixes: prefixSelector?.selectedIds ?? [],
     };
   }, [content?.branchRules]);
@@ -65,12 +70,13 @@ export function useGitConventionYjs({ widgetId }: UseGitConventionYjsProps) {
   const confirmChangeStrategy = useCallback(() => {
     if (pendingStrategy) {
       const preset = GIT_CONVENTION_PRESETS[pendingStrategy];
-      // Strategy 변경
+      // Strategy 변경 - lowercase key 사용 (예: 'github_flow')
+      const strategyKey = pendingStrategy.toLowerCase();
       updateSelectorPickAction(
         widgetId,
         'GIT_CONVENTION',
         'strategy',
-        pendingStrategy,
+        strategyKey,
       );
       // Branch Rules 변경
       updatePrimitiveFieldAction(
