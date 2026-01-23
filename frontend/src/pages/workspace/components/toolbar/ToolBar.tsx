@@ -1,8 +1,8 @@
 import ToolButton from './ToolButton';
 import { LuMousePointer2, LuGitBranch } from 'react-icons/lu';
-import { LuLayers } from 'react-icons/lu';
-import type { TechStackData } from '@/common/types/widgetData';
-import { emitCreateWidget } from '@/common/api/socket';
+import { LuLayers, LuUsers, LuMessageSquare } from 'react-icons/lu';
+import { RiFontSizeAi } from 'react-icons/ri';
+import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 
 function ToolBar() {
   return (
@@ -20,11 +20,11 @@ function ToolBar() {
           label="기술 스택"
           onClick={() => {
             const widgetId = crypto.randomUUID();
-            emitCreateWidget({
+            createWidgetAction({
               widgetId,
               type: 'TECH_STACK',
-              layout: { x: 200, y: 200, width: 500 },
-              content: { selectedItems: [] } as TechStackData,
+              layout: { x: 200, y: 200 },
+              content: { selectedItems: [] },
             });
           }}
         />
@@ -33,10 +33,10 @@ function ToolBar() {
           label="Git Convention"
           onClick={() => {
             const widgetId = crypto.randomUUID();
-            emitCreateWidget({
+            createWidgetAction({
               widgetId,
               type: 'GIT_CONVENTION',
-              layout: { x: 500, y: 500, width: 500 },
+              layout: { x: 500, y: 500 },
               content: {
                 strategy: 'GITHUB_FLOW',
                 branchRules: {
@@ -55,6 +55,45 @@ function ToolBar() {
                   ],
                 },
               },
+            });
+          }}
+        />
+        <ToolButton
+          icon={<LuUsers size={20} />}
+          label="작업 및 협업"
+          onClick={() => {
+            const widgetId = crypto.randomUUID();
+            createWidgetAction({
+              widgetId,
+              type: 'COLLABORATION',
+              layout: { x: 200, y: 200 },
+              content: { selectedItems: [] },
+            });
+          }}
+        />
+        <ToolButton
+          icon={<LuMessageSquare size={20} />}
+          label="커뮤니케이션"
+          onClick={() => {
+            const widgetId = crypto.randomUUID();
+            createWidgetAction({
+              widgetId,
+              type: 'COMMUNICATION',
+              layout: { x: 200, y: 200 },
+              content: { selectedItems: [] },
+            });
+          }}
+        />
+        <ToolButton
+          icon={<RiFontSizeAi size={20} />}
+          label="네이밍 컨벤션"
+          onClick={() => {
+            const widgetId = crypto.randomUUID();
+            createWidgetAction({
+              widgetId,
+              type: 'NAMING_CONVENTION',
+              layout: { x: 200, y: 200 },
+              content: { selectedItems: [] },
             });
           }}
         />

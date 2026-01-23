@@ -7,7 +7,7 @@ import {
   LuUsers,
 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
-import { emitDeleteWidget } from '@/common/api/socket';
+import { deleteWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 import { RiFontSizeAi } from 'react-icons/ri';
 
 const WIDGET_TITLE_ICON: Record<WidgetType, WidgetMetaData> = {
@@ -52,7 +52,7 @@ function WidgetHeader() {
         <LuTrash2
           size={16}
           onClick={() => {
-            emitDeleteWidget(widgetId);
+            deleteWidgetAction(widgetId);
           }}
         />
       </button>

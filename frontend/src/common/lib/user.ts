@@ -7,5 +7,6 @@ export const generateCurrentUser = () => {
     id: crypto.randomUUID(),
     nickname: `임시 유저 ${randomNickname}`,
     color: getRandomColor(),
+    backgroundColor: getRandomColor(),
   };
 };

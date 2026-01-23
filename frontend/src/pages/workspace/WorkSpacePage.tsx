@@ -18,6 +18,7 @@ import { joinRoom, leaveRoom } from '@/common/api/socket';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { generateCurrentUser } from '@/common/lib/user';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
+import useUserStore from '@/common/store/user';
 
 function WorkSpacePage() {
   // UI State
@@ -26,6 +27,7 @@ function WorkSpacePage() {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const { workspaceId } = useWorkspaceInfoStore();
+
   useCollaboration(workspaceId);
 
   useEffect(() => {

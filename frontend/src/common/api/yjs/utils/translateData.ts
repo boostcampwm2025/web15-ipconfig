@@ -79,8 +79,8 @@ export const yWidgetToWidgetData = (
     layout: {
       x: layout.get('x') ?? 0,
       y: layout.get('y') ?? 0,
-      width: layout.get('width') ?? 300,
-      height: layout.get('height') ?? 300,
+      width: layout.get('width'),
+      height: layout.get('height'),
       zIndex: derivedZIndex,
     },
     content: content.toJSON() as WidgetContent,

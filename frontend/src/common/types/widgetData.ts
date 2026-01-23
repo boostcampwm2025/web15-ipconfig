@@ -4,6 +4,13 @@ import type { GitConventionData } from '@/features/widgets/gitConvention/types/g
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 import type { NamingConventionData } from '@/features/widgets/namingConvention/types/namingConvention';
 
+export type {
+  CollaborationData,
+  CommunicationData,
+  GitConventionData,
+  TechStack,
+};
+
 export type WidgetType =
   | 'TECH_STACK'
   | 'GIT_CONVENTION'
@@ -20,6 +27,7 @@ export type WidgetContent =
 
 export interface TechStackData {
   selectedItems: TechStack[];
+  subject?: string;
 }
 
 export interface WidgetData {

@@ -45,8 +45,6 @@ export const createWidgetAction = ({
       layout: {
         x: 0,
         y: 0,
-        width: 300,
-        height: 300,
         zIndex: 0,
         ...layout,
       },

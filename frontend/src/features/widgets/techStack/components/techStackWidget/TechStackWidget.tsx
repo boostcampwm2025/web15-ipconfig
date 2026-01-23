@@ -32,7 +32,7 @@ function TechStackWidget() {
       collisionDetection={pointerWithin}
       onDragEnd={actions.handleDragEnd}
     >
-      <section className="flex flex-col gap-4">
+      <section className="flex h-full w-[500px] flex-col gap-4 p-1">
         <div className="flex items-center gap-2 font-bold">
           <div className="shrink-0">주제 :</div>
           <SelectInput
