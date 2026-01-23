@@ -9,7 +9,8 @@ export type WidgetType =
   | 'GIT_CONVENTION'
   | 'COLLABORATION'
   | 'COMMUNICATION'
-  | 'NAMING_CONVENTION';
+  | 'NAMING_CONVENTION'
+  | 'CODE_FORMAT';
 
 export type WidgetContent =
   | TechStackData

@@ -7,6 +7,8 @@ import { CommunicationSection } from './CommunicationSection';
 import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
 import { MeetingSection } from './MeetingSection';
+import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
+import { LuMessageSquare } from 'react-icons/lu';
 
 function CommunicationWidget() {
   const [data, setData] = useState<CommunicationData>(
@@ -14,7 +16,11 @@ function CommunicationWidget() {
   );
 
   return (
-    <>
+    <WidgetFrame
+      title="커뮤니케이션"
+      icon={<LuMessageSquare className="text-yellow-500" />}
+      defaultLayout={{ x: 2000, y: 1000 }}
+    >
       <div className="flex w-[550px] flex-col gap-6 p-4">
         <CommunicationSection
           data={data.communication}
@@ -61,7 +67,7 @@ function CommunicationWidget() {
           }
         />
       </div>
-    </>
+    </WidgetFrame>
   );
 }
 

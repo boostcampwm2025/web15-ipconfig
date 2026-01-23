@@ -1,22 +1,28 @@
-import { use, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
-import type { PropsWithChildren } from 'react';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { emitUpdateWidgetLayout } from '@/common/api/socket';
 import { useCanvas } from '../canvas/context/CanvasProvider';
+import type { WidgetLayout } from '@/common/types/widgetData';
 
-function WidgetContainer({ children }: PropsWithChildren) {
+interface WidgetContainerProps {
+  children: React.ReactNode;
+  defaultLayout?: WidgetLayout;
+}
+
+function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
   const { widgetId } = useWidgetIdAndType();
   const { camera } = useCanvas();
   const widgetData = useWorkspaceWidgetStore((state) =>
     state.widgetList.find((widget) => widget.widgetId === widgetId),
   );
 
-  const { x, y, width, height, zIndex } = widgetData?.layout ?? {
-    x: 400,
-    y: 400,
-  };
+  const { x, y, width, height, zIndex } = widgetData?.layout ??
+    defaultLayout ?? {
+      x: 400,
+      y: 400,
+    };
 
   // 드래그 시작 시점의 데이터 저장
   const dragStartRef = useRef({
