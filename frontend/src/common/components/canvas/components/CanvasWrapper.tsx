@@ -9,19 +9,18 @@ import {
 } from 'react';
 import { ZOOM_CONFIG } from '../constants/zoom';
 import {
-  browserToCanvasPosition,
   getNewCameraState,
   zoomByDeltaAtPivot,
+  browserToCanvasPosition,
 } from '../lib/positionTransform';
-import { emitCursorMove } from '@/common/api/socket';
 import { cn } from '@/common/lib/utils';
+import { updateLocalCursor } from '@/common/api/yjs/awareness';
+import { useThrottledCallback } from '@/common/hooks/useThrottledCallback';
 
 export function CanvasWrapper({ children }: PropsWithChildren) {
   const { camera, setCamera, frameRef, getFrameInfo } = useCanvas();
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePos = useRef<Position | null>(null);
-  // 스로틀링을 위한 ref
-  const lastEmitRef = useRef<number>(0);
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
@@ -48,32 +47,8 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   };
 
-  // 캔버스 좌표로 변환
-  const getMousePosition = useCallback(
-    (e: React.PointerEvent | React.MouseEvent) => {
-      const { left: rectLeft, top: rectTop } = getFrameInfo();
-      const frameLeftTopPosition = { x: rectLeft, y: rectTop };
-
-      const mousePositionInCanvas = browserToCanvasPosition(
-        { x: e.clientX, y: e.clientY },
-        frameLeftTopPosition,
-        camera,
-      );
-
-      return mousePositionInCanvas;
-    },
-    [getFrameInfo, camera],
-  );
-
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
-      const now = performance.now();
-      if (now - lastEmitRef.current < 30) return;
-      lastEmitRef.current = now;
-
-      const mousePositionInCanvas = getMousePosition(e);
-
-      emitCursorMove(mousePositionInCanvas.x, mousePositionInCanvas.y);
       if (!lastMousePos.current) return;
 
       const dx = e.clientX - lastMousePos.current.x;
@@ -88,13 +63,24 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
         }));
       }
     },
-    [isPanning, setCamera, getNewCameraState, getMousePosition],
+    [isPanning, setCamera],
   );
 
   const handlePointerUp = () => {
     setIsPanning(false);
     lastMousePos.current = null;
   };
+
+  const handleMouseMove = useThrottledCallback((e: React.MouseEvent) => {
+    const frameInfo = getFrameInfo();
+    const canvasPosition = browserToCanvasPosition(
+      { x: e.clientX, y: e.clientY },
+      { x: frameInfo.left, y: frameInfo.top },
+      camera,
+    );
+
+    updateLocalCursor(canvasPosition.x, canvasPosition.y);
+  }, 50);
 
   useEffect(() => {
     const frame = frameRef.current;
@@ -118,6 +104,7 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
+      onMouseMove={handleMouseMove}
     >
       {/* 캔버스 이동 이벤트 감지용 */}
       <div

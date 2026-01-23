@@ -40,7 +40,6 @@ function TechStackWidget() {
             setSelectedValue={setSelectedSubject}
           />
         </div>
-
         {parsedSubject && (
           <SubjectGuideline
             key={`${parsedSubject.category}-${parsedSubject.option}`}
