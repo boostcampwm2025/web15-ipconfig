@@ -6,6 +6,7 @@ import { useCanvas } from '../canvas/context/CanvasProvider';
 import {
   clearEditingState,
   updateEditingState,
+  updateLocalCursor,
 } from '@/common/api/yjs/awareness';
 import {
   updateWidgetLayoutAction,
@@ -13,6 +14,7 @@ import {
 } from '@/common/api/yjs/actions/widgetFrame';
 import { useWidgetInteractionStore } from '@/common/store/widgetInteraction';
 import type { WidgetLayout } from '@/common/types/widgetData';
+import { browserToCanvasPosition } from '../canvas/lib/positionTransform';
 
 interface WidgetContainerProps {
   children: React.ReactNode;
@@ -21,7 +23,7 @@ interface WidgetContainerProps {
 
 function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
   const { widgetId } = useWidgetIdAndType();
-  const { camera } = useCanvas();
+  const { camera, getFrameInfo } = useCanvas();
   const widgetData = useWorkspaceWidgetStore((state) =>
     state.widgetList.find((widget) => widget.widgetId === widgetId),
   );
@@ -105,6 +107,16 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
           height: height ?? undefined,
         },
       });
+
+      // 3) 드래그 중에도 커서 위치 동기화 (Mouse Move가 stopPropagation 되므로 여기서 직접 호출)
+      // 실제 마우스 위치를 캔버스 좌표로 변환하여 전송
+      const frameInfo = getFrameInfo();
+      const cursorCanvasPos = browserToCanvasPosition(
+        { x: e.clientX, y: e.clientY },
+        { x: frameInfo.left, y: frameInfo.top },
+        camera,
+      );
+      updateLocalCursor(cursorCanvasPos.x, cursorCanvasPos.y);
     };
 
     const handlePointerUp = () => {
@@ -133,7 +145,7 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [isDragging, widgetId, camera.scale, width, height]);
+  }, [isDragging, widgetId, camera, width, height, getFrameInfo]);
 
   const renderedPos = useMemo(() => {
     // 1. Interaction(내꺼/남의꺼) 있으면 그거 우선
