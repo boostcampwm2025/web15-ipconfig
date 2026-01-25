@@ -26,7 +26,7 @@ function WidgetLayer() {
   return (
     <>
       {widgetIds.map(({ widgetId, type }) => (
-        <WidgetProvider widgetId={widgetId} type={type}>
+        <WidgetProvider key={widgetId} widgetId={widgetId} type={type}>
           <WidgetContent type={type} />
         </WidgetProvider>
       ))}
