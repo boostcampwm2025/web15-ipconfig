@@ -125,4 +125,14 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
   getConnectionsCount(): number {
     return this.hocuspocus.getConnectionsCount();
   }
+
+  /**
+   * 특정 워크스페이스의 Hocuspocus Document 가져오기
+   * @param workspaceId 워크스페이스 ID
+   * @returns Hocuspocus Document 또는 null (문서가 로드되지 않은 경우)
+   */
+  getDocument(workspaceId: string) {
+    const documentName = `workspace:${workspaceId}`;
+    return this.hocuspocus.documents.get(documentName) ?? null;
+  }
 }
