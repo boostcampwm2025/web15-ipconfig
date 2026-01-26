@@ -1,0 +1,48 @@
+import { Terminal, Layout } from 'lucide-react';
+import { Button } from '@/common/components/shadcn/button';
+
+interface NavbarProps {
+  scrolled: boolean;
+  isMenuOpen: boolean;
+  setIsMenuOpen: (open: boolean) => void;
+}
+
+const Navbar = ({ scrolled, isMenuOpen, setIsMenuOpen }: NavbarProps) => {
+  return (
+    <nav
+      className={`fixed z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? 'border-b border-slate-800 bg-slate-950/80 py-3 backdrop-blur-md'
+          : 'bg-transparent py-5'
+      }`}
+    >
+      <div className="container mx-auto flex items-center justify-between px-6">
+        <div className="flex items-center gap-2 font-mono text-xl font-bold tracking-tighter">
+          <Terminal className="text-green-400" size={24} />
+          <span className="text-white">
+            team<span className="text-green-400">.config</span>
+          </span>
+        </div>
+
+        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
+          <Button className="transition-colors hover:text-green-400">
+            Log in
+          </Button>
+          <Button className="rounded-full border border-slate-700 bg-slate-800 px-5 py-2 text-white transition-all hover:bg-slate-700">
+            Sign In
+          </Button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="text-white md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <Layout />
+        </button>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
