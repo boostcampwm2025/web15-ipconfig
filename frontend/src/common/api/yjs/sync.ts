@@ -15,10 +15,7 @@ function isWidgetData(value: WidgetData | null): value is WidgetData {
 }
 
 /**
- * Yjs Doc 데이터를 Zustand Store와 동기화하는 함수 (Hook 아님)
- *
- * - 컴포넌트 생명주기와 무관하게 동작
- * - 반드시 반환된 cleanup 함수를 호출해 observer를 해제해야 함
+ * Yjs Doc 데이터를 Zustand Store와 동기화하는 함수
  */
 export const bindYjsToZustand = (): (() => void) => {
   const { setWidgetList } = useWorkspaceWidgetStore.getState();

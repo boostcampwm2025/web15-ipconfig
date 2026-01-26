@@ -35,7 +35,7 @@ function GitConventionWidget() {
       title="Git 컨벤션"
       icon={<LuGitBranch className="text-green-500" />}
     >
-      <section className="relative flex h-full w-full flex-col gap-4 p-1">
+      <section className="relative flex h-full w-[400px] flex-col gap-4 p-1">
         <StrategySelector
           value={strategy}
           onChange={actions.requestChangeStrategy}
