@@ -4,7 +4,7 @@ import {
   Navbar,
   HeroSection,
   Footer,
-} from './components/landing';
+} from '../workspace/components/landing';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
