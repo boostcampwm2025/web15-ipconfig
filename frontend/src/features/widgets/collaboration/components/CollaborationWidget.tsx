@@ -1,98 +1,19 @@
-import {
-  updateMultiSelectorPickAction,
-  updatePrimitiveFieldAction,
-  updateSelectorPickAction,
-} from '@/common/api/yjs/actions/widgetContent';
-import type { MultiSelector, Selector } from '@/common/types/yjsDoc';
-import { useShallow } from 'zustand/react/shallow';
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
-import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { LuUsers } from 'react-icons/lu';
 import CodeReviewPolicy from './CodeReviewPolicy';
 import PRRules from './PRRules';
 import TaskWorkflow from './TaskWorkflow';
-
-export interface CollaborationData {
-  prRules: {
-    activeVersion: Selector;
-    selectedLabels: MultiSelector;
-    activeStrategy: Selector;
-  };
-  reviewPolicy: {
-    approves: number;
-    maxReviewHours: number;
-    blockMerge: boolean;
-  };
-  workflow: {
-    platform: Selector;
-    cycleValue: number;
-    cycleUnit: string;
-  };
-}
+import useCollaborationWidget from '../hooks/useCollaborationWidget';
 
 export default function CollaborationWidget() {
-  const { widgetId, type } = useWidgetIdAndType();
-  const content = useWorkspaceWidgetStore(
-    useShallow(
-      (state) =>
-        state.widgetList.find((widget) => widget.widgetId === widgetId)
-          ?.content,
-    ),
-  );
-
-  const collaborationData = content as CollaborationData;
-
-  // Defaults for safety
-  const prRules = collaborationData?.prRules ?? {
-    activeVersion: { selectedId: 'semantic', options: {} },
-    selectedLabels: {
-      selectedIds: ['feature', 'fix', 'refactor'],
-      options: {},
-    },
-    activeStrategy: { selectedId: 'squash', options: {} },
-  };
-
-  const reviewPolicy = collaborationData?.reviewPolicy ?? {
-    approves: 2,
-    maxReviewHours: 24,
-    blockMerge: true,
-  };
-
-  const workflow = collaborationData?.workflow ?? {
-    platform: { selectedId: '', options: {} },
-    cycleValue: 2,
-    cycleUnit: 'week',
-  };
-
-  const handlePRRulesUpdate = (
-    key: keyof CollaborationData['prRules'],
-    value: string | string[],
-  ) => {
-    if (key === 'selectedLabels') {
-      updateMultiSelectorPickAction(widgetId, type, key, value as string[]);
-    } else {
-      updateSelectorPickAction(widgetId, type, key, value as string);
-    }
-  };
-
-  const handleReviewPolicyUpdate = (
-    key: keyof CollaborationData['reviewPolicy'],
-    value: number | boolean,
-  ) => {
-    updatePrimitiveFieldAction(widgetId, type, key, value);
-  };
-
-  const handleWorkflowUpdate = (
-    key: keyof CollaborationData['workflow'],
-    value: string | number,
-  ) => {
-    if (key === 'platform') {
-      updateSelectorPickAction(widgetId, type, key, value as string);
-    } else {
-      updatePrimitiveFieldAction(widgetId, type, key, value as string | number);
-    }
-  };
+  const {
+    prRules,
+    reviewPolicy,
+    workflow,
+    handlePRRulesUpdate,
+    handleReviewPolicyUpdate,
+    handleWorkflowUpdate,
+  } = useCollaborationWidget();
 
   return (
     <WidgetFrame
