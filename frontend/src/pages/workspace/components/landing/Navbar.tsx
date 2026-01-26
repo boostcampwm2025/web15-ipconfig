@@ -7,6 +7,7 @@ interface NavbarProps {
   setIsMenuOpen: (open: boolean) => void;
 }
 
+// 버튼 색이 마음에 안 듬...
 const Navbar = ({ scrolled, isMenuOpen, setIsMenuOpen }: NavbarProps) => {
   return (
     <nav
@@ -23,23 +24,21 @@ const Navbar = ({ scrolled, isMenuOpen, setIsMenuOpen }: NavbarProps) => {
             team<span className="text-green-400">.config</span>
           </span>
         </div>
-
         <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-          <Button className="transition-colors hover:text-green-400">
+          <Button className="rounded-full border border-slate-700 bg-green-600 px-5 py-2 text-white transition-all hover:bg-green-500">
             Log in
           </Button>
           <Button className="rounded-full border border-slate-700 bg-slate-800 px-5 py-2 text-white transition-all hover:bg-slate-700">
             Sign In
           </Button>
         </div>
-
         {/* Mobile Menu Button */}
-        <button
+        <Button
           className="text-white md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <Layout />
-        </button>
+        </Button>
       </div>
     </nav>
   );
