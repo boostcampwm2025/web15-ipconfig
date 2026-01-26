@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "printWidth": 80,
+  "endOfLine": "lf",
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": ["frontend/**/*.{js,jsx,ts,tsx,css,html}"],
+      "options": {
+        "plugins": ["prettier-plugin-tailwindcss"]
+      }
+    }
+  ]
+}
