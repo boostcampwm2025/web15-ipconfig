@@ -13,14 +13,22 @@ import { customAlphabet } from 'nanoid';
 export class WorkspaceController {
   constructor(private readonly workspaceService: WorkspaceService) {}
 
-  // 워크스페이스 존재 여부 확인
   @Get(':workspaceId')
   getWorkspaceIsExists(@Param('workspaceId') workspaceId: string) {
     return this.workspaceService.isExistsWorkspace(workspaceId);
   }
 
-  // 워크스페이스 생성 (make)
-  @Post('make')
+  @Get(':workspaceId/join')
+  joinWorkspace(@Param('workspaceId') workspaceId: string) {
+    if (!this.workspaceService.isExistsWorkspace(workspaceId)) {
+      throw new NotFoundException(
+        `Workspace with ID '${workspaceId}' does not exist`,
+      );
+    }
+    return { workspaceId };
+  }
+
+  @Post()
   createWorkspaceWithRandomId() {
     let workspaceId = customAlphabet(
       '0123456789abcdefghijklmnopqrstuvwxyz',
@@ -35,7 +43,7 @@ export class WorkspaceController {
     return { workspaceId };
   }
 
-  @Post('make/:workspaceId')
+  @Post(':workspaceId')
   createWorkspaceWithId(@Param('workspaceId') workspaceId: string) {
     if (this.workspaceService.isExistsWorkspace(workspaceId)) {
       throw new ConflictException(
@@ -45,17 +53,6 @@ export class WorkspaceController {
 
     this.workspaceService.createWorkspace(workspaceId);
 
-    return { workspaceId };
-  }
-
-  // 워크스페이스 참가 (join)
-  @Get('join/:workspaceId')
-  joinWorkspace(@Param('workspaceId') workspaceId: string) {
-    if (!this.workspaceService.isExistsWorkspace(workspaceId)) {
-      throw new NotFoundException(
-        `Workspace with ID '${workspaceId}' does not exist`,
-      );
-    }
     return { workspaceId };
   }
 }
