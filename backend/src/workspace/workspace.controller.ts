@@ -18,6 +18,16 @@ export class WorkspaceController {
     return this.workspaceService.isExistsWorkspace(workspaceId);
   }
 
+  @Get(':workspaceId/join')
+  joinWorkspace(@Param('workspaceId') workspaceId: string) {
+    if (!this.workspaceService.isExistsWorkspace(workspaceId)) {
+      throw new NotFoundException(
+        `Workspace with ID '${workspaceId}' does not exist`,
+      );
+    }
+    return { workspaceId };
+  }
+
   @Post()
   createWorkspaceWithRandomId() {
     let workspaceId = customAlphabet(
