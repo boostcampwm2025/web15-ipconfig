@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { DragEndEvent } from '@dnd-kit/core';
 import type { TechStack } from '../../types/techStack';
 import type { TechStackWidgetData } from '@/common/types/widgetData';
@@ -9,9 +9,10 @@ import {
   updateArrayContentAction,
   updateSelectorPickAction,
 } from '@/common/api/yjs/actions/widgetContent';
+import { parseSubject } from '../../utils/parsing';
 
 export function useTechStack() {
-  // Store Connection
+  // 스토어 연결
   const { widgetId, type } = useWidgetIdAndType();
   const content = useWorkspaceWidgetStore(
     useShallow(
@@ -23,11 +24,11 @@ export function useTechStack() {
 
   const techStackData = content as TechStackWidgetData;
 
-  // Defaults
+  // 기본값 설정
   const subject = techStackData?.subject ?? { selectedId: '', options: {} };
   const techItems = techStackData?.techItems ?? [];
 
-  // Update Handlers
+  // 업데이트 핸들러
   const handleSubjectUpdate = useCallback(
     (newSubject: string) => {
       updateSelectorPickAction(widgetId, type, 'subject', newSubject);
@@ -42,7 +43,6 @@ export function useTechStack() {
     [widgetId, type],
   );
 
-  // Local UI State
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const setSelectedTechStacks = (value: React.SetStateAction<TechStack[]>) => {
@@ -79,8 +79,14 @@ export function useTechStack() {
     }
   };
 
+  const parsedSubject = useMemo(
+    () => parseSubject(subject.selectedId),
+    [subject.selectedId],
+  );
+
   return {
     subject,
+    parsedSubject,
     techItems,
     isModalOpen,
     handleSubjectUpdate,

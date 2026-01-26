@@ -1,23 +1,22 @@
 import { TechStackModal } from '@/features/widgets/techStack/components/modal';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
 import { useTechStack } from '@/features/widgets/techStack/hooks/techStackWidget/useTechStack';
-import { useMemo } from 'react';
+
 import SelectedTechStackBox from './SelectedTechStackBox';
 import SelectInput from '@/common/components/SelectInput';
 import SubjectGuideline from './SubjectGuideline';
 
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuLayers } from 'react-icons/lu';
-import { parseSubject } from '../../utils/parsing';
-
 function TechStackWidget() {
-  const { subject, techItems, isModalOpen, handleSubjectUpdate, actions } =
-    useTechStack();
-
-  const parsedSubject = useMemo(
-    () => parseSubject(subject.selectedId),
-    [subject.selectedId],
-  );
+  const {
+    subject,
+    parsedSubject,
+    techItems,
+    isModalOpen,
+    handleSubjectUpdate,
+    actions,
+  } = useTechStack();
 
   return (
     <WidgetFrame
