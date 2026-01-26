@@ -19,10 +19,8 @@ export class MarkdownController {
     description: '생성된 마크다운 문서',
     type: GetMarkdownDto,
   })
-  async find(
-    @Query('workspaceId') workspaceId: string,
-  ): Promise<GetMarkdownDto> {
-    const markdown = await this.markdownService.generateMarkdown(workspaceId);
+  find(@Query('workspaceId') workspaceId: string): GetMarkdownDto {
+    const markdown = this.markdownService.generateMarkdown(workspaceId);
     return { markdown };
   }
 }

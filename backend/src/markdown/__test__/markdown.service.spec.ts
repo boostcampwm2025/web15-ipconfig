@@ -1,37 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { MarkdownService } from '../markdown.service';
-import { IWidgetService, WIDGET_SERVICE } from '../../widget/widget.interface';
-
-type MockWidgetService = {
-  [P in keyof IWidgetService]: jest.Mock;
-};
+import { YjsDocReaderService } from '../../collaboration/yjs-doc-reader.service';
 
 describe('MarkdownService', () => {
   let service: MarkdownService;
-  let widgetServiceMock: MockWidgetService;
+  let yjsDocReaderMock: { getWidgets: jest.Mock };
   const workspaceId = 'w1';
 
   beforeEach(async () => {
-    widgetServiceMock = {
-      create: jest.fn(),
-      findAll: jest.fn(),
-      findOne: jest.fn(),
-      lock: jest.fn(),
-      unlock: jest.fn(),
-      getLockOwner: jest.fn(),
-      unlockAllByUser: jest.fn(),
-      update: jest.fn(),
-      remove: jest.fn(),
-      updateLayout: jest.fn(),
+    yjsDocReaderMock = {
+      getWidgets: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MarkdownService,
         {
-          provide: WIDGET_SERVICE,
-          useValue: widgetServiceMock,
+          provide: YjsDocReaderService,
+          useValue: yjsDocReaderMock,
         },
       ],
     }).compile();
@@ -44,10 +31,10 @@ describe('MarkdownService', () => {
     jest.useRealTimers();
   });
 
-  it('모든 위젯이 없으면 헤더, 푸터, 안내 문구를 반환한다.', async () => {
-    widgetServiceMock.findAll.mockResolvedValue([]);
+  it('모든 위젯이 없으면 헤더, 푸터, 안내 문구를 반환한다.', () => {
+    yjsDocReaderMock.getWidgets.mockReturnValue([]);
 
-    const markdown = await service.generateMarkdown(workspaceId);
+    const markdown = service.generateMarkdown(workspaceId);
 
     expect(markdown).toContain(
       '아직 적은 내용이 없는 것 같습니다! 위젯에 내용을 추가해보세요! 🚀',
