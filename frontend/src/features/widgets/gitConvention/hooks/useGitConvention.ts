@@ -74,18 +74,18 @@ export function useGitConvention() {
           );
 
           if (rules.prefixes) {
-            updateMultiSelectorPickAction(
-              widgetId,
-              type,
-              'prefixes',
-              rules.prefixes.selectedIds,
-            );
             replaceMapAction(
               widgetId,
               type,
               'prefixes',
               ['options'],
               rules.prefixes.options as Record<string, unknown>,
+            );
+            updateMultiSelectorPickAction(
+              widgetId,
+              type,
+              'prefixes',
+              rules.prefixes.selectedIds,
             );
           }
         }
@@ -101,18 +101,18 @@ export function useGitConvention() {
           );
 
           if (conv.commitTypes) {
-            updateMultiSelectorPickAction(
-              widgetId,
-              type,
-              'commitTypes',
-              conv.commitTypes.selectedIds,
-            );
             replaceMapAction(
               widgetId,
               type,
               'commitTypes',
               ['options'],
               conv.commitTypes.options as Record<string, unknown>,
+            );
+            updateMultiSelectorPickAction(
+              widgetId,
+              type,
+              'commitTypes',
+              conv.commitTypes.selectedIds,
             );
           }
         }
