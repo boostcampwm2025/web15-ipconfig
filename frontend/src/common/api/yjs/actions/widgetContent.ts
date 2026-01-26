@@ -207,21 +207,14 @@ export const updateArrayContentAction = (
  *
  * @param widgetId - 대상 위젯 ID
  * @param type - 위젯 타입
- * @param fieldKey - 필드 키 (예: 'branchRules') -> 내부 경로 매핑 필요?
- *                   NOTE: getMappedPath는 최하위 필드까지의 경로를 반환함.
- *                   options 맵을 교체하려면 fieldKey가 'prefixes'일 때 그 아래 'options'를 타겟팅해야 함.
- *                   이 함수는 'fieldKey'가 가리키는 Map 자체를 교체하거나, subKey를 받을 수 있어야 함.
- *                   여기서는 fieldKey가 가리키는 대상이 Map이면 그것을, 아니면 그 안의 특정 키를 찾도록 유연성 확보가 필요하나,
- *                   단순화를 위해 "fieldKey가 가리키는 경로의 값(Map)"을 교체하는 것으로 정의.
+ * @param fieldKey - 필드 키 (예: 'branchRules')
+ * @param subPath - 필드 키 아래의 하위 경로 (예: ['options'])
  * @param newMapData - 새로운 데이터 객체
  */
 export const replaceMapAction = (
   widgetId: string,
   type: WidgetType,
-  fieldKey: string, // 예: 'prefixes' (이 경로의 selectedIds는 냅두고 options만 바꾸려면? 별도 액션 필요)
-  // 'options'를 바꾸려면 fieldKey='prefixes'가 아니라 path=['branchRules', 'prefixes', 'options'] 여야 함.
-  // getMappedPath는 ['branchRules', 'prefixes'] 만 리턴함.
-  // 따라서 추가 subPath 인자가 필요함.
+  fieldKey: string,
   subPath: string[], // 예: ['options']
   newMapData: Record<string, unknown>,
 ) => {
@@ -237,13 +230,6 @@ export const replaceMapAction = (
     const parentMap = getTargetMap(widgetId, parentPath);
     if (!parentMap) return;
 
-    // 타겟(예: 'options')이 Map이어야 함.
-    // 기존 맵을 가져오거나 새로 생성?
-    // 보통 options는 이미 존재.
-    // 내용을 싹 비우고 새로 채움.
-
-    // 만약 parentMap에 targetKey가 없다면 set으로 넣어야 함.
-    // 있으면 get해서 clear.
     let targetMap: Y.Map<unknown>;
 
     if (parentMap.has(targetKey)) {

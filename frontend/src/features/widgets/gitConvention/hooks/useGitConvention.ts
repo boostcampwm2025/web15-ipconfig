@@ -55,8 +55,6 @@ export function useGitConvention() {
             'strategy',
             preset.strategy.selectedId,
           );
-          // Options usually don't change for strategy, but if they did:
-          // replaceMapAction(widgetId, type, 'strategy', ['options'], preset.strategy.options);
         }
 
         // 2. 브랜치 규칙
