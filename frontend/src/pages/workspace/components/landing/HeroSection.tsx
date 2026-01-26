@@ -30,7 +30,7 @@ const HeroSection = () => {
 
         <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
           <Button
-            onClick={() => navigate('/canvas')}
+            onClick={() => navigate('/workspace')}
             className="group relative transform rounded-lg bg-green-500 px-8 py-4 font-mono font-bold text-slate-950 shadow-[0_0_20px_rgba(74,222,128,0.3)] transition-all hover:scale-105 hover:bg-green-400"
           >
             <span className="flex items-center gap-2">
