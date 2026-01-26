@@ -21,9 +21,7 @@ export class WorkspaceController {
   @Get(':workspaceId/join')
   joinWorkspace(@Param('workspaceId') workspaceId: string) {
     if (!this.workspaceService.isExistsWorkspace(workspaceId)) {
-      throw new NotFoundException(
-        `Workspace with ID '${workspaceId}' does not exist`,
-      );
+      throw new NotFoundException(`'${workspaceId}' 는 존재하지 않습니다.`);
     }
     return { workspaceId };
   }
@@ -32,10 +30,13 @@ export class WorkspaceController {
   createWorkspaceWithRandomId() {
     let workspaceId = customAlphabet(
       '0123456789abcdefghijklmnopqrstuvwxyz',
-      6,
+      10,
     )();
     while (this.workspaceService.isExistsWorkspace(workspaceId)) {
-      workspaceId = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 6)();
+      workspaceId = customAlphabet(
+        '0123456789abcdefghijklmnopqrstuvwxyz',
+        10,
+      )();
     }
 
     this.workspaceService.createWorkspace(workspaceId);
@@ -47,7 +48,7 @@ export class WorkspaceController {
   createWorkspaceWithId(@Param('workspaceId') workspaceId: string) {
     if (this.workspaceService.isExistsWorkspace(workspaceId)) {
       throw new ConflictException(
-        `Workspace with ID '${workspaceId}' already exists`,
+        `이미 '${workspaceId}' 워크스페이스가 존재합니다.`,
       );
     }
 
