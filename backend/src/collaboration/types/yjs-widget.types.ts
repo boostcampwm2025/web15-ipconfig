@@ -65,10 +65,10 @@ export interface YjsGitConventionContent {
 // COMMUNICATION
 export interface YjsCommunicationContent {
   communication: {
-    urgent: string;
-    sync: string;
-    async: string;
-    official: string;
+    urgent: YjsSelector;
+    sync: YjsSelector;
+    async: YjsSelector;
+    official: YjsSelector;
   };
   sla: {
     responseTime: number;

@@ -209,10 +209,10 @@ export class MarkdownService {
       lines.push('### 커뮤니케이션 수단');
       lines.push('| 긴급 | 동기 | 비동기 | 공식 |');
       lines.push('| :--- | :--- | :--- | :--- |');
-      const urgent = content.communication?.urgent || '-';
-      const sync = content.communication?.sync || '-';
-      const async = content.communication?.async || '-';
-      const official = content.communication?.official || '-';
+      const urgent = getSelectedValue(content.communication?.urgent) || '-';
+      const sync = getSelectedValue(content.communication?.sync) || '-';
+      const async = getSelectedValue(content.communication?.async) || '-';
+      const official = getSelectedValue(content.communication?.official) || '-';
       lines.push(`| ${urgent} | ${sync} | ${async} | ${official} |`);
       lines.push('');
 
