@@ -4,7 +4,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-main: #00c950;
+  /* Primary color scale */
+  --color-primary-50: #eefff3;
+  --color-primary-100: #d7ffe6;
+  --color-primary-200: #b2ffcf;
+  --color-primary-300: #76ffab;
+  --color-primary-400: #33f580;
+  --color-primary-500: #09de5d;
+  --color-primary-600: #00c950;
+  --color-primary-700: #04913d;
+  --color-primary-800: #0a7134;
+  --color-primary-900: #0a5d2d;
+  --color-primary-950: #003417;
 }
 
 :root {
@@ -24,7 +35,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.13 0.028 261.692);
   /* --primary: oklch(0.21 0.034 264.665); */
-  --primary: oklch(0.7289 0.2119 147.82);
+  --primary: var(--color-primary-600);
   --primary-foreground: oklch(0.985 0.002 247.839);
   --secondary: oklch(0.967 0.003 264.542);
   --secondary-foreground: oklch(0.21 0.034 264.665);
