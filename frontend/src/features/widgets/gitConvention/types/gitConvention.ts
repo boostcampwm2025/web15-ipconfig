@@ -1,18 +1,20 @@
+import type { Selector, MultiSelector } from '@/common/types/yjsDoc';
+
 export type GitStrategy = 'GITHUB_FLOW' | 'GIT_FLOW' | 'TRUNK_BASED';
 
 export interface BranchRuleState {
   mainBranch: string;
   developBranch?: string;
-  prefixes: string[];
+  prefixes: MultiSelector;
 }
 
 export interface CommitConventionState {
   useGitmoji: boolean;
-  commitTypes: string[];
+  commitTypes: MultiSelector;
 }
 
 export interface GitConventionData {
-  strategy: GitStrategy;
+  strategy: Selector;
   branchRules: BranchRuleState;
   commitConvention: CommitConventionState;
 }
