@@ -7,7 +7,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative px-6 pt-32 pb-20">
-      <div className="container mx-auto max-w-4xl text-center">
+      <div className="container mx-auto max-w-5xl text-center">
         <div className="animate-fade-in-up mb-8 inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-xs text-green-400">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
