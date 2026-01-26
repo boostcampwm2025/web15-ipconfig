@@ -2,6 +2,7 @@ export interface UserState {
   id: string;
   nickname: string;
   color: string;
+  backgroundColor: string;
 }
 
 export interface CursorState {

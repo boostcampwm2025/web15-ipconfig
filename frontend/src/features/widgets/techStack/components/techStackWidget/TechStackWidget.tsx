@@ -9,6 +9,8 @@ import type { TechStackData } from '@/common/types/widgetData';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 import { emitUpdateWidget } from '@/common/api/socket';
+import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
+import { LuLayers } from 'react-icons/lu';
 
 function TechStackWidget() {
   const { widgetId } = useWidgetIdAndType();
@@ -28,40 +30,45 @@ function TechStackWidget() {
   });
 
   return (
-    <DndContext
-      collisionDetection={pointerWithin}
-      onDragEnd={actions.handleDragEnd}
+    <WidgetFrame
+      title="기술 스택"
+      icon={<LuLayers className="text-blue-500" />}
     >
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 font-bold">
-          <div className="shrink-0">주제 :</div>
-          <SelectInput
-            selectedValue={selectedSubject}
-            setSelectedValue={setSelectedSubject}
-          />
-        </div>
+      <DndContext
+        collisionDetection={pointerWithin}
+        onDragEnd={actions.handleDragEnd}
+      >
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center gap-2 font-bold">
+            <div className="shrink-0">주제 :</div>
+            <SelectInput
+              selectedValue={selectedSubject}
+              setSelectedValue={setSelectedSubject}
+            />
+          </div>
 
-        {parsedSubject && (
-          <SubjectGuideline
-            key={`${parsedSubject.category}-${parsedSubject.option}`}
-            category={parsedSubject.category}
-            option={parsedSubject.option}
+          {parsedSubject && (
+            <SubjectGuideline
+              key={`${parsedSubject.category}-${parsedSubject.option}`}
+              category={parsedSubject.category}
+              option={parsedSubject.option}
+            />
+          )}
+
+          <SelectedTechStackBox
+            selectedTechStacks={selectedTechStacks}
+            setSelectedTechStacks={actions.setSelectedTechStacks}
+            setIsTechStackModalOpen={actions.openModal}
+          />
+        </section>
+        {isModalOpen && (
+          <TechStackModal
+            isOpen={isModalOpen}
+            onModalClose={actions.closeModal}
           />
         )}
-
-        <SelectedTechStackBox
-          selectedTechStacks={selectedTechStacks}
-          setSelectedTechStacks={actions.setSelectedTechStacks}
-          setIsTechStackModalOpen={actions.openModal}
-        />
-      </section>
-      {isModalOpen && (
-        <TechStackModal
-          isOpen={isModalOpen}
-          onModalClose={actions.closeModal}
-        />
-      )}
-    </DndContext>
+      </DndContext>
+    </WidgetFrame>
   );
 }
 

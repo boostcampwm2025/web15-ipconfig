@@ -5,6 +5,8 @@ import TaskWorkflow from './TaskWorkflow';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
+import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
+import { LuUsers } from 'react-icons/lu';
 
 export interface CollaborationData {
   prRules: {
@@ -55,32 +57,38 @@ export default function CollaborationWidget() {
   });
 
   return (
-    <div className="grid w-[800px] grid-cols-1 gap-2 md:grid-cols-2">
-      <div className="w-full justify-self-center">
-        <CodeReviewPolicy
-          data={reviewPolicy}
-          onUpdate={(key, value) =>
-            setReviewPolicy((prev) => ({ ...prev, [key]: value }))
-          }
-        />
-      </div>
-      <div className="row-span-2 w-full justify-self-center">
-        <PRRules
-          data={prRules}
-          onUpdate={(key, value) =>
-            setPrRules((prev) => ({ ...prev, [key]: value }))
-          }
-        />
-      </div>
+    <WidgetFrame
+      title="작업 및 협업"
+      icon={<LuUsers className="text-purple-500" />}
+      defaultLayout={{ x: 1000, y: 1000 }}
+    >
+      <div className="grid w-[800px] grid-cols-1 gap-2 md:grid-cols-2">
+        <div className="w-full justify-self-center">
+          <CodeReviewPolicy
+            data={reviewPolicy}
+            onUpdate={(key, value) =>
+              setReviewPolicy((prev) => ({ ...prev, [key]: value }))
+            }
+          />
+        </div>
+        <div className="row-span-2 w-full justify-self-center">
+          <PRRules
+            data={prRules}
+            onUpdate={(key, value) =>
+              setPrRules((prev) => ({ ...prev, [key]: value }))
+            }
+          />
+        </div>
 
-      <div className="w-full justify-self-center">
-        <TaskWorkflow
-          data={workflow}
-          onUpdate={(key, value) =>
-            setWorkflow((prev) => ({ ...prev, [key]: value }))
-          }
-        />
+        <div className="w-full justify-self-center">
+          <TaskWorkflow
+            data={workflow}
+            onUpdate={(key, value) =>
+              setWorkflow((prev) => ({ ...prev, [key]: value }))
+            }
+          />
+        </div>
       </div>
-    </div>
+    </WidgetFrame>
   );
 }

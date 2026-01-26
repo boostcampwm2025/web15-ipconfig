@@ -8,6 +8,8 @@ import WidgetFrame from './WidgetFrame';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
+import FormatWidget from '@/features/widgets/format/components/FormatWidget';
+import { WidgetProvider } from './context/WidgetContext';
 
 function WidgetLayer() {
   const widgetKeys = useWorkspaceWidgetStore(
@@ -26,22 +28,26 @@ function WidgetLayer() {
   return (
     <>
       {widgetIds.map(({ widgetId, type }) => (
-        <WidgetFrame key={widgetId} widgetId={widgetId} type={type}>
+        <WidgetProvider widgetId={widgetId} type={type}>
           <WidgetContent type={type} />
-        </WidgetFrame>
+        </WidgetProvider>
       ))}
 
-      <WidgetFrame widgetId={'COLLABORATION'} type={'COLLABORATION'}>
+      <WidgetProvider widgetId={'COLLABORATION'} type={'COLLABORATION'}>
         <CollaborationWidget />
-      </WidgetFrame>
+      </WidgetProvider>
 
-      <WidgetFrame widgetId={'COMMUNICATION'} type={'COMMUNICATION'}>
+      <WidgetProvider widgetId={'COMMUNICATION'} type={'COMMUNICATION'}>
         <CommunicationWidget />
-      </WidgetFrame>
+      </WidgetProvider>
 
-      <WidgetFrame widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
+      <WidgetProvider widgetId={'NAMING_CONVENTION'} type={'NAMING_CONVENTION'}>
         <NamingConventionWidget />
-      </WidgetFrame>
+      </WidgetProvider>
+
+      <WidgetProvider widgetId={'CODE_FORMAT'} type={'CODE_FORMAT'}>
+        <FormatWidget />
+      </WidgetProvider>
     </>
   );
 }

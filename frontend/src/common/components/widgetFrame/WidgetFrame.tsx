@@ -1,21 +1,25 @@
 import type { PropsWithChildren } from 'react';
 import WidgetContainer from './WidgetContainer';
 import WidgetHeader from './WidgetHeader';
-import { WidgetProvider } from './context/WidgetContext';
-import type { WidgetIdAndType } from './context/WidgetContext';
+import type { WidgetLayout } from '@/common/types/widgetData';
+
+interface WidgetFrameProps {
+  title: string;
+  icon: React.ReactNode;
+  actions?: React.ReactNode[];
+  defaultLayout?: WidgetLayout;
+}
 
 function WidgetFrame({
   children,
-  widgetId,
-  type,
-}: PropsWithChildren<WidgetIdAndType>) {
+  defaultLayout,
+  ...props
+}: PropsWithChildren<WidgetFrameProps>) {
   return (
-    <WidgetProvider widgetId={widgetId} type={type}>
-      <WidgetContainer>
-        <WidgetHeader />
-        {children}
-      </WidgetContainer>
-    </WidgetProvider>
+    <WidgetContainer defaultLayout={defaultLayout}>
+      <WidgetHeader {...props} />
+      {children}
+    </WidgetContainer>
   );
 }
 
