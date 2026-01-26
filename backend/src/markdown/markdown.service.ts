@@ -8,6 +8,7 @@ import type {
   YjsCollaborationContent,
   YjsCommunicationContent,
   YjsNamingConventionContent,
+  YjsFormatContent,
 } from '../collaboration/types/yjs-widget.types';
 import {
   getSelectedValue,
@@ -308,7 +309,44 @@ export class MarkdownService {
       lines.push(`| 유틸리티 | ${content.common?.utility || '-'} |`);
       lines.push(`| 상수 | ${content.common?.constant || '-'} |`);
       lines.push(`| 타입 | ${content.common?.type || '-'} |`);
-      lines.push(`| Enum | ${content.common?.enum || '-'} |`);
+      lines.push(`| 열거형 | ${content.common?.enum || '-'} |`);
+      lines.push('');
+    });
+
+    return lines;
+  }
+
+  private buildFormatSection(widgets: YjsWidgetData[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
+
+    const lines: string[] = [];
+    lines.push('## ⚙️ 코드 포맷');
+
+    widgets.forEach((widget) => {
+      const content = widget.content as unknown as YjsFormatContent;
+
+      lines.push('| 설정 | 값 |');
+      lines.push('| :--- | :--- |');
+      lines.push(`| 줄 길이 | ${content.line ?? '-'} |`);
+      lines.push(`| 탭 사용 | ${content.useTabs ? '스페이스' : '탭'} |`);
+      lines.push(`| 들여쓰기 폭 | ${content.tabWidth ?? '-'} |`);
+      lines.push(`| 세미콜론 | ${content.semi ? '사용' : '생략'} |`);
+      lines.push(
+        `| 홑따옴표 | ${content.singleQuote ? '홑따옴표' : '쌍따옴표'} |`,
+      );
+      lines.push(
+        `| JSX 홑따옴표 | ${content.jsxSingleQuote ? '홑따옴표' : '쌍따옴표'} |`,
+      );
+      lines.push(`| 후행 쉼표 | ${content.trailingComma || '-'} |`);
+      lines.push(
+        `| 중괄호 공백 | ${content.bracketSpacing ? '공백 사용' : '공백 없음'} |`,
+      );
+      lines.push(
+        `| 화살표 괄호 | ${content.arrowParens ? '사용' : '미사용'} |`,
+      );
+      lines.push(
+        `| 속성 줄바꿈 | ${content.attributePerLine ? '줄바꿈' : '한 줄에 배치'} |`,
+      );
       lines.push('');
     });
 
@@ -361,6 +399,11 @@ export class MarkdownService {
       ...this.buildNamingConventionSection(namingConventionWidgets),
     );
 
+    const formatWidgets = allWidgets.filter(
+      (widget) => widget.type === 'FORMAT',
+    );
+    markdownParts.push(...this.buildFormatSection(formatWidgets));
+
     const postItWidgets = allWidgets.filter(
       (widget) => widget.type === 'POST_IT',
     );
@@ -372,6 +415,7 @@ export class MarkdownService {
       communicationWidgets.length === 0 &&
       techStackWidgets.length === 0 &&
       namingConventionWidgets.length === 0 &&
+      formatWidgets.length === 0 &&
       postItWidgets.length === 0
     ) {
       markdownParts.push(
