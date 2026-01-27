@@ -1,13 +1,10 @@
 // frontend/src/features/widgets/namingConvention/NamingConventionWidget.tsx
 import { useState } from 'react';
 import { Button } from '@/common/components/shadcn/button';
-import type {
-  NamingConventionData,
-  NamingCase,
-} from '../types/namingConvention';
 import { GuidelineBox } from '@/common/components/guidelineBox/GuidelineBox';
 import { ConventionSection } from './ConventionSection';
 import { NAMING_INFO } from '../constants/namingInfo';
+import useNamingConventionWidget from '../hooks/useNamingConventionWidget';
 import {
   FileCodeIcon,
   ServerIcon,
@@ -16,6 +13,7 @@ import {
 } from 'lucide-react';
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { RiFontSizeAi } from 'react-icons/ri';
+import type { NamingConventionData } from '../types/namingConvention';
 
 type Category = 'frontend' | 'backend' | 'database' | 'common';
 
@@ -74,52 +72,7 @@ export default function NamingConventionWidget() {
     desc: string;
   } | null>(null);
 
-  // State 분리하는 게 나을까요?
-  const [namingState, setNamingState] = useState<
-    Pick<NamingConventionData, 'frontend' | 'backend' | 'database' | 'common'>
-  >({
-    frontend: {
-      variable: 'camelCase' as NamingCase,
-      function: 'camelCase' as NamingCase,
-      component: 'PascalCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-    },
-    backend: {
-      variable: 'camelCase' as NamingCase,
-      function: 'camelCase' as NamingCase,
-      class: 'PascalCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-    },
-    database: {
-      table: 'snake_case' as NamingCase,
-      column: 'snake_case' as NamingCase,
-      index: 'snake_case' as NamingCase,
-      constraint: 'snake_case' as NamingCase,
-    },
-    common: {
-      utility: 'camelCase' as NamingCase,
-      constant: 'UPPER_SNAKE_CASE' as NamingCase,
-      type: 'PascalCase' as NamingCase,
-      enum: 'PascalCase' as NamingCase,
-    },
-  });
-
-  const updateNamingState = (
-    section: Category,
-    key: string,
-    value: NamingCase,
-  ) => {
-    setNamingState((prev) => {
-      const sectionState = prev[section];
-      return {
-        ...prev,
-        [section]: {
-          ...sectionState,
-          [key]: value,
-        },
-      };
-    });
-  };
+  const { content, handleUpdate } = useNamingConventionWidget();
 
   const handleHover = (section: Category, key: string, label: string) => {
     const sectionInfo = NAMING_INFO[section];
@@ -130,7 +83,11 @@ export default function NamingConventionWidget() {
   const currentCategoryConfig = CATEGORIES.find(
     (cat) => cat.id === activeCategory,
   )!;
-  const currentConvention = namingState[activeCategory];
+  // content[activeCategory]가 없을 수 있으므로 안전하게 접근
+  const currentConvention =
+    (content[
+      activeCategory
+    ] as unknown as NamingConventionData[typeof activeCategory]) || {};
 
   return (
     <WidgetFrame
@@ -172,9 +129,7 @@ export default function NamingConventionWidget() {
             title={currentCategoryConfig.title}
             titleColor={currentCategoryConfig.titleColor}
             convention={currentConvention}
-            onChange={(key, value) =>
-              updateNamingState(activeCategory, key, value)
-            }
+            onChange={(key, value) => handleUpdate(activeCategory, key, value)}
             onHover={(key, label) => handleHover(activeCategory, key, label)}
           />
         </div>
