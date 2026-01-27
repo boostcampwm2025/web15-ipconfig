@@ -66,4 +66,29 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     // 3. MultiSelectors
     labelRules: ['prRules', 'labelRules'],
   },
+  NAMING_CONVENTION: {
+    // Frontend
+    'frontend.variable': ['frontend', 'variable'],
+    'frontend.function': ['frontend', 'function'],
+    'frontend.component': ['frontend', 'component'],
+    'frontend.constant': ['frontend', 'constant'],
+
+    // Backend
+    'backend.variable': ['backend', 'variable'],
+    'backend.function': ['backend', 'function'],
+    'backend.class': ['backend', 'class'],
+    'backend.constant': ['backend', 'constant'],
+
+    // Database
+    'database.table': ['database', 'table'],
+    'database.column': ['database', 'column'],
+    'database.index': ['database', 'index'],
+    'database.constraint': ['database', 'constraint'],
+
+    // Common
+    'common.utility': ['common', 'utility'],
+    'common.constant': ['common', 'constant'],
+    'common.type': ['common', 'type'],
+    'common.enum': ['common', 'enum'],
+  },
 };
