@@ -10,10 +10,13 @@ import {
 import ExportDocButton from './ExportDocButton';
 import { useMarkdown } from '@/common/hooks/useMarkdown';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
-import { LuCheck, LuCopy, LuFileText } from 'react-icons/lu';
+import { LuCircleX, LuCheck, LuCopy, LuFileText } from 'react-icons/lu';
 import { Button } from '@/common/components/shadcn/button';
 import { SpinnerCustom } from '@/common/components/SpinnerCustom';
 import { useClipboard } from '@/common/hooks/useClipboard';
+import 'github-markdown-css/github-markdown.css';
+import remarkGfm from 'remark-gfm'; // 테이블 기능을 위해 필수!
+import Markdown from 'react-markdown';
 
 function ExportDocModal() {
   const { workspaceId } = useWorkspaceInfoStore();
@@ -25,7 +28,7 @@ function ExportDocModal() {
       <DialogTrigger asChild>
         <ExportDocButton onClick={() => fetchMarkdown(workspaceId)} />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="z-999 sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <LuFileText size={18} className="text-primary-600" />
@@ -43,10 +46,15 @@ function ExportDocModal() {
               <SpinnerCustom />
               <span>불러오는 중...</span>
             </div>
+          ) : error ? (
+            <div className="flex items-center gap-2">
+              <LuCircleX size={16} className="text-red-500" />
+              <span>{error}</span>
+            </div>
           ) : (
-            <pre className="bg-currentfont-mono h-full w-full text-sm leading-relaxed whitespace-pre-wrap text-gray-300">
-              {markdown}
-            </pre>
+            <div className="markdown-body h-full w-full">
+              <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+            </div>
           )}
         </div>
         <DialogFooter>
