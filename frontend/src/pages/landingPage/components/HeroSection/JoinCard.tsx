@@ -4,7 +4,8 @@ import { Users } from 'lucide-react';
 import { useJoinWorkspace } from '@/common/hooks/useJoinWorkspace';
 
 const JoinCard = () => {
-  const { register, handleSubmit, errors, onSubmit } = useJoinWorkspace();
+  const { joinCode, joinError, handleJoinCodeChange, handleJoinWorkspace } =
+    useJoinWorkspace();
   return (
     <div className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl backdrop-blur transition-all hover:border-slate-700 hover:bg-slate-900">
       <div className="mb-6 text-left">
@@ -21,19 +22,20 @@ const JoinCard = () => {
         <Input
           type="text"
           placeholder="코드 입력 (예: 1a2b3c)"
-          {...register('code')}
+          value={joinCode}
+          onChange={handleJoinCodeChange}
           maxLength={32}
           className="h-12 text-center font-mono text-base"
         />
-        {errors.code && (
+        {joinError && (
           <p className="text-left font-mono text-sm text-red-400">
-            {errors.code.message}
+            {joinError}
           </p>
         )}
         <MainButton
           text="워크스페이스 참가"
           icon={<Users size={18} />}
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleJoinWorkspace}
           className="bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-blue-600"
         />
       </div>
