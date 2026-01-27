@@ -115,11 +115,6 @@ function WorkSpacePage() {
       {hoveredUser && (
         <UserHoverCard user={hoveredUser} position={hoverPosition} />
       )}
-      {/* <ExportModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-        markdown={exportMarkdown}
-      /> */}
     </div>
   );
 }
