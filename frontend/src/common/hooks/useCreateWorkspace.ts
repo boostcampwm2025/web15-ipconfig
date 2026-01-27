@@ -1,4 +1,3 @@
-// frontend/src/common/hooks/useCreateWorkspace.ts
 import { useNavigate } from 'react-router';
 import { AxiosError } from 'axios';
 import { workspaceApi } from '@/common/api/workspaceApi';
