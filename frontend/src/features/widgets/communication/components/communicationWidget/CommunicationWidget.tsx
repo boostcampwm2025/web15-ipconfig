@@ -1,8 +1,4 @@
-// import WidgetContainer from '@/common/components/widgetFrame/WidgetContainer';
-// import WidgetHeader from '@/common/components/widgetFrame/WidgetHeader';
-import { useState } from 'react';
-import type { CommunicationData } from '../../types/communication';
-import { DEFAULT_COMMUNICATION_DATA } from '../../constants/communication';
+import { useCommunication } from '../../hooks/useCommunication';
 import { CommunicationSection } from './CommunicationSection';
 import { SlaStepper } from './SlaStepper';
 import { TimeSection } from './TimeSection';
@@ -11,9 +7,18 @@ import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuMessageSquare } from 'react-icons/lu';
 
 function CommunicationWidget() {
-  const [data, setData] = useState<CommunicationData>(
-    DEFAULT_COMMUNICATION_DATA,
-  );
+  const {
+    communication,
+    sla,
+    timeManagement,
+    meeting,
+    actions: {
+      updateCommunicationChannel,
+      updateSla,
+      updateTimeManagement,
+      updateMeeting,
+    },
+  } = useCommunication();
 
   return (
     <WidgetFrame
@@ -23,49 +28,20 @@ function CommunicationWidget() {
     >
       <div className="flex w-[550px] flex-col gap-6 p-4">
         <CommunicationSection
-          data={data.communication}
-          onChange={(key, value) =>
-            setData((prev) => ({
-              ...prev,
-              communication: { ...prev.communication, [key]: value },
-            }))
-          }
+          data={communication}
+          onChange={updateCommunicationChannel}
         />
 
         <div className="bg-border h-px w-full" />
 
         <div className="grid grid-cols-2 gap-4">
-          <SlaStepper
-            responseTime={data.sla.responseTime}
-            onChange={(value) =>
-              setData((prev) => ({
-                ...prev,
-                sla: { responseTime: value },
-              }))
-            }
-          />
-          <TimeSection
-            data={data.timeManagement}
-            onChange={(key, value) =>
-              setData((prev) => ({
-                ...prev,
-                timeManagement: { ...prev.timeManagement, [key]: value },
-              }))
-            }
-          />
+          <SlaStepper responseTime={sla.responseTime} onChange={updateSla} />
+          <TimeSection data={timeManagement} onChange={updateTimeManagement} />
         </div>
 
         <div className="bg-border h-px w-full" />
 
-        <MeetingSection
-          data={data.meeting}
-          onChange={(key, value) =>
-            setData((prev) => ({
-              ...prev,
-              meeting: { ...prev.meeting, [key]: value },
-            }))
-          }
-        />
+        <MeetingSection data={meeting} onChange={updateMeeting} />
       </div>
     </WidgetFrame>
   );

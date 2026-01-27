@@ -6,6 +6,8 @@ import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/constants/initial';
 import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/initial';
 import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
+import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
+import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
 
 function ToolBar() {
   return (
@@ -40,7 +42,7 @@ function ToolBar() {
               widgetId,
               type: 'GIT_CONVENTION',
               layout: { x: 500, y: 500 },
-              content: {},
+              content: INITIAL_GIT_CONVENTION_DATA,
             });
           }}
         />
@@ -66,7 +68,7 @@ function ToolBar() {
               widgetId,
               type: 'COMMUNICATION',
               layout: { x: 200, y: 200 },
-              content: {},
+              content: INITIAL_COMMUNICATION_DATA,
             });
           }}
         />
