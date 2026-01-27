@@ -6,7 +6,7 @@ function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative px-6 pt-32 pb-20">
+    <section className="relative flex flex-1 items-center justify-center px-6 pt-32 pb-20">
       <div className="container mx-auto max-w-5xl text-center">
         <h1 className="mb-6 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-5xl leading-tight font-bold text-transparent md:text-6xl">
           우리 팀의 <span className="font-mono text-green-400">0</span> 번째

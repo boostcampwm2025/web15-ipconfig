@@ -17,7 +17,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-slate-950 font-sans text-slate-50 selection:bg-green-500/30 selection:text-green-200">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-slate-950 text-slate-50 selection:bg-green-500/30 selection:text-green-200">
       <BackgroundGradient />
       <Navbar scrolled={scrolled} />
       <HeroSection />
