@@ -92,9 +92,17 @@ export const updateMultiSelectorPickAction = (
     const selectorMap = getTargetMap(widgetId, multiSelectorPath);
 
     if (selectorMap) {
-      const yArray = new Y.Array();
-      yArray.push(newSelectedIds);
-      selectorMap.set('selectedIds', yArray);
+      const existingArray = selectorMap.get('selectedIds');
+      const convertedItems = newSelectedIds.map(toYType);
+
+      if (existingArray instanceof Y.Array) {
+        existingArray.delete(0, existingArray.length);
+        existingArray.push(convertedItems);
+      } else {
+        const yArray = new Y.Array();
+        yArray.push(convertedItems);
+        selectorMap.set('selectedIds', yArray);
+      }
     }
   });
 };
@@ -192,10 +200,17 @@ export const updateArrayContentAction = (
     const parentMap = getTargetMap(widgetId, parentPath);
 
     if (parentMap) {
-      const yArray = new Y.Array();
       const convertedItems = items.map(toYType);
-      yArray.push(convertedItems);
-      parentMap.set(targetKey, yArray);
+      const existingArray = parentMap.get(targetKey);
+
+      if (existingArray instanceof Y.Array) {
+        existingArray.delete(0, existingArray.length);
+        existingArray.push(convertedItems);
+      } else {
+        const yArray = new Y.Array();
+        yArray.push(convertedItems);
+        parentMap.set(targetKey, yArray);
+      }
     }
   });
 };
