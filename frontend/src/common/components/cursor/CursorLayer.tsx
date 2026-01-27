@@ -13,11 +13,10 @@ function CursorLayer() {
       {cursorList.map((cursor) => (
         <div
           key={cursor.userId}
-          className="pointer-events-none fixed z-[100]"
+          className="pointer-events-none absolute z-[100]"
           style={{
             left: `${cursor.x}px`,
             top: `${cursor.y}px`,
-            transform: 'translate(-50%, -50%)',
             transition: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
           }}
         >

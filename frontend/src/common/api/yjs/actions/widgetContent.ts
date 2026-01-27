@@ -1,5 +1,5 @@
 import * as Y from 'yjs';
-import { getWidgetMap } from '../utils/getMaps';
+
 import type { OptionItem, WidgetType } from '@/common/types/yjsDoc';
 import { doc } from '../instance';
 import { getMappedPath, getTargetMap } from '../utils/getWidgetPath';
@@ -92,9 +92,17 @@ export const updateMultiSelectorPickAction = (
     const selectorMap = getTargetMap(widgetId, multiSelectorPath);
 
     if (selectorMap) {
-      const yArray = new Y.Array();
-      yArray.push(newSelectedIds);
-      selectorMap.set('selectedIds', yArray);
+      const existingArray = selectorMap.get('selectedIds');
+      const convertedItems = newSelectedIds.map(toYType);
+
+      if (existingArray instanceof Y.Array) {
+        existingArray.delete(0, existingArray.length);
+        existingArray.push(convertedItems);
+      } else {
+        const yArray = new Y.Array();
+        yArray.push(convertedItems);
+        selectorMap.set('selectedIds', yArray);
+      }
     }
   });
 };
@@ -163,6 +171,46 @@ export const removeOptionAction = (
 
     if (optionsMap && optionsMap.has(optionKey)) {
       optionsMap.delete(optionKey);
+    }
+  });
+};
+
+// 배열 형태의 Content 필드 업데이트 (Generic)
+/**
+ * 특정 필드의 배열 데이터를 통째로 교체합니다.
+ * (예: TechStackWidget의 techItems 등)
+ *
+ * @param widgetId - 대상 위젯 ID
+ * @param type - 위젯 타입
+ * @param fieldKey - 필드 키
+ * @param items - 교체할 아이템 배열
+ */
+export const updateArrayContentAction = (
+  widgetId: string,
+  type: WidgetType,
+  fieldKey: string,
+  items: unknown[],
+) => {
+  doc.transact(() => {
+    const fieldPath = getMappedPath(type, fieldKey);
+    if (!fieldPath) return;
+
+    const parentPath = fieldPath.slice(0, -1);
+    const targetKey = fieldPath[fieldPath.length - 1];
+    const parentMap = getTargetMap(widgetId, parentPath);
+
+    if (parentMap) {
+      const convertedItems = items.map(toYType);
+      const existingArray = parentMap.get(targetKey);
+
+      if (existingArray instanceof Y.Array) {
+        existingArray.delete(0, existingArray.length);
+        existingArray.push(convertedItems);
+      } else {
+        const yArray = new Y.Array();
+        yArray.push(convertedItems);
+        parentMap.set(targetKey, yArray);
+      }
     }
   });
 };

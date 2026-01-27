@@ -9,13 +9,15 @@ interface WorkspaceInfo {
 interface WorkspaceInfoStore {
   workspaceId: string;
   workspaceName: string;
+  setWorkspaceId: (id: string) => void;
   setWorkspaceInfo: (workspaceInfo: WorkspaceInfo) => void;
 }
 
 // 워크스페이스 기본 정보 스토어
 export const useWorkspaceInfoStore = create<WorkspaceInfoStore>((set) => ({
-  workspaceId: 'w1', // 임시로 고정된 워크스페이스 / 사용자 정보 (실제 서비스에서는 라우팅/로그인 정보 사용)
-  workspaceName: 'workspace1',
+  workspaceId: '', // URL에서 동기화됨
+  workspaceName: '',
+  setWorkspaceId: (id: string) => set({ workspaceId: id }),
   setWorkspaceInfo: (workspaceInfo: WorkspaceInfo) => set({ ...workspaceInfo }),
 }));
 

@@ -1,8 +1,8 @@
 import { Checkbox } from '@/common/components/shadcn/checkbox';
 import { Label } from '@/common/components/shadcn/label';
 import { useState } from 'react';
-import type { CollaborationData } from './CollaborationWidget';
 import CounterInput from './CounterInput';
+import type { CollaborationData } from '../types/CollaborationData';
 
 interface CodeReviewPolicyProps {
   data: CollaborationData['reviewPolicy'];

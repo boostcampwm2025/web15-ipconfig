@@ -6,7 +6,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/workspace" element={<WorkSpacePage />} />
+      <Route path="/workspace/:workspaceId" element={<WorkSpacePage />} />
     </Routes>
   );
 }

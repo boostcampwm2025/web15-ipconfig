@@ -1,4 +1,4 @@
-import type { CollaborationData } from '@/features/widgets/collaboration/components/CollaborationWidget';
+import type { CollaborationData } from '@/features/widgets/collaboration/types/CollaborationData';
 import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
@@ -20,16 +20,14 @@ export type WidgetType =
   | 'CODE_FORMAT';
 
 export type WidgetContent =
-  | TechStackData
+  | TechStackWidgetData
   | GitConventionData
   | CommunicationData
   | CollaborationData
   | NamingConventionData;
 
-export interface TechStackData {
-  selectedItems: TechStack[];
-  subject?: string;
-}
+import type { TechStackWidgetData } from '@/features/widgets/techStack/types/TechStackWidgetData';
+export type { TechStackWidgetData };
 
 export interface WidgetData {
   widgetId: string;

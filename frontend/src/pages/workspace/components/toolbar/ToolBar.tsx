@@ -3,6 +3,8 @@ import { LuMousePointer2, LuGitBranch } from 'react-icons/lu';
 import { LuLayers, LuUsers, LuMessageSquare } from 'react-icons/lu';
 import { RiFontSizeAi } from 'react-icons/ri';
 import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
+import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/constants/initial';
+import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/initial';
 
 function ToolBar() {
   return (
@@ -24,7 +26,7 @@ function ToolBar() {
               widgetId,
               type: 'TECH_STACK',
               layout: { x: 200, y: 200 },
-              content: { selectedItems: [] },
+              content: INITIAL_TECH_STACK_DATA,
             });
           }}
         />
@@ -37,24 +39,7 @@ function ToolBar() {
               widgetId,
               type: 'GIT_CONVENTION',
               layout: { x: 500, y: 500 },
-              content: {
-                strategy: 'GITHUB_FLOW',
-                branchRules: {
-                  mainBranch: 'main',
-                  prefixes: ['feature', 'fix', 'refactor'],
-                },
-                commitConvention: {
-                  useGitmoji: false,
-                  commitTypes: [
-                    'feat',
-                    'fix',
-                    'refactor',
-                    'chore',
-                    'docs',
-                    'test',
-                  ],
-                },
-              },
+              content: {},
             });
           }}
         />
@@ -67,7 +52,7 @@ function ToolBar() {
               widgetId,
               type: 'COLLABORATION',
               layout: { x: 200, y: 200 },
-              content: { selectedItems: [] },
+              content: COLLABORATION_INITIAL_CONTENT,
             });
           }}
         />
@@ -80,7 +65,7 @@ function ToolBar() {
               widgetId,
               type: 'COMMUNICATION',
               layout: { x: 200, y: 200 },
-              content: { selectedItems: [] },
+              content: {},
             });
           }}
         />
@@ -93,7 +78,7 @@ function ToolBar() {
               widgetId,
               type: 'NAMING_CONVENTION',
               layout: { x: 200, y: 200 },
-              content: { selectedItems: [] },
+              content: {},
             });
           }}
         />
