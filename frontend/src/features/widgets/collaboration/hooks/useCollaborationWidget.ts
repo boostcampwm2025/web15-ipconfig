@@ -54,14 +54,9 @@ export default function useCollaborationWidget() {
   const handleWorkflowUpdate = useCallback(
     (key: keyof CollaborationData['workflow'], value: string | number) => {
       if (key === 'platform') {
-        updateSelectorPickAction(widgetId, type, key, value as string);
+        updateSelectorPickAction(widgetId, type, key, String(value));
       } else {
-        updatePrimitiveFieldAction(
-          widgetId,
-          type,
-          key,
-          value as string | number,
-        );
+        updatePrimitiveFieldAction(widgetId, type, key, value);
       }
     },
     [widgetId, type],
