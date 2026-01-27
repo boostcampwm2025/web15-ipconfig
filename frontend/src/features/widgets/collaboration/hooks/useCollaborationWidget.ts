@@ -9,6 +9,8 @@ import {
   updateSelectorPickAction,
 } from '@/common/api/yjs/actions/widgetContent';
 
+import { COLLABORATION_INITIAL_CONTENT } from '../constants/initial';
+
 export default function useCollaborationWidget() {
   const { widgetId, type } = useWidgetIdAndType();
   const content = useWorkspaceWidgetStore(
@@ -21,26 +23,15 @@ export default function useCollaborationWidget() {
 
   const collaborationData = content as CollaborationData;
 
-  const prRules = collaborationData?.prRules ?? {
-    activeVersion: { selectedId: 'semantic', options: {} },
-    labelRules: {
-      selectedIds: ['feature', 'fix', 'refactor'],
-      options: {},
-    },
-    activeStrategy: { selectedId: 'squash', options: {} },
-  };
+  const prRules =
+    collaborationData?.prRules ?? COLLABORATION_INITIAL_CONTENT.prRules;
 
-  const reviewPolicy = collaborationData?.reviewPolicy ?? {
-    approves: 2,
-    maxReviewHours: 24,
-    blockMerge: true,
-  };
+  const reviewPolicy =
+    collaborationData?.reviewPolicy ??
+    COLLABORATION_INITIAL_CONTENT.reviewPolicy;
 
-  const workflow = collaborationData?.workflow ?? {
-    platform: { selectedId: '', options: {} },
-    cycleValue: 2,
-    cycleUnit: 'week',
-  };
+  const workflow =
+    collaborationData?.workflow ?? COLLABORATION_INITIAL_CONTENT.workflow;
 
   const handlePRRulesUpdate = useCallback(
     (key: keyof CollaborationData['prRules'], value: string | string[]) => {
