@@ -7,7 +7,7 @@ import useNamingConventionWidget from '../hooks/useNamingConventionWidget';
 
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { RiFontSizeAi } from 'react-icons/ri';
-import type { NamingConventionData } from '../types/namingConvention';
+
 import type { Category } from '../types/category';
 import { CATEGORIES } from '../constants/category';
 
@@ -18,7 +18,8 @@ export default function NamingConventionWidget() {
     desc: string;
   } | null>(null);
 
-  const { content, handleUpdate } = useNamingConventionWidget();
+  const { handleUpdate, currentConvention } =
+    useNamingConventionWidget(activeCategory);
 
   const handleHover = (section: Category, key: string, label: string) => {
     const sectionInfo = NAMING_INFO[section];
@@ -29,11 +30,6 @@ export default function NamingConventionWidget() {
   const currentCategoryConfig = CATEGORIES.find(
     (cat) => cat.id === activeCategory,
   )!;
-  // content[activeCategory]가 없을 수 있으므로 안전하게 접근
-  const currentConvention =
-    (content[
-      activeCategory
-    ] as unknown as NamingConventionData[typeof activeCategory]) || {};
 
   return (
     <WidgetFrame

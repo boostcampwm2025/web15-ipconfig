@@ -6,7 +6,10 @@ import type { NamingConventionContent } from '@/common/types/yjsWidgetContent';
 import { NAMING_CONVENTION_INITIAL_CONTENT } from '../constants/initial';
 import { updatePrimitiveFieldAction } from '@/common/api/yjs/actions/widgetContent';
 
-export default function useNamingConventionWidget() {
+import type { Category } from '../types/category';
+import type { NamingConventionData } from '../types/namingConvention';
+
+export default function useNamingConventionWidget(activeCategory: Category) {
   const { widgetId, type } = useWidgetIdAndType();
   const content = useWorkspaceWidgetStore(
     useShallow(
@@ -38,6 +41,11 @@ export default function useNamingConventionWidget() {
     },
   };
 
+  const currentConvention =
+    (mergedContent[
+      activeCategory
+    ] as unknown as NamingConventionData[typeof activeCategory]) || {};
+
   const handleUpdate = useCallback(
     (section: string, key: string, value: string) => {
       // fieldKey format: "frontend.variable"
@@ -49,6 +57,7 @@ export default function useNamingConventionWidget() {
 
   return {
     content: mergedContent,
+    currentConvention,
     handleUpdate,
   };
 }
