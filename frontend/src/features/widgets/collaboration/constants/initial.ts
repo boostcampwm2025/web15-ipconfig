@@ -1,7 +1,7 @@
 export const COLLABORATION_INITIAL_CONTENT = {
   prRules: {
     activeVersion: { selectedId: 'semantic', options: {} },
-    selectedLabels: {
+    labelRules: {
       selectedIds: ['feature', 'fix', 'refactor'],
       options: {},
     },

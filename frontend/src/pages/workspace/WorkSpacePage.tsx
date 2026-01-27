@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useParams, useNavigate } from 'react-router';
 
 import type { UserExtended } from '@/common/types/user';
 
@@ -21,27 +22,38 @@ import { useCollaboration } from '@/common/hooks/useCollaboration';
 import useUserStore from '@/common/store/user';
 
 function WorkSpacePage() {
+  const navigate = useNavigate();
+
+  // Workspace State
+  const { workspaceId } = useParams<{ workspaceId: string }>();
+  const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
+
   // UI State
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
-  const { workspaceId } = useWorkspaceInfoStore();
-
-  useCollaboration(workspaceId);
 
   useEffect(() => {
-    // 소켓 연결
+    if (!workspaceId) {
+      navigate('/'); // 나중에 에러페이지 만들기
+      return;
+    }
+    setWorkspaceId(workspaceId);
+  }, [workspaceId, setWorkspaceId, navigate]);
+
+  useCollaboration(workspaceId || '');
+
+  useEffect(() => {
+    if (!workspaceId) return;
     joinRoom(generateCurrentUser());
     return () => {
       leaveRoom();
     };
-  }, []);
+  }, [workspaceId]);
 
-  // 마크다운 관리 hook
   const { markdown: exportMarkdown, fetchMarkdown } = useMarkdown();
 
-  // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setHoverPosition({
@@ -56,6 +68,7 @@ function WorkSpacePage() {
   };
 
   const handleExportClick = useCallback(async () => {
+    if (!workspaceId) return;
     try {
       await fetchMarkdown(workspaceId);
       setIsExportModalOpen(true);

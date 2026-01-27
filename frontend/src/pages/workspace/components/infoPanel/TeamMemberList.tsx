@@ -1,4 +1,3 @@
-import { LuShare2 } from 'react-icons/lu';
 import type { UserExtended } from '@/common/types/user';
 import { INITIAL_USERS } from '@/common/mocks/users';
 
@@ -15,14 +14,7 @@ function TeamMemberList({ onUserHover, onUserLeave }: TeamMemberListProps) {
           Team Members ({INITIAL_USERS.length})
         </h4>
       </div>
-
       <ul className="space-y-2">
-        <button className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg bg-gray-700 py-1">
-          <LuShare2 />
-          <div className="flex h-8 items-center text-sm font-semibold">
-            초대하기
-          </div>
-        </button>
         {INITIAL_USERS.map((user) => (
           <li
             key={user.id}

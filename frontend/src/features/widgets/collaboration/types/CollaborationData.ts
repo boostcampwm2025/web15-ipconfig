@@ -3,8 +3,8 @@ import type { MultiSelector, Selector } from '@/common/types/yjsDoc';
 export interface CollaborationData {
   prRules: {
     activeVersion: Selector;
-    selectedLabels: MultiSelector;
     activeStrategy: Selector;
+    labelRules: MultiSelector;
   };
   reviewPolicy: {
     approves: number;

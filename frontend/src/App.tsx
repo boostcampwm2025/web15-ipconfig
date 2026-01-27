@@ -1,11 +1,12 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route } from 'react-router';
 import WorkSpacePage from './pages/workspace/WorkSpacePage';
+import LandingPage from './pages/landingPage/LandingPage';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/workspace" replace />} />
-      <Route path="/workspace" element={<WorkSpacePage />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/workspace/:workspaceId" element={<WorkSpacePage />} />
     </Routes>
   );
 }

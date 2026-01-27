@@ -9,6 +9,8 @@ import {
   updateSelectorPickAction,
 } from '@/common/api/yjs/actions/widgetContent';
 
+import { COLLABORATION_INITIAL_CONTENT } from '../constants/initial';
+
 export default function useCollaborationWidget() {
   const { widgetId, type } = useWidgetIdAndType();
   const content = useWorkspaceWidgetStore(
@@ -21,33 +23,23 @@ export default function useCollaborationWidget() {
 
   const collaborationData = content as CollaborationData;
 
-  const prRules = collaborationData?.prRules ?? {
-    activeVersion: { selectedId: 'semantic', options: {} },
-    selectedLabels: {
-      selectedIds: ['feature', 'fix', 'refactor'],
-      options: {},
-    },
-    activeStrategy: { selectedId: 'squash', options: {} },
-  };
+  const prRules =
+    collaborationData?.prRules ?? COLLABORATION_INITIAL_CONTENT.prRules;
 
-  const reviewPolicy = collaborationData?.reviewPolicy ?? {
-    approves: 2,
-    maxReviewHours: 24,
-    blockMerge: true,
-  };
+  const reviewPolicy =
+    collaborationData?.reviewPolicy ??
+    COLLABORATION_INITIAL_CONTENT.reviewPolicy;
 
-  const workflow = collaborationData?.workflow ?? {
-    platform: { selectedId: '', options: {} },
-    cycleValue: 2,
-    cycleUnit: 'week',
-  };
+  const workflow =
+    collaborationData?.workflow ?? COLLABORATION_INITIAL_CONTENT.workflow;
 
   const handlePRRulesUpdate = useCallback(
     (key: keyof CollaborationData['prRules'], value: string | string[]) => {
-      if (key === 'selectedLabels') {
-        updateMultiSelectorPickAction(widgetId, type, key, value as string[]);
-      } else {
-        updateSelectorPickAction(widgetId, type, key, value as string);
+      // Type Guard를 통한 안전한 업데이트 요청
+      if (key === 'labelRules' && Array.isArray(value)) {
+        updateMultiSelectorPickAction(widgetId, type, key, value);
+      } else if (key !== 'labelRules' && typeof value === 'string') {
+        updateSelectorPickAction(widgetId, type, key, value);
       }
     },
     [widgetId, type],
@@ -63,14 +55,9 @@ export default function useCollaborationWidget() {
   const handleWorkflowUpdate = useCallback(
     (key: keyof CollaborationData['workflow'], value: string | number) => {
       if (key === 'platform') {
-        updateSelectorPickAction(widgetId, type, key, value as string);
+        updateSelectorPickAction(widgetId, type, key, String(value));
       } else {
-        updatePrimitiveFieldAction(
-          widgetId,
-          type,
-          key,
-          value as string | number,
-        );
+        updatePrimitiveFieldAction(widgetId, type, key, value);
       }
     },
     [widgetId, type],
