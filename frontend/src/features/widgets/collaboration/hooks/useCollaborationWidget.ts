@@ -35,10 +35,11 @@ export default function useCollaborationWidget() {
 
   const handlePRRulesUpdate = useCallback(
     (key: keyof CollaborationData['prRules'], value: string | string[]) => {
-      if (key === 'labelRules') {
-        updateMultiSelectorPickAction(widgetId, type, key, value as string[]);
-      } else {
-        updateSelectorPickAction(widgetId, type, key, value as string);
+      // Type Guard를 통한 안전한 업데이트 요청
+      if (key === 'labelRules' && Array.isArray(value)) {
+        updateMultiSelectorPickAction(widgetId, type, key, value);
+      } else if (key !== 'labelRules' && typeof value === 'string') {
+        updateSelectorPickAction(widgetId, type, key, value);
       }
     },
     [widgetId, type],
