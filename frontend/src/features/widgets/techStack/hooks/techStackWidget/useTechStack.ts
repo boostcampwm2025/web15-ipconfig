@@ -10,6 +10,7 @@ import {
   updateSelectorPickAction,
 } from '@/common/api/yjs/actions/widgetContent';
 import { parseSubject } from '../../utils/parsing';
+import { INITIAL_TECH_STACK_DATA } from '../../constant/initial';
 
 export function useTechStack() {
   // 스토어 연결
@@ -25,8 +26,9 @@ export function useTechStack() {
   const techStackData = content as TechStackWidgetData;
 
   // 기본값 설정
-  const subject = techStackData?.subject ?? { selectedId: '', options: {} };
-  const techItems = techStackData?.techItems ?? [];
+  const subject = techStackData?.subject ?? INITIAL_TECH_STACK_DATA.subject;
+  const techItems =
+    techStackData?.techItems ?? INITIAL_TECH_STACK_DATA.techItems;
 
   // 업데이트 핸들러
   const handleSubjectUpdate = useCallback(
