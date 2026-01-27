@@ -1,9 +1,9 @@
 import { Input } from '@/common/components/shadcn/input';
-import { MainButton } from '..';
+import MainButton from '@/pages/landing/components/MainButton';
 import { Plus } from 'lucide-react';
 import { useCreateWorkspace } from '@/common/hooks/useCreateWorkspace';
 
-const CreateCard = () => {
+function CreateCard() {
   const {
     createCode,
     createError,
@@ -33,12 +33,10 @@ const CreateCard = () => {
           value={createCode}
           onChange={handleCreateCodeChange}
           maxLength={32}
-          className="h-12 text-center font-mono text-base"
+          className="h-12 text-center"
         />
         {createError && (
-          <p className="text-left font-mono text-sm text-red-400">
-            {createError}
-          </p>
+          <p className="text-left text-sm text-red-400">{createError}</p>
         )}
         <MainButton
           text="새 워크스페이스 생성"
@@ -49,6 +47,6 @@ const CreateCard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default CreateCard;

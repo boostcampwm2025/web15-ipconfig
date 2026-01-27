@@ -9,7 +9,7 @@ interface MainButtonProps {
   className?: string;
 }
 
-const MainButton = ({ text, icon, onClick, className }: MainButtonProps) => {
+function MainButton({ text, icon, onClick, className }: MainButtonProps) {
   return (
     <Button
       onClick={onClick}
@@ -28,6 +28,6 @@ const MainButton = ({ text, icon, onClick, className }: MainButtonProps) => {
       </span>
     </Button>
   );
-};
+}
 
 export default MainButton;

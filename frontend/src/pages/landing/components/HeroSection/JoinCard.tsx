@@ -1,9 +1,9 @@
 import { Input } from '@/common/components/shadcn/input';
-import { MainButton } from '..';
+import MainButton from '@/pages/landing/components/MainButton';
 import { Users } from 'lucide-react';
 import { useJoinWorkspace } from '@/common/hooks/useJoinWorkspace';
 
-const JoinCard = () => {
+function JoinCard() {
   const { joinCode, joinError, handleJoinCodeChange, handleJoinWorkspace } =
     useJoinWorkspace();
   return (
@@ -25,12 +25,10 @@ const JoinCard = () => {
           value={joinCode}
           onChange={handleJoinCodeChange}
           maxLength={32}
-          className="h-12 text-center font-mono text-base focus-visible:border-blue-500 focus-visible:ring-blue-500/50"
+          className="h-12 text-center text-base focus-visible:border-blue-500 focus-visible:ring-blue-500/50"
         />
         {joinError && (
-          <p className="text-left font-mono text-sm text-red-400">
-            {joinError}
-          </p>
+          <p className="text-left text-sm text-red-400">{joinError}</p>
         )}
         <MainButton
           text="워크스페이스 참가"
@@ -41,6 +39,6 @@ const JoinCard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default JoinCard;
