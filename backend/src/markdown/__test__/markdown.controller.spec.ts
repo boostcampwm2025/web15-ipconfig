@@ -26,10 +26,10 @@ describe('MarkdownController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('generateMarkdown 결과를 반환한다', async () => {
-    markdownServiceMock.generateMarkdown.mockResolvedValue('# md');
+  it('generateMarkdown 결과를 반환한다', () => {
+    markdownServiceMock.generateMarkdown.mockReturnValue('# md');
 
-    const result = await controller.find('w1');
+    const result = controller.find('w1');
 
     expect(markdownServiceMock.generateMarkdown).toHaveBeenCalledWith('w1');
     expect(result).toEqual({ markdown: '# md' });
