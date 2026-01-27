@@ -6,10 +6,19 @@ export type WidgetContent =
   | GitConventionContent
   | CommunicationContent
   | CollaborationContent
+  | NamingConventionContent
   | PostItContent
   | Record<string, unknown>;
 
 // 이 밑에서부터는 위젯별 컨텐츠 타입이라 각 위젯 연결할때 세분화하면 좋을 것 같습니다.
+
+// 0. NAMING_CONVENTION
+export type NamingConventionContent = {
+  [key in 'frontend' | 'backend' | 'database' | 'common']?: Record<
+    string,
+    string
+  >;
+};
 
 // 1. TECH_STACK
 export interface TechStackContent {
