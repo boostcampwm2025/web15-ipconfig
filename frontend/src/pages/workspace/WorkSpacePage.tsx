@@ -50,16 +50,6 @@ function WorkSpacePage() {
     setHoveredUser(null);
   };
 
-  // const handleExportClick = useCallback(async () => {
-  //   try {
-  //     await fetchMarkdown(workspaceId);
-  //     setIsExportModalOpen(true);
-  //   } catch {
-  //     // 일단 alert를 사용했는데, 그냥 마크다운 내용으로 (마크다운 생성 실패)를 보내는 것도 나쁘지 않을 것 같습니다!
-  //     alert('마크다운 생성에 실패했습니다.');
-  //   }
-  // }, [fetchMarkdown, workspaceId]);
-
   return (
     <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
       {/* 헤더: 최상단 오버레이 */}
