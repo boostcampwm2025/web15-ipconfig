@@ -5,6 +5,8 @@ import type {
   YjsGitConventionContent,
   YjsTechStackContent,
   YjsPostItContent,
+  YjsCollaborationContent,
+  YjsCommunicationContent,
 } from '../collaboration/types/yjs-widget.types';
 import {
   getSelectedValue,
@@ -71,9 +73,9 @@ export class MarkdownService {
 
     gitConventionWidgets.forEach((widget) => {
       const content = widget.content as unknown as YjsGitConventionContent;
-      const mainBranch = content.branchRules.mainBranch || '-';
-      const developBranch = content.branchRules.developBranch || '-';
-      const prefixes = getSelectedValues(content.branchRules.prefixes);
+      const mainBranch = content.branchRules?.mainBranch || '-';
+      const developBranch = content.branchRules?.developBranch || '-';
+      const prefixes = getSelectedValues(content.branchRules?.prefixes);
       const prefixesStr = prefixes.length > 0 ? prefixes.join(', ') : '-';
 
       lines.push(`| ${mainBranch} | ${developBranch} | ${prefixesStr} |`);
@@ -98,7 +100,7 @@ export class MarkdownService {
     gitConventionWidgets.forEach((widget) => {
       const content = widget.content as unknown as YjsGitConventionContent;
       const commitTypes = getSelectedValues(
-        content.commitConvention.commitTypes,
+        content.commitConvention?.commitTypes,
       );
       const commitTypesStr =
         commitTypes.length > 0 ? commitTypes.join(', ') : '-';
@@ -150,6 +152,96 @@ export class MarkdownService {
     return lines;
   }
 
+  private buildCollaborationSection(widgets: YjsWidgetData[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
+
+    const lines: string[] = [];
+    lines.push('## 🤝 협업 규칙');
+
+    widgets.forEach((widget) => {
+      const content = widget.content as unknown as YjsCollaborationContent;
+
+      // PR 규칙 섹션
+      lines.push('### PR 규칙');
+      const version = getSelectedValue(content.prRules?.activeVersion) || '-';
+      const strategy = getSelectedValue(content.prRules?.activeStrategy) || '-';
+      const labels = getSelectedValues(content.prRules?.labelRules);
+      const labelsStr = labels.length > 0 ? labels.join(', ') : '-';
+      lines.push(`| 버전 관리 | 머지 전략 | 라벨 |`);
+      lines.push(`| :--- | :--- | :--- |`);
+      lines.push(`| ${version} | ${strategy} | ${labelsStr} |`);
+      lines.push('');
+
+      // 리뷰 정책 섹션
+      lines.push('### 리뷰 정책');
+      lines.push(`| 필요 승인 수 | 최대 리뷰 시간 | 승인 전 머지 차단 |`);
+      lines.push(`| :--- | :--- | :--- |`);
+      const approves = content.reviewPolicy?.approves ?? 0;
+      const maxHours = content.reviewPolicy?.maxReviewHours ?? 0;
+      const blockMerge = content.reviewPolicy?.blockMerge ? '예' : '아니오';
+      lines.push(`| ${approves}명 | ${maxHours}시간 | ${blockMerge} |`);
+      lines.push('');
+
+      // 워크플로우 섹션
+      lines.push('### 워크플로우');
+      const platform = getSelectedValue(content.workflow?.platform) || '-';
+      const cycleValue = content.workflow?.cycleValue ?? 0;
+      const cycleUnit = content.workflow?.cycleUnit || '-';
+      lines.push(`| 플랫폼 | 스프린트 주기 |`);
+      lines.push(`| :--- | :--- |`);
+      lines.push(`| ${platform} | ${cycleValue}${cycleUnit} |`);
+      lines.push('');
+    });
+
+    return lines;
+  }
+
+  private buildCommunicationSection(widgets: YjsWidgetData[]): string[] {
+    if (!widgets || widgets.length === 0) return [];
+
+    const lines: string[] = [];
+    lines.push('## 💬 커뮤니케이션');
+
+    widgets.forEach((widget) => {
+      const content = widget.content as unknown as YjsCommunicationContent;
+
+      // 커뮤니케이션 수단 섹션
+      lines.push('### 커뮤니케이션 수단');
+      lines.push('| 긴급 | 동기 | 비동기 | 공식 |');
+      lines.push('| :--- | :--- | :--- | :--- |');
+      const urgent = getSelectedValue(content.communication?.urgent) || '-';
+      const sync = getSelectedValue(content.communication?.sync) || '-';
+      const async = getSelectedValue(content.communication?.async) || '-';
+      const official = getSelectedValue(content.communication?.official) || '-';
+      lines.push(`| ${urgent} | ${sync} | ${async} | ${official} |`);
+      lines.push('');
+
+      // SLA 섹션
+      lines.push('### 응답 시간');
+      const responseTime = content.sla?.responseTime ?? 0;
+      lines.push(`- 최대 응답 시간: ${responseTime}시간 이내`);
+      lines.push('');
+
+      // 코어 타임 섹션
+      lines.push('### 코어 타임');
+      const coreStart = content.timeManagement?.coreTimeStart || '-';
+      const coreEnd = content.timeManagement?.coreTimeEnd || '-';
+      lines.push(`- ${coreStart} ~ ${coreEnd}`);
+      lines.push('');
+
+      // 미팅 섹션
+      lines.push('### 미팅');
+      const noMeetingDay = content.meeting?.noMeetingDay || '-';
+      const feedbackStyle = content.meeting?.feedbackStyle || '-';
+      lines.push(`| 미팅 없는 날 | 피드백 스타일 |`);
+      lines.push(`| :--- | :--- |`);
+      lines.push(`| ${noMeetingDay} | ${feedbackStyle} |`);
+      lines.push('');
+    });
+
+    return lines;
+  }
+
   private buildElseSection(widgets: YjsWidgetData[]): string[] {
     if (!widgets || widgets.length === 0) return [];
 
@@ -193,6 +285,16 @@ export class MarkdownService {
     );
     markdownParts.push(...this.buildGroundRuleSection(groundRuleWidgets));
 
+    const collaborationWidgets = allWidgets.filter(
+      (widget) => widget.type === 'COLLABORATION',
+    );
+    markdownParts.push(...this.buildCollaborationSection(collaborationWidgets));
+
+    const communicationWidgets = allWidgets.filter(
+      (widget) => widget.type === 'COMMUNICATION',
+    );
+    markdownParts.push(...this.buildCommunicationSection(communicationWidgets));
+
     const techStackWidgets = allWidgets.filter(
       (widget) => widget.type === 'TECH_STACK',
     );
@@ -205,6 +307,8 @@ export class MarkdownService {
 
     if (
       groundRuleWidgets.length === 0 &&
+      collaborationWidgets.length === 0 &&
+      communicationWidgets.length === 0 &&
       techStackWidgets.length === 0 &&
       postItWidgets.length === 0
     ) {
