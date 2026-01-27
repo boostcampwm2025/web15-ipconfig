@@ -12,7 +12,8 @@ import {
   updatePrimitiveFieldAction,
   updateMultiSelectorPickAction,
   updateSelectorPickAction,
-  replaceMapAction,
+  upsertOptionAction,
+  removeOptionAction,
 } from '@/common/api/yjs/actions/widgetContent';
 import { INITIAL_GIT_CONVENTION_DATA } from '../constants/initial';
 
@@ -41,6 +42,28 @@ export function useGitConvention() {
     if (newStrategy === strategy.selectedId) return;
     setPendingStrategy(newStrategy);
     setIsModalOpen(true);
+  };
+
+  const syncOptions = (
+    fieldKey: string,
+    newOptions: Record<string, { value: string }> | undefined,
+    currentOptions: Record<string, unknown> | undefined,
+  ) => {
+    if (!newOptions) return;
+
+    const curOptions = currentOptions || {};
+
+    // 1. New Options Upsert
+    Object.entries(newOptions).forEach(([key, value]) => {
+      upsertOptionAction(widgetId, type, fieldKey, key, value.value);
+    });
+
+    // 2. Removed Options Delete
+    Object.keys(curOptions).forEach((key) => {
+      if (!newOptions[key]) {
+        removeOptionAction(widgetId, type, fieldKey, key);
+      }
+    });
   };
 
   const confirmChangeStrategy = () => {
@@ -74,13 +97,12 @@ export function useGitConvention() {
           );
 
           if (rules.prefixes) {
-            replaceMapAction(
-              widgetId,
-              type,
+            syncOptions(
               'prefixes',
-              ['options'],
-              rules.prefixes.options as Record<string, unknown>,
+              rules.prefixes.options as Record<string, { value: string }>,
+              branchRules.prefixes.options,
             );
+
             updateMultiSelectorPickAction(
               widgetId,
               type,
@@ -101,13 +123,12 @@ export function useGitConvention() {
           );
 
           if (conv.commitTypes) {
-            replaceMapAction(
-              widgetId,
-              type,
+            syncOptions(
               'commitTypes',
-              ['options'],
-              conv.commitTypes.options as Record<string, unknown>,
+              conv.commitTypes.options as Record<string, { value: string }>,
+              commitConvention.commitTypes.options,
             );
+
             updateMultiSelectorPickAction(
               widgetId,
               type,

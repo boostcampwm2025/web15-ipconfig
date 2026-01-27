@@ -199,37 +199,3 @@ export const updateArrayContentAction = (
     }
   });
 };
-
-// Map 형태의 Content 필드 업데이트 (Generic)
-/**
- * 특정 필드의 Map 데이터를 통째로 교체합니다.
- * (예: Selector/MultiSelector의 options 등)
- *
- * @param widgetId - 대상 위젯 ID
- * @param type - 위젯 타입
- * @param fieldKey - 필드 키 (예: 'branchRules')
- * @param subPath - 필드 키 아래의 하위 경로 (예: ['options'])
- * @param newMapData - 새로운 데이터 객체
- */
-export const replaceMapAction = (
-  widgetId: string,
-  type: WidgetType,
-  fieldKey: string,
-  subPath: string[], // 예: ['options']
-  newMapData: Record<string, unknown>,
-) => {
-  doc.transact(() => {
-    const basePath = getMappedPath(type, fieldKey);
-    if (!basePath) return;
-
-    const fullPath = [...basePath, ...subPath];
-    const parentPath = fullPath.slice(0, -1);
-    const targetKey = fullPath[fullPath.length - 1];
-
-    const parentMap = getTargetMap(widgetId, parentPath);
-
-    if (parentMap) {
-      parentMap.set(targetKey, toYType(newMapData));
-    }
-  });
-};
