@@ -64,6 +64,6 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     platform: ['workflow', 'platform'],
 
     // 3. MultiSelectors
-    selectedLabels: ['prRules', 'selectedLabels'],
+    labelRules: ['prRules', 'labelRules'],
   },
 };

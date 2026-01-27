@@ -20,12 +20,12 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
   const [hoverStrategy, setHoverStrategy] = useState<string | null>(null);
 
   const toggleLabel = (label: string) => {
-    // data.selectedLabels가 없거나 selectedIds가 없으면 빈 배열 처리
-    const prev = data.selectedLabels?.selectedIds || [];
+    // data.labelRules가 없거나 selectedIds가 없으면 빈 배열 처리
+    const prev = data.labelRules?.selectedIds || [];
     const newValue = prev.includes(label)
       ? prev.filter((l) => l !== label)
       : [...prev, label];
-    onUpdate('selectedLabels', newValue);
+    onUpdate('labelRules', newValue);
   };
 
   return (
@@ -70,7 +70,7 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
               key={label}
               onClick={() => toggleLabel(label)}
               className={`text-s rounded-md border px-3 py-1 ${
-                (data.selectedLabels?.selectedIds || []).includes(label)
+                (data?.labelRules?.selectedIds || []).includes(label)
                   ? 'border-primary text-primary bg-green-900/40'
                   : 'border-gray-700 text-gray-300'
               }`}

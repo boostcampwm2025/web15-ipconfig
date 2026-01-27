@@ -23,7 +23,7 @@ export default function useCollaborationWidget() {
 
   const prRules = collaborationData?.prRules ?? {
     activeVersion: { selectedId: 'semantic', options: {} },
-    selectedLabels: {
+    labelRules: {
       selectedIds: ['feature', 'fix', 'refactor'],
       options: {},
     },
@@ -44,7 +44,7 @@ export default function useCollaborationWidget() {
 
   const handlePRRulesUpdate = useCallback(
     (key: keyof CollaborationData['prRules'], value: string | string[]) => {
-      if (key === 'selectedLabels') {
+      if (key === 'labelRules') {
         updateMultiSelectorPickAction(widgetId, type, key, value as string[]);
       } else {
         updateSelectorPickAction(widgetId, type, key, value as string);
