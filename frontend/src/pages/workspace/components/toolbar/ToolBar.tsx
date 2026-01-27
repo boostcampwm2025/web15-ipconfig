@@ -7,6 +7,7 @@ import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/
 import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/initial';
 import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
+import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
 
 function ToolBar() {
   return (
@@ -80,7 +81,7 @@ function ToolBar() {
               widgetId,
               type: 'NAMING_CONVENTION',
               layout: { x: 200, y: 200 },
-              content: {},
+              content: NAMING_CONVENTION_INITIAL_CONTENT,
             });
           }}
         />
