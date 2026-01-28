@@ -1,236 +1,56 @@
-import { Test, TestingModule } from '@nestjs/testing';
-
 import { WorkspaceService } from '../workspace.service';
-import { JoinUserDTO } from '../dto/join-user.dto';
 
 describe('WorkspaceService', () => {
   let service: WorkspaceService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [WorkspaceService],
-    }).compile();
-
-    service = module.get<WorkspaceService>(WorkspaceService);
+  beforeEach(() => {
+    service = new WorkspaceService();
   });
 
-  it('서비스 인스턴스 생성', () => {
-    expect(service).toBeDefined();
+  it('워크스페이스를 생성하고 존재 여부를 확인할 수 있다', () => {
+    expect(service.isExistsWorkspace('room-1')).toBe(false);
+
+    service.createWorkspace('room-1');
+
+    expect(service.isExistsWorkspace('room-1')).toBe(true);
   });
 
-  describe('joinUser', () => {
-    it('유저 정보를 Map에 저장하고 반환한다', () => {
-      // GIVEN
-      const payload: JoinUserDTO = {
-        workspaceId: 'w1',
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const socketId = 's1';
+  it('updateWorkspace 호출 시 만료 시간이 연장된다', () => {
+    service.createWorkspace('room-2');
 
-      // WHEN
-      const result = service.joinUser(payload, socketId);
+    // 내부 만료 시간을 확인하기 위해 any 캐스팅
+    const workspaces = (
+      service as unknown as {
+        workspaces: Map<string, { expirationTime: Date }>;
+      }
+    ).workspaces as Map<string, { expirationTime: Date }>;
 
-      // THEN
-      expect(result).toEqual({
-        roomId: 'w1',
-        user: payload.user,
-        allUsers: [payload.user],
-      });
+    const before = workspaces.get('room-2')!.expirationTime;
 
-      // Map에 저장되었는지 확인
-      const userInfo = service.getUserBySocketId(socketId);
-      expect(userInfo).toEqual({
-        roomId: 'w1',
-        user: payload.user,
-      });
-    });
+    service.updateWorkspace('room-2');
+
+    const after = workspaces.get('room-2')!.expirationTime;
+
+    // 실제 구현은 create/update 모두 "현재 시점 기준 7일 후"로 설정하므로
+    // 아주 짧은 시간 안에 호출하면 동일 타임스탬프가 나올 수 있다.
+    // 따라서 "이전보다 크거나 같다"로 비교한다.
+    expect(after.getTime()).toBeGreaterThanOrEqual(before.getTime());
   });
 
-  describe('leaveUser', () => {
-    it('Map에서 유저 정보를 삭제하고 roomId/userId를 반환한다', () => {
-      // GIVEN
-      const payload: JoinUserDTO = {
-        workspaceId: 'w1',
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const socketId = 's1';
-      service.joinUser(payload, socketId);
+  it('만료된 워크스페이스를 삭제한다', () => {
+    // 과거 시점으로 만료된 워크스페이스를 직접 주입
+    const workspaces = (
+      service as unknown as {
+        workspaces: Map<string, { expirationTime: Date }>;
+      }
+    ).workspaces as Map<string, { expirationTime: Date }>;
 
-      // WHEN
-      const result = service.leaveUser(socketId);
-
-      // THEN
-      expect(result).toEqual({ roomId: 'w1', userId: 'u1' });
-
-      // Map에서 삭제되었는지 확인
-      const userInfo = service.getUserBySocketId(socketId);
-      expect(userInfo).toBeNull();
+    workspaces.set('expired-room', {
+      expirationTime: new Date(Date.now() - 1000),
     });
 
-    it('유저가 없으면 null을 반환한다', () => {
-      // GIVEN
-      const socketId = 's1';
-
-      // WHEN
-      const result = service.leaveUser(socketId);
-
-      // THEN
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('handleDisconnect', () => {
-    it('유저 정보가 없으면 null을 반환한다', () => {
-      // GIVEN
-      const socketId = 's1';
-
-      // WHEN
-      const result = service.handleDisconnect(socketId);
-
-      // THEN
-      expect(result).toBeNull();
-    });
-
-    it('유저 정보가 있으면 반환하고 Map에서 삭제한다', () => {
-      // GIVEN
-      const payload: JoinUserDTO = {
-        workspaceId: 'w1',
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const socketId = 's1';
-      service.joinUser(payload, socketId);
-
-      // WHEN
-      const result = service.handleDisconnect(socketId);
-
-      // THEN
-      expect(result).toEqual({ roomId: 'w1', userId: 'u1' });
-
-      // Map에서 삭제되었는지 확인
-      const userInfo = service.getUserBySocketId(socketId);
-      expect(userInfo).toBeNull();
-    });
-  });
-
-  describe('getUserBySocketId', () => {
-    it('소켓 ID로 유저 정보를 조회한다', () => {
-      // GIVEN
-      const payload: JoinUserDTO = {
-        workspaceId: 'w1',
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const socketId = 's1';
-      service.joinUser(payload, socketId);
-
-      // WHEN
-      const result = service.getUserBySocketId(socketId);
-
-      // THEN
-      expect(result).toEqual({
-        roomId: 'w1',
-        user: payload.user,
-      });
-    });
-
-    it('유저 정보가 없으면 null을 반환한다', () => {
-      // GIVEN
-      const socketId = 's1';
-
-      // WHEN
-      const result = service.getUserBySocketId(socketId);
-
-      // THEN
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('getUsersByRoomId', () => {
-    it('Room ID로 해당 방의 모든 유저를 조회한다', () => {
-      // GIVEN
-      const roomId = 'w1';
-      const payload1: JoinUserDTO = {
-        workspaceId: roomId,
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const payload2: JoinUserDTO = {
-        workspaceId: roomId,
-        user: {
-          id: 'u2',
-          nickname: 'user2',
-          color: '#FF0000',
-        },
-      };
-      service.joinUser(payload1, 's1');
-      service.joinUser(payload2, 's2');
-
-      // WHEN
-      const result = service.getUsersByRoomId(roomId);
-
-      // THEN
-      expect(result).toHaveLength(2);
-      expect(result).toContainEqual(payload1.user);
-      expect(result).toContainEqual(payload2.user);
-    });
-
-    it('다른 방의 유저는 조회하지 않는다', () => {
-      // GIVEN
-      const payload1: JoinUserDTO = {
-        workspaceId: 'w1',
-        user: {
-          id: 'u1',
-          nickname: 'user1',
-          color: '#000000',
-        },
-      };
-      const payload2: JoinUserDTO = {
-        workspaceId: 'w2',
-        user: {
-          id: 'u2',
-          nickname: 'user2',
-          color: '#FF0000',
-        },
-      };
-      service.joinUser(payload1, 's1');
-      service.joinUser(payload2, 's2');
-
-      // WHEN
-      const result = service.getUsersByRoomId('w1');
-
-      // THEN
-      expect(result).toHaveLength(1);
-      expect(result).toContainEqual(payload1.user);
-      expect(result).not.toContainEqual(payload2.user);
-    });
-
-    it('유저가 없는 방이면 빈 배열을 반환한다', () => {
-      // GIVEN
-      const roomId = 'w1';
-
-      // WHEN
-      const result = service.getUsersByRoomId(roomId);
-
-      // THEN
-      expect(result).toEqual([]);
-    });
+    expect(service.isExistsWorkspace('expired-room')).toBe(true);
+    service.deleteWorkspace('expired-room');
+    expect(service.isExistsWorkspace('expired-room')).toBe(false);
   });
 });

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JoinUserDTO } from './dto/join-user.dto';
-import { User } from './dto/join-user.dto';
+import { User } from './entity/user';
 
 // 유저 정보는 저장해야 함
 interface UserSession {
@@ -43,85 +42,5 @@ export class WorkspaceService {
         this.workspaces.delete(workspaceId);
       }
     });
-  }
-
-  public handleDisconnect(
-    socketId: string,
-  ): { roomId: string; userId: string } | null {
-    const session = this.userSessions.get(socketId);
-    if (!session) {
-      return null;
-    }
-
-    const { roomId, user } = session;
-
-    this.userSessions.delete(socketId);
-
-    return { roomId, userId: user.id };
-  }
-
-  public joinUser(
-    payload: JoinUserDTO,
-    socketId: string,
-  ): {
-    roomId: string;
-    user: User;
-    allUsers: User[];
-  } {
-    const roomId = payload.workspaceId;
-
-    const user: User = {
-      id: payload.user.id,
-      nickname: payload.user.nickname,
-      color: payload.user.color,
-    };
-
-    this.userSessions.set(socketId, {
-      socketId,
-      roomId,
-      user,
-    });
-
-    const allUsers = this.getUsersByRoomId(roomId);
-
-    return { roomId, user, allUsers };
-  }
-
-  public leaveUser(
-    socketId: string,
-  ): { roomId: string; userId: string } | null {
-    const session = this.userSessions.get(socketId);
-    if (!session) {
-      return null;
-    }
-
-    const { roomId, user } = session;
-
-    this.userSessions.delete(socketId);
-
-    return { roomId, userId: user.id };
-  }
-
-  // 소켓 Id로 유저 정보 조회
-  public getUserBySocketId(socketId: string): {
-    roomId: string;
-    user: User;
-  } | null {
-    const session = this.userSessions.get(socketId);
-    if (!session) {
-      return null;
-    }
-
-    return {
-      roomId: session.roomId,
-      user: session.user,
-    };
-  }
-
-  // 방 Id로 유저 정보 조회
-  public getUsersByRoomId(roomId: string): User[] {
-    return Array.from(this.userSessions.values())
-      .filter((session) => session.roomId === roomId)
-      .map((session) => session.user);
   }
 }
