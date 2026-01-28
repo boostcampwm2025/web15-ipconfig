@@ -1,4 +1,4 @@
-import type { Position } from '@/common/types/canvas';
+import type { FrameInfo, Position } from '@/common/types/canvas';
 import type { Camera } from '@/common/types/camera';
 import { ZOOM_CONFIG } from '../constants/zoom';
 import { CANVAS_CONFIG } from '../constants/canvas';
@@ -30,6 +30,21 @@ export function frameToCanvasPosition(
   const yInCanvas = (yInFrame - camera.y) / camera.scale;
 
   return { x: xInCanvas, y: yInCanvas };
+}
+
+/**
+ * 캔버스 좌표계 좌표를  프레임 내부 좌표로 변환
+ * @param canvasPoint 캔버스 좌표계 좌표
+ * @param camera 카메라 좌표 (캔버스 좌표계의 원점(0, 0)이 프레임 내부 어디에 그려지는가)
+ * @returns 프레임 내부 좌표
+ */
+export function canvasToFramePosition(
+  { x: xInCanvas, y: yInCanvas }: Position,
+  camera: Camera,
+): Position {
+  const xInFrame = xInCanvas * camera.scale + camera.x;
+  const yInFrame = yInCanvas * camera.scale + camera.y;
+  return { x: xInFrame, y: yInFrame };
 }
 
 /**
@@ -124,3 +139,21 @@ export const zoomByDeltaAtPivot = (
 
   return { x: newX, y: newY, scale: newScale };
 };
+
+export function getCameraByCursorPosition({
+  frameInfo,
+  cursorPosition,
+  camera,
+}: {
+  frameInfo: FrameInfo;
+  cursorPosition: Position;
+  camera: Camera;
+}): Camera {
+  const { width, height } = frameInfo;
+  const { x: cursorX, y: cursorY } = cursorPosition;
+
+  const newCameraX = width / 2 - cursorX * camera.scale;
+  const newCameraY = height / 2 - cursorY * camera.scale;
+
+  return { x: newCameraX, y: newCameraY, scale: camera.scale };
+}
