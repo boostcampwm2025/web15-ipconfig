@@ -75,7 +75,7 @@ function ExportDocDialog({
       </div>
       <DialogFooter>
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={() => handleCopyToClipboard(markdown)}
         >
           {isCopied ? (
@@ -132,12 +132,16 @@ function ExportGroupDropdownButton() {
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="secondary" size="sm">
             <LuExport />
             결과 내보내기
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-40" align="start">
+        <DropdownMenuContent
+          className="w-40"
+          align="start"
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <DialogTrigger
