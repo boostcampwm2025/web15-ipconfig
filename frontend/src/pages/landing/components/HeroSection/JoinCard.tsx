@@ -1,11 +1,10 @@
 import { Input } from '@/common/components/shadcn/input';
-import { MainButton } from '..';
+import MainButton from '@/pages/landing/components/MainButton';
 import { Users } from 'lucide-react';
 import { useJoinWorkspace } from '@/common/hooks/useJoinWorkspace';
 
-const JoinCard = () => {
-  const { joinCode, joinError, handleJoinCodeChange, handleJoinWorkspace } =
-    useJoinWorkspace();
+function JoinCard() {
+  const { register, handleSubmit, errors, onSubmit } = useJoinWorkspace();
   return (
     <div className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl backdrop-blur transition-all hover:border-slate-700 hover:bg-slate-900">
       <div className="mb-6 text-left">
@@ -22,25 +21,24 @@ const JoinCard = () => {
         <Input
           type="text"
           placeholder="코드 입력 (예: 1a2b3c)"
-          value={joinCode}
-          onChange={handleJoinCodeChange}
+          {...register('code')}
           maxLength={32}
-          className="h-12 text-center font-mono text-base focus-visible:border-blue-500 focus-visible:ring-blue-500/50"
+          className="h-12 text-center text-base focus-visible:border-blue-500 focus-visible:ring-blue-500/50"
         />
-        {joinError && (
+        {errors.code && (
           <p className="text-left font-mono text-sm text-red-400">
-            {joinError}
+            {errors.code.message}
           </p>
         )}
         <MainButton
           text="워크스페이스 참가"
           icon={<Users size={18} />}
-          onClick={handleJoinWorkspace}
+          onClick={handleSubmit(onSubmit)}
           className="bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-blue-600"
         />
       </div>
     </div>
   );
-};
+}
 
 export default JoinCard;

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router';
-import WorkSpacePage from './pages/workspace/WorkSpacePage';
-import LandingPage from './pages/landingPage/LandingPage';
+import WorkSpacePage from '@/pages/workspace/WorkSpacePage';
+import LandingPage from '@/pages/landing/LandingPage';
 
 function App() {
   return (

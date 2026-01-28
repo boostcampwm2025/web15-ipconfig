@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 // 버튼 색이 마음에 안 듬...
-const Navbar = ({ scrolled }: NavbarProps) => {
+function Navbar({ scrolled }: NavbarProps) {
   return (
     <nav
       className={`fixed z-50 w-full transition-all duration-300 ${
@@ -41,6 +41,6 @@ const Navbar = ({ scrolled }: NavbarProps) => {
       </div>
     </nav>
   );
-};
+}
 
 export default Navbar;

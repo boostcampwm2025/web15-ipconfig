@@ -1,5 +1,5 @@
 // 쓸모 없고 별도 로직은 없는데 가독성은 낮아서 뺐습니다
-const HeroHeader = () => {
+function HeroHeader() {
   return (
     <>
       <h1 className="mb-6 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-5xl leading-tight font-bold text-transparent md:text-6xl">
@@ -14,6 +14,6 @@ const HeroHeader = () => {
       </p>
     </>
   );
-};
+}
 
 export default HeroHeader;

@@ -18,8 +18,15 @@
   --color-primary-950: #003417;
 }
 
+@font-face {
+  font-family: 'suit';
+  font-weight: 100 900;
+  src: url('./assets/fonts/SUIT-Variable.ttf') format('truetype');
+  font-display: swap;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'suit', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -37,7 +44,7 @@
   /* --primary: oklch(0.21 0.034 264.665); */
   --primary: var(--color-primary-600);
   --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.967 0.003 264.542);
+  --secondary: var(--color-gray-200);
   --secondary-foreground: oklch(0.21 0.034 264.665);
   --muted: oklch(0.967 0.003 264.542);
   --muted-foreground: oklch(0.551 0.027 264.364);
@@ -114,11 +121,12 @@
   /* --primary: oklch(0.928 0.006 264.531); */
   --primary: oklch(0.7289 0.2119 147.82);
   --primary-foreground: oklch(0.21 0.034 264.665);
-  --secondary: oklch(0.278 0.033 256.848);
+  --secondary: var(--color-gray-700);
   --secondary-foreground: oklch(0.985 0.002 247.839);
   --muted: oklch(0.278 0.033 256.848);
   --muted-foreground: oklch(0.707 0.022 261.325);
-  --accent: oklch(0.278 0.033 256.848);
+  /* --accent: oklch(0.278 0.033 256.848); */
+  --accent: var(--color-gray-700);
   --accent-foreground: oklch(0.985 0.002 247.839);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
