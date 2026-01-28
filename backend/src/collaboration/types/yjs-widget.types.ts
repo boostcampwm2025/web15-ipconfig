@@ -3,7 +3,9 @@ export type YjsWidgetType =
   | 'POST_IT'
   | 'GIT_CONVENTION'
   | 'COLLABORATION'
-  | 'COMMUNICATION';
+  | 'COMMUNICATION'
+  | 'NAMING_CONVENTION'
+  | 'FORMAT';
 
 // Selector 공통 타입
 export interface YjsOptionItem {
@@ -107,4 +109,46 @@ export interface YjsPostItContent {
   text: string;
   backgroundColor: string;
   fontSize: number;
+}
+
+// NAMING_CONVENTION
+export interface YjsNamingConventionContent {
+  frontend: {
+    variable: string;
+    function: string;
+    component: string;
+    constant: string;
+  };
+  backend: {
+    variable: string;
+    function: string;
+    class: string;
+    constant: string;
+  };
+  database: {
+    table: string;
+    column: string;
+    index: string;
+    constraint: string;
+  };
+  common: {
+    utility: string;
+    constant: string;
+    type: string;
+    enum: string;
+  };
+}
+
+// FORMAT
+export interface YjsFormatContent {
+  line: number;
+  useTabs: boolean;
+  tabWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  jsxSingleQuote: boolean;
+  bracketSpacing: boolean;
+  trailingComma: string;
+  arrowParens: boolean;
+  attributePerLine: boolean;
 }
