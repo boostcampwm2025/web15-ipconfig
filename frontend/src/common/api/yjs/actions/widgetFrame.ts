@@ -38,6 +38,19 @@ export const createWidgetAction = ({
 
     if (widgetsMap.has(widgetId)) return;
 
+    // Singleton 위젯 체크: GIT_CONVENTION 타입이 이미 존재하면 생성 중단
+    if (type === 'GIT_CONVENTION') {
+      let isExists = false;
+      for (const widget of widgetsMap.values()) {
+        const widgetType = (widget as Y.Map<unknown>).get('type');
+        if (widgetType === 'GIT_CONVENTION') {
+          isExists = true;
+          break;
+        }
+      }
+      if (isExists) return;
+    }
+
     // 기본 레이아웃 설정
     const newWidget: WidgetData = {
       widgetId,
