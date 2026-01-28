@@ -15,7 +15,9 @@ export class WorkspaceController {
   constructor(private readonly workspaceService: WorkspaceService) {}
 
   @Get('join/:workspaceId')
-  joinWorkspaceById(@Param(WorkspaceIdPipe) workspaceId: string) {
+  joinWorkspaceById(
+    @Param('workspaceId', WorkspaceIdPipe) workspaceId: string,
+  ) {
     if (!this.workspaceService.isExistsWorkspace(workspaceId)) {
       throw new NotFoundException(`'${workspaceId}' 는 존재하지 않습니다.`);
     }
@@ -41,7 +43,9 @@ export class WorkspaceController {
   }
 
   @Post('make/:workspaceId')
-  createWorkspaceWithId(@Param(WorkspaceIdPipe) workspaceId: string) {
+  createWorkspaceWithId(
+    @Param('workspaceId', WorkspaceIdPipe) workspaceId: string,
+  ) {
     if (this.workspaceService.isExistsWorkspace(workspaceId)) {
       throw new ConflictException(
         `이미 '${workspaceId}' 워크스페이스가 존재합니다.`,
