@@ -28,8 +28,6 @@ export const useOtherUserList = () =>
   useUserStore(
     useShallow((s) =>
       s.userList.filter((user) => {
-        console.log(user.id, s.myId);
-        console.log(user.id !== s.myId);
         return user.id !== s.myId;
       }),
     ),

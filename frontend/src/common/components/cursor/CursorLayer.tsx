@@ -1,13 +1,7 @@
 import CursorWithName from './CursorWithName';
-// import useCursorStore from '@/common/store/cursor';
-// import { useCursorAwareness } from '@/common/hooks/useCursorAwareness';
 import { useOtherUserList } from '@/common/store/user';
 
 function CursorLayer() {
-  // Awareness change 이벤트 리스너 등록
-  // useCursorAwareness();
-
-  // const cursorList = useCursorStore((state) => state.cursorList);
   const otherUsers = useOtherUserList();
 
   return (

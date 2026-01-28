@@ -29,12 +29,13 @@ const mockUser: UserExtended = {
   nickname: '김개발',
   role: 'Frontend Developer',
   color: 'bg-blue-400',
-  backgroundColor: 'bg-blue-400',
   textColor: 'text-blue-400',
   status: '작업중',
   time: '오전 9:00 - 오후 6:00',
   style: '빠른 개발과 실험을 선호',
   activity: [60, 80, 70, 90, 65, 75, 85],
+  cursor: { x: 0, y: 0 },
+  manipulationState: { widgetId: '', type: 'move', layout: { x: 0, y: 0 } },
 };
 
 export const Default: Story = {
@@ -52,7 +53,6 @@ export const BackendDeveloper: Story = {
       nickname: '이서버',
       role: 'Backend Developer',
       color: 'bg-green-400',
-      backgroundColor: 'bg-green-400',
       textColor: 'text-green-400',
       time: '오전 10:00 - 오후 7:00',
       style: '체계적이고 안정적인 개발',
@@ -70,7 +70,6 @@ export const Designer: Story = {
       nickname: '박디자인',
       role: 'UI/UX Designer',
       color: 'bg-purple-400',
-      backgroundColor: 'bg-purple-400',
       textColor: 'text-purple-400',
       status: '준비중',
       time: '오전 11:00 - 오후 8:00',
