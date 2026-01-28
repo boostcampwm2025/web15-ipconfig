@@ -7,6 +7,7 @@ export type WidgetContent =
   | CommunicationContent
   | CollaborationContent
   | NamingConventionContent
+  | FormatContent
   | PostItContent
   | Record<string, unknown>;
 
@@ -83,7 +84,21 @@ export type NamingConventionContent = {
   >;
 };
 
-// 5. POST_IT (Example placeholder)
+// 5. CODE_FORMAT
+export interface FormatContent {
+  printWidth: number;
+  useTabs: boolean;
+  tabWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  jsxSingleQuote: boolean;
+  trailingComma: string;
+  bracketSpacing: boolean;
+  arrowParens: string;
+  singleAttributePerLine: boolean;
+}
+
+// 6. POST_IT (Example placeholder)
 export interface PostItContent {
   text: string;
   color: string;
