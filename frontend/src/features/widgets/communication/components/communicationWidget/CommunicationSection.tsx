@@ -5,10 +5,7 @@ import { COMMUNICATION_ITEMS } from '@/features/widgets/communication/constants/
 
 interface CommunicationSectionProps {
   data: CommunicationData['communication'];
-  onChange: (
-    key: keyof CommunicationData['communication'],
-    value: string,
-  ) => void;
+  onChange: (key: string, value: string) => void;
 }
 
 import {
@@ -48,16 +45,20 @@ export function CommunicationSection({
               </span>
             </div>
             <Select
-              value={data[item.key]}
+              value={data[item.key].selectedId}
               onValueChange={(value) => onChange(item.key, value)}
             >
               <SelectTrigger className="h-8 w-full text-xs font-medium">
                 <SelectValue placeholder="선택해주세요" />
               </SelectTrigger>
               <SelectContent>
-                {item.options.map((opt) => (
-                  <SelectItem key={opt} value={opt} className="text-xs">
-                    {opt}
+                {Object.values(data[item.key].options).map((opt) => (
+                  <SelectItem
+                    key={opt.value}
+                    value={opt.value}
+                    className="text-xs"
+                  >
+                    {opt.value}
                   </SelectItem>
                 ))}
               </SelectContent>
