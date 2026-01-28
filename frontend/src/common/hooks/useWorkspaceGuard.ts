@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { AxiosError } from 'axios';
 
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
+import { workspaceApi } from '@/common/api/workspaceApi';
 
 export function useWorkspaceGuard(workspaceId: string | undefined) {
   const navigate = useNavigate();
   const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
 
   useEffect(() => {
+    // 1. 워크스페이스 ID 자체가 없는 경우
     if (!workspaceId) {
       navigate('/error', {
         state: {
@@ -20,6 +23,7 @@ export function useWorkspaceGuard(workspaceId: string | undefined) {
       return;
     }
 
+    // 2. URL 상의 워크스페이스 ID 형식 검증
     const isValidFormat = /^[a-z0-9]{1,32}$/.test(workspaceId);
     if (!isValidFormat) {
       navigate('/error', {
@@ -32,6 +36,63 @@ export function useWorkspaceGuard(workspaceId: string | undefined) {
       return;
     }
 
-    setWorkspaceId(workspaceId);
+    let cancelled = false;
+
+    // 3. 서버에 해당 워크스페이스가 실제로 존재하는지 검증
+    const verifyWorkspace = async () => {
+      try {
+        // join API를 통해 존재 여부 및 서버 상태 확인
+        await workspaceApi.join(workspaceId);
+        if (cancelled) return;
+
+        // 서버 검증까지 통과한 경우에만 전역 스토어에 동기화
+        setWorkspaceId(workspaceId);
+      } catch (error) {
+        if (cancelled) return;
+
+        // 서버가 응답을 주는 경우 (404, 5xx 등)
+        if (error instanceof AxiosError && error.response) {
+          const status = error.response.status;
+
+          if (status === 404) {
+            navigate('/error', {
+              state: {
+                status: 404,
+                title: '워크스페이스를 찾을 수 없습니다',
+                message:
+                  '해당 워크스페이스가 존재하지 않습니다.\n코드를 다시 확인하거나 홈에서 새로운 워크스페이스를 생성해주세요.',
+              },
+            });
+            return;
+          }
+
+          // 그 외 서버에서 온 에러는 모두 서버 오류로 처리
+          navigate('/error', {
+            state: {
+              status: status >= 500 ? status : 500,
+              title: '서버 오류가 발생했습니다',
+              message:
+                '서버와 통신 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+            },
+          });
+          return;
+        }
+
+        // 서버에 아예 연결되지 않는 경우 (백엔드 꺼짐, 네트워크 오류 등)
+        navigate('/error', {
+          state: {
+            status: 500,
+            title: '서버 오류가 발생했습니다',
+            message: '서버와 연결할 수 없습니다.\n잠시 후 다시 시도해주세요.',
+          },
+        });
+      }
+    };
+
+    void verifyWorkspace();
+
+    return () => {
+      cancelled = true;
+    };
   }, [workspaceId, navigate, setWorkspaceId]);
 }
