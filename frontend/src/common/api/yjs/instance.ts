@@ -1,6 +1,11 @@
 import * as Y from 'yjs';
-import { HocuspocusProvider } from '@hocuspocus/provider';
+import {
+  HocuspocusProvider,
+  type onAwarenessChangeParameters,
+} from '@hocuspocus/provider';
 import { initializeRoot } from './utils/initializeRoot';
+import { useUserStore } from '@/common/store/user';
+import { getRandomColor } from '@/utils/color';
 
 // Doc은 앱 실행 시 바로 생성 (싱글톤)
 export const doc = new Y.Doc();
@@ -46,7 +51,31 @@ export const connectProvider = (workspaceId: string) => {
         providerReadyCallbacks.forEach((cb) => cb(provider!));
         providerReadyCallbacks = [];
       },
+      onAwarenessChange({ states }: onAwarenessChangeParameters) {
+        const setUserList = useUserStore.getState().setUserList;
+        const userWithCursor = states.map(({ user, cursor }) => ({
+          ...user,
+          cursor,
+        }));
+        setUserList(userWithCursor);
+      },
     });
+    const clinetId = provider?.awareness?.clientID;
+    if (clinetId) {
+      provider?.awareness?.setLocalStateField('user', {
+        id: clinetId.toString(),
+        nickname: `임시 유저 ${clinetId}`,
+        color: getRandomColor(),
+      });
+      provider?.awareness?.setLocalStateField('cursor', {
+        x: -100,
+        y: -100,
+        ts: Date.now(),
+      });
+      const setMyId = useUserStore.getState().setMyId;
+      setMyId(clinetId.toString());
+    }
+
     currentWorkspaceId = workspaceId;
   } catch (error) {
     provider = null;

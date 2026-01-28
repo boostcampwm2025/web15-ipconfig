@@ -11,12 +11,12 @@ import {
 } from '../../store/widgetInteraction';
 
 // 내 정보 등록
-export const setLocalUser = (user: UserState) => {
-  const provider = getProvider();
-  if (provider && provider.awareness) {
-    provider.awareness.setLocalStateField('user', user);
-  }
-};
+// export const setLocalUser = (user: UserState) => {
+//   const provider = getProvider();
+//   if (provider && provider.awareness) {
+//     provider.awareness.setLocalStateField('user', user);
+//   }
+// };
 
 // 커서 움직임 (마우스 이동)
 export const updateLocalCursor = (x: number, y: number) => {
