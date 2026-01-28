@@ -1,5 +1,5 @@
 import type { MultiSelector, Selector } from './yjsDoc';
-import type { NamingConventionCategory } from '@/features/widgets/namingConvention/types/category';
+import type { Category as NamingConventionCategory } from '@/features/widgets/namingConvention/types/category';
 
 // Union Content Type
 export type WidgetContent =
