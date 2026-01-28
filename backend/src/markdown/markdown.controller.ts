@@ -1,8 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MarkdownService } from './markdown.service';
 import { GetMarkdownDto } from './dto/get-markdown.dto';
 
+@ApiTags('markdown')
 @Controller('markdown')
 export class MarkdownController {
   constructor(private readonly markdownService: MarkdownService) {}
