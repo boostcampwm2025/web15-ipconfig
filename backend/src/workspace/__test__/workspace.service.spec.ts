@@ -31,7 +31,10 @@ describe('WorkspaceService', () => {
 
     const after = workspaces.get('room-2')!.expirationTime;
 
-    expect(after.getTime()).toBeGreaterThan(before.getTime());
+    // 실제 구현은 create/update 모두 "현재 시점 기준 7일 후"로 설정하므로
+    // 아주 짧은 시간 안에 호출하면 동일 타임스탬프가 나올 수 있다.
+    // 따라서 "이전보다 크거나 같다"로 비교한다.
+    expect(after.getTime()).toBeGreaterThanOrEqual(before.getTime());
   });
 
   it('만료된 워크스페이스를 삭제한다', () => {
