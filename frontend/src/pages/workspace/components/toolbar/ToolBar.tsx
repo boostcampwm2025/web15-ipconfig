@@ -9,8 +9,12 @@ import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/co
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { toast } from 'sonner';
+import { useCanvasStore } from '@/common/store/canvas';
+import { getRandomWidgetLocation } from '@/common/lib/widgetLocation';
 
 function ToolBar() {
+  const { camera } = useCanvasStore();
+
   return (
     <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border border-gray-700 bg-gray-800 p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105">
       <div className="flex items-center justify-center gap-2">
@@ -29,7 +33,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'TECH_STACK',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_TECH_STACK_DATA,
             });
           }}
@@ -52,7 +56,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'GIT_CONVENTION',
-              layout: { x: 500, y: 500 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_GIT_CONVENTION_DATA,
             });
           }}
@@ -65,7 +69,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'COLLABORATION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: COLLABORATION_INITIAL_CONTENT,
             });
           }}
@@ -78,7 +82,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'COMMUNICATION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_COMMUNICATION_DATA,
             });
           }}
@@ -91,7 +95,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'NAMING_CONVENTION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: {},
             });
           }}
