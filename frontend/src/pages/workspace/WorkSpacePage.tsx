@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router';
 // Page-specific components
 import WorkspaceHeader from './components/header/WorkspaceHeader';
 // import UserHoverCard from './components/UserHoverCard';
-import { Canvas } from '@/common/components/canvas';
+import { Canvas, CanvasProvider } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
@@ -47,20 +47,14 @@ function WorkSpacePage() {
   // };
 
   return (
-    <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
-      {/* 헤더: 최상단 오버레이 */}
-      <div className="pointer-events-none absolute top-0 left-0 z-50 w-full">
-        <div className="pointer-events-auto">
-          <WorkspaceHeader />
-        </div>
-      </div>
-
+    <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
       {/* 캔버스: 화면 전체 */}
-      <div className="absolute inset-0">
-        <main className="relative h-full w-full flex-1">
+      <CanvasProvider>
+        <WorkspaceHeader />
+        <main className="absolute inset-0">
           <Canvas />
         </main>
-      </div>
+      </CanvasProvider>
 
       {/* HUD 레이어 */}
       <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
