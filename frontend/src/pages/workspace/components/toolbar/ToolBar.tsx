@@ -14,6 +14,7 @@ import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/i
 import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
 import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
+import { INITIAL_FORMAT_DATA } from '@/features/widgets/format/constants/initial';
 
 function ToolBar() {
   return (
@@ -41,7 +42,7 @@ function ToolBar() {
         />
         <ToolButton
           icon={<LuGitBranch size={20} />}
-          label="Git Convention"
+          label="깃 컨벤션"
           onClick={() => {
             const widgetId = crypto.randomUUID();
             createWidgetAction({
@@ -100,7 +101,7 @@ function ToolBar() {
               widgetId,
               type: 'CODE_FORMAT',
               layout: { x: 200, y: 200 },
-              content: NAMING_CONVENTION_INITIAL_CONTENT,
+              content: INITIAL_FORMAT_DATA,
             });
           }}
         />
