@@ -9,6 +9,7 @@ import NamingConventionWidget from '@/features/widgets/namingConvention/componen
 import { WidgetProvider } from './context/WidgetContext';
 import { GitConventionWidget } from '@/features/widgets/gitConvention';
 import { useWidgetAwareness } from '@/common/hooks/useWidgetAwareness';
+import { FormatWidget } from '@/features/widgets/format';
 
 function WidgetLayer() {
   useWidgetAwareness();
@@ -52,6 +53,8 @@ function WidgetContent({ type }: WidgetContentProps) {
       return <CommunicationWidget />;
     case 'NAMING_CONVENTION':
       return <NamingConventionWidget />;
+    case 'CODE_FORMAT':
+      return <FormatWidget />;
     default:
       return null;
   }
