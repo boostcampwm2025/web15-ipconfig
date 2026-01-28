@@ -54,9 +54,9 @@ function UserListInfo() {
           {userList.map((user) => {
             const isMe = user.id === myInfo?.id;
             if (isMe) {
-              return <MyUserItem user={user} />;
+              return <MyUserItem key={user.id} user={user} />;
             }
-            return <UserItem user={user} />;
+            return <UserItem key={user.id} user={user} />;
           })}
         </div>
       </PopoverContent>

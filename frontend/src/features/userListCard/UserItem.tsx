@@ -3,16 +3,29 @@ import { Button } from '@/common/components/shadcn/button';
 import { cn } from '@/common/lib/utils';
 import { getContrastClass } from '@/utils/color';
 import type { User } from '@/common/types/user';
+import { useCanvas } from '@/common/components/canvas/context/CanvasProvider';
+import { getCameraByCursorPosition } from '@/common/components/canvas/lib/positionTransform';
 
 interface UserItemProps {
   user: User;
 }
 
 function UserItem({ user }: UserItemProps) {
+  const { setCamera, getFrameInfo } = useCanvas();
+  const { cursor } = user;
   return (
     <Button
       variant="ghost"
       className="group flex items-center justify-start gap-2.5 px-2 py-5"
+      onClick={() => {
+        setCamera((prev) => {
+          return getCameraByCursorPosition({
+            frameInfo: getFrameInfo(),
+            cursorPosition: { x: cursor.x, y: cursor.y },
+            camera: prev,
+          });
+        });
+      }}
     >
       <Avatar className="size-7 !ring-gray-800">
         <AvatarFallback
