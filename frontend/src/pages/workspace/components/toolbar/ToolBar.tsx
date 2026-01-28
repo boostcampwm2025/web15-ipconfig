@@ -7,6 +7,8 @@ import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/
 import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/initial';
 import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
+import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import { toast } from 'sonner';
 
 function ToolBar() {
   return (
@@ -36,7 +38,17 @@ function ToolBar() {
           icon={<LuGitBranch size={20} />}
           label="Git Convention"
           onClick={() => {
-            const widgetId = crypto.randomUUID();
+            const { widgetList } = useWorkspaceWidgetStore.getState();
+            const hasGitConvention = widgetList.some(
+              (widget) => widget.type === 'GIT_CONVENTION',
+            );
+
+            if (hasGitConvention) {
+              toast.warning('Git Convention 위젯은 하나만 생성할 수 있습니다.');
+              return;
+            }
+
+            const widgetId = 'GIT_CONVENTION';
             createWidgetAction({
               widgetId,
               type: 'GIT_CONVENTION',
