@@ -138,22 +138,19 @@ export class MarkdownService {
 
     const lines: string[] = [];
     lines.push('## 🛠 기술 스택 선택');
+    lines.push('| 기술 스택 이름 | 버전 |');
+    lines.push('| :--- | :--- |');
 
     widgets.forEach((widget) => {
       const content = widget.content as unknown as YjsTechStackContent;
-      const subject = getSelectedValue(content.subject) || '';
-
       if (content.techItems && content.techItems.length > 0) {
-        lines.push(`### ${subject}`);
-        lines.push('| 기술 스택 이름 | 버전 |');
-        lines.push('| :--- | :--- |');
         content.techItems.forEach((item) => {
           lines.push(`| ${item.name} | 최신 버전 |`);
         });
-        lines.push('');
       }
     });
 
+    lines.push('');
     return lines;
   }
 

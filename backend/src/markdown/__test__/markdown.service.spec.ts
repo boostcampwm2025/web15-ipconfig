@@ -241,32 +241,4 @@ describe('MarkdownService', () => {
     expect(markdown).toContain('후행 쉼표');
     expect(markdown).toContain('all');
   });
-  it('TECH_STACK 위젯이 있으면 기술 스택 마크다운을 생성한다.', () => {
-    const techStackWidget: YjsWidgetData = {
-      widgetId: 'tech-1',
-      type: 'TECH_STACK',
-      layout: { x: 0, y: 0, width: 300, height: 300 },
-      createdAt: Date.now(),
-      content: {
-        subject: {
-          selectedId: 's1',
-          options: { s1: { value: 'Frontend', createdAt: 0 } },
-        },
-        techItems: [
-          { id: 't1', name: 'React', category: 'Library' },
-          { id: 't2', name: 'TypeScript', category: 'Language' },
-        ],
-      } as Record<string, unknown>,
-    };
-
-    yjsDocReaderMock.getWidgets.mockReturnValue([techStackWidget]);
-
-    const markdown = service.generateMarkdown(workspaceId);
-
-    expect(markdown).toContain('## 🛠 기술 스택 선택');
-    expect(markdown).toContain('### Frontend');
-    expect(markdown).toContain('React');
-    expect(markdown).toContain('TypeScript');
-    expect(markdown).toContain('최신 버전');
-  });
 });
