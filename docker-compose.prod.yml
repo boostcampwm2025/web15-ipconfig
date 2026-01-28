@@ -10,7 +10,7 @@ services:
       - app-network
     environment:
       - NODE_ENV=production
-      - HOST_URL=http://49.50.138.164/
+      - HOST_URL=${HOST_URL}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -22,6 +22,10 @@ services:
     container_name: web15-ipconfig-frontend
     ports:
       - '80:80'
+      - '443:443'
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     networks:
       - app-network
     environment:

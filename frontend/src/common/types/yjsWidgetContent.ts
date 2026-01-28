@@ -26,7 +26,7 @@ export interface GitConventionContent {
   strategy: Selector;
   branchRules: {
     mainBranch: string;
-    developBranch: string;
+    developBranch?: string;
     prefixes: MultiSelector;
   };
   commitConvention: {
@@ -37,15 +37,22 @@ export interface GitConventionContent {
 
 // 3. COMMUNICATION
 export interface CommunicationContent {
-  strategy: Selector;
-  branchRules: {
-    mainBranch: string;
-    developBranch: string;
-    prefixes: MultiSelector;
+  communication: {
+    urgent: Selector;
+    sync: Selector;
+    async: Selector;
+    official: Selector;
   };
-  commitConvention: {
-    useGitmoji: boolean;
-    commitTypes: MultiSelector;
+  sla: {
+    responseTime: number;
+  };
+  timeManagement: {
+    coreTimeStart: string;
+    coreTimeEnd: string;
+  };
+  meeting: {
+    noMeetingDay: string;
+    feedbackStyle: string;
   };
 }
 

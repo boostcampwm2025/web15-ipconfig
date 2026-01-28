@@ -157,4 +157,88 @@ describe('MarkdownService', () => {
     expect(markdown).toContain('수요일');
     expect(markdown).toContain('직접적');
   });
+
+  it('NAMING_CONVENTION 위젯이 있으면 네이밍 컨벤션 마크다운을 생성한다.', () => {
+    const namingConventionWidget: YjsWidgetData = {
+      widgetId: 'naming-1',
+      type: 'NAMING_CONVENTION',
+      layout: { x: 0, y: 0, width: 300, height: 300 },
+      createdAt: Date.now(),
+      content: {
+        frontend: {
+          variable: 'camelCase',
+          function: 'camelCase',
+          component: 'PascalCase',
+          constant: 'UPPER_SNAKE_CASE',
+        },
+        backend: {
+          variable: 'camelCase',
+          function: 'camelCase',
+          class: 'PascalCase',
+          constant: 'UPPER_SNAKE_CASE',
+        },
+        database: {
+          table: 'snake_case',
+          column: 'snake_case',
+          index: 'idx_prefix',
+          constraint: 'pk_prefix',
+        },
+        common: {
+          utility: 'camelCase',
+          constant: 'UPPER_SNAKE_CASE',
+          type: 'PascalCase',
+          enum: 'UPPER_SNAKE_CASE',
+        },
+      } as Record<string, unknown>,
+    };
+
+    yjsDocReaderMock.getWidgets.mockReturnValue([namingConventionWidget]);
+
+    const markdown = service.generateMarkdown(workspaceId);
+
+    expect(markdown).toContain('## 📝 네이밍 컨벤션');
+    expect(markdown).toContain('### Frontend');
+    expect(markdown).toContain('camelCase');
+    expect(markdown).toContain('PascalCase');
+    expect(markdown).toContain('### Backend');
+    expect(markdown).toContain('### Database');
+    expect(markdown).toContain('snake_case');
+    expect(markdown).toContain('### Common');
+    expect(markdown).toContain('열거형');
+  });
+
+  it('FORMAT 위젯이 있으면 코드 포맷 마크다운을 생성한다.', () => {
+    const formatWidget: YjsWidgetData = {
+      widgetId: 'format-1',
+      type: 'FORMAT',
+      layout: { x: 0, y: 0, width: 300, height: 300 },
+      createdAt: Date.now(),
+      content: {
+        line: 80,
+        useTabs: false,
+        tabWidth: 2,
+        semi: true,
+        singleQuote: true,
+        jsxSingleQuote: false,
+        bracketSpacing: true,
+        trailingComma: 'all',
+        arrowParens: true,
+        attributePerLine: true,
+      } as Record<string, unknown>,
+    };
+
+    yjsDocReaderMock.getWidgets.mockReturnValue([formatWidget]);
+
+    const markdown = service.generateMarkdown(workspaceId);
+
+    expect(markdown).toContain('## ⚙️ 코드 포맷');
+    expect(markdown).toContain('줄 길이');
+    expect(markdown).toContain('80');
+    expect(markdown).toContain('탭 사용');
+    expect(markdown).toContain('들여쓰기 폭');
+    expect(markdown).toContain('세미콜론');
+    expect(markdown).toContain('홑따옴표');
+    expect(markdown).toContain('후행 쉼표');
+    expect(markdown).toContain('all');
+  });
 });

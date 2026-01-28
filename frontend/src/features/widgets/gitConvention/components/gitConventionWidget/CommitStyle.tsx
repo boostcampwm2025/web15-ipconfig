@@ -10,12 +10,17 @@ interface CommitStyleProps {
 
 export function CommitStyle({ convention, onChange }: CommitStyleProps) {
   const toggleType = (type: string) => {
-    const currentTypes = convention.commitTypes || [];
+    const currentTypes = convention.commitTypes?.selectedIds || [];
     const newTypes = currentTypes.includes(type)
       ? currentTypes.filter((t) => t !== type)
       : [...currentTypes, type];
 
-    onChange({ commitTypes: newTypes });
+    onChange({
+      commitTypes: {
+        ...convention.commitTypes,
+        selectedIds: newTypes,
+      },
+    });
   };
 
   return (
@@ -26,7 +31,7 @@ export function CommitStyle({ convention, onChange }: CommitStyleProps) {
 
       <div className="grid grid-cols-2 gap-2">
         {DEFAULT_COMMIT_TYPES.map((type) => {
-          const isChecked = convention.commitTypes?.includes(type);
+          const isChecked = convention.commitTypes?.selectedIds.includes(type);
           return (
             <button
               key={type}

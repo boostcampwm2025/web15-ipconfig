@@ -51,6 +51,7 @@ function WorkSpacePage() {
     };
   }, [workspaceId]);
 
+  // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setHoverPosition({
