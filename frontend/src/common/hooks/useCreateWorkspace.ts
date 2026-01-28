@@ -4,9 +4,9 @@ import { workspaceApi } from '@/common/api/workspaceApi';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  createCodeSchema,
-  type CreateCode,
-} from '@/common/schemas/createCodeSchema';
+  createInviteCodeSchema,
+  type CreateInviteCode,
+} from '@/common/schemas/createInviteCodeSchema';
 
 export const useCreateWorkspace = () => {
   const navigate = useNavigate();
@@ -16,15 +16,15 @@ export const useCreateWorkspace = () => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<CreateCode>({
-    resolver: zodResolver(createCodeSchema),
+  } = useForm<CreateInviteCode>({
+    resolver: zodResolver(createInviteCodeSchema),
     mode: 'onChange',
     defaultValues: {
       code: '',
     },
   });
 
-  const onSubmit = async (data: CreateCode) => {
+  const onSubmit = async (data: CreateInviteCode) => {
     try {
       let workspaceId: string;
       if (data.code) {

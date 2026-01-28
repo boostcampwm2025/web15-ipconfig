@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createCodeSchema = z.object({
+export const createInviteCodeSchema = z.object({
   code: z
     .string()
     .max(32, '코드는 32자 이하여야 합니다.')
@@ -9,4 +9,4 @@ export const createCodeSchema = z.object({
     .optional(),
 });
 
-export type CreateCode = z.infer<typeof createCodeSchema>;
+export type CreateInviteCode = z.infer<typeof createInviteCodeSchema>;
