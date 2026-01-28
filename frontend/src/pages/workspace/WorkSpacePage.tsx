@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 
-import type { UserExtended } from '@/common/types/user';
+// import type { UserExtended } from '@/common/types/user';
 
 // Page-specific components
 import WorkspaceHeader from './components/header/WorkspaceHeader';
-import UserHoverCard from './components/UserHoverCard';
+// import UserHoverCard from './components/UserHoverCard';
 import { Canvas } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
@@ -19,9 +19,9 @@ function WorkSpacePage() {
   const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
 
   // UI State
-  const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
-  const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
-  const [isSidebarExpanded, setSidebarExpanded] = useState(false);
+  // const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
+  // const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
+  // const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
   useEffect(() => {
     if (!workspaceId) {
@@ -32,28 +32,19 @@ function WorkSpacePage() {
   }, [workspaceId, setWorkspaceId, navigate]);
 
   useCollaboration(workspaceId || '');
-
-  // useEffect(() => {
-  //   if (!workspaceId) return;
-  //   joinRoom(generateCurrentUser());
-  //   return () => {
-  //     leaveRoom();
-  //   };
-  // }, [workspaceId]);
-
   // User Hover Logic
-  const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoverPosition({
-      top: Math.min(rect.top, window.innerHeight - 250),
-      left: rect.left - 280,
-    });
-    setHoveredUser(user);
-  };
+  // const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
+  //   const rect = e.currentTarget.getBoundingClientRect();
+  //   setHoverPosition({
+  //     top: Math.min(rect.top, window.innerHeight - 250),
+  //     left: rect.left - 280,
+  //   });
+  //   setHoveredUser(user);
+  // };
 
-  const handleUserLeave = () => {
-    setHoveredUser(null);
-  };
+  // const handleUserLeave = () => {
+  //   setHoveredUser(null);
+  // };
 
   return (
     <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
@@ -115,9 +106,9 @@ function WorkSpacePage() {
         </div>
       </div>
 
-      {hoveredUser && (
+      {/* {hoveredUser && (
         <UserHoverCard user={hoveredUser} position={hoverPosition} />
-      )}
+      )} */}
     </div>
   );
 }
