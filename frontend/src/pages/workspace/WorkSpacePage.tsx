@@ -1,23 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 
 import type { UserExtended } from '@/common/types/user';
 
-import { useMarkdown } from '@/common/hooks/useMarkdown';
-
 // Page-specific components
 import WorkspaceHeader from './components/header/WorkspaceHeader';
-import RightSidebar from './components/infoPanel/InfoPanel';
 import UserHoverCard from './components/UserHoverCard';
-import ExportModal from './components/ExportModal';
-import CompactPanel from './components/infoPanel/CompactPanel';
-import { INITIAL_USERS } from '@/common/mocks/users';
 import { Canvas } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
-import { joinRoom, leaveRoom } from '@/common/api/socket';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
-import { generateCurrentUser } from '@/common/lib/user';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
 
 function WorkSpacePage() {
@@ -42,13 +33,13 @@ function WorkSpacePage() {
 
   useCollaboration(workspaceId || '');
 
-  useEffect(() => {
-    if (!workspaceId) return;
-    joinRoom(generateCurrentUser());
-    return () => {
-      leaveRoom();
-    };
-  }, [workspaceId]);
+  // useEffect(() => {
+  //   if (!workspaceId) return;
+  //   joinRoom(generateCurrentUser());
+  //   return () => {
+  //     leaveRoom();
+  //   };
+  // }, [workspaceId]);
 
   // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
@@ -86,7 +77,7 @@ function WorkSpacePage() {
           <div className="absolute top-0 left-0">
             <ToolBar />
           </div>
-          <AnimatePresence mode="sync">
+          {/* <AnimatePresence mode="sync">
             {isSidebarExpanded ? (
               <motion.div
                 key="sidebar"
@@ -120,7 +111,7 @@ function WorkSpacePage() {
                 />
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
         </div>
       </div>
 
