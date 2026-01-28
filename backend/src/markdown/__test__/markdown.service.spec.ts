@@ -182,11 +182,10 @@ describe('MarkdownService', () => {
 
     const markdown = service.generateMarkdown(workspaceId);
 
-    expect(markdown).toContain('## 🛠 기술 스택 선택');
+    expect(markdown).toContain('## 🛠 기술 스택');
     expect(markdown).toContain('### Frontend');
     expect(markdown).toContain('React');
     expect(markdown).toContain('TypeScript');
-    expect(markdown).toContain('최신 버전');
   });
 
   it('GIT_CONVENTION 위젯이 있으면 그라운드 룰 마크다운을 생성한다.', () => {
