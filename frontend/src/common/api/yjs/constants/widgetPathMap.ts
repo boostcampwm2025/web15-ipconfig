@@ -91,4 +91,16 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     'common.type': ['common', 'type'],
     'common.enum': ['common', 'enum'],
   },
+  CODE_FORMAT: {
+    printWidth: ['printWidth'],
+    useTabs: ['useTabs'],
+    tabWidth: ['tabWidth'],
+    semi: ['semi'],
+    singleQuote: ['singleQuote'],
+    jsxSingleQuote: ['jsxSingleQuote'],
+    trailingComma: ['trailingComma'],
+    bracketSpacing: ['bracketSpacing'],
+    arrowParens: ['arrowParens'],
+    singleAttributePerLine: ['singleAttributePerLine'],
+  },
 };
