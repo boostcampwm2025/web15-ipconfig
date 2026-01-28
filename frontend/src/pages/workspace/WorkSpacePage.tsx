@@ -7,7 +7,7 @@ import type { UserExtended } from '@/common/types/user';
 import { useMarkdown } from '@/common/hooks/useMarkdown';
 
 // Page-specific components
-import WorkspaceHeader from './components/WorkspaceHeader';
+import WorkspaceHeader from './components/header/WorkspaceHeader';
 import RightSidebar from './components/infoPanel/InfoPanel';
 import UserHoverCard from './components/UserHoverCard';
 import ExportModal from './components/ExportModal';
@@ -19,7 +19,6 @@ import { joinRoom, leaveRoom } from '@/common/api/socket';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { generateCurrentUser } from '@/common/lib/user';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
-import useUserStore from '@/common/store/user';
 
 function WorkSpacePage() {
   const navigate = useNavigate();
