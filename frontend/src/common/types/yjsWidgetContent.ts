@@ -26,7 +26,7 @@ export interface GitConventionContent {
   strategy: Selector;
   branchRules: {
     mainBranch: string;
-    developBranch: string;
+    developBranch?: string;
     prefixes: MultiSelector;
   };
   commitConvention: {
@@ -40,7 +40,7 @@ export interface CommunicationContent {
   strategy: Selector;
   branchRules: {
     mainBranch: string;
-    developBranch: string;
+    developBranch?: string;
     prefixes: MultiSelector;
   };
   commitConvention: {

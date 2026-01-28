@@ -1,34 +1,13 @@
-import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import { useGitConvention } from '@/features/widgets/gitConvention/hooks/useGitConvention';
 import { StrategySelector } from './StrategySelector';
 import { BranchRules } from './BranchRules';
 import { CommitStyle } from './CommitStyle';
-import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
-import { useShallow } from 'zustand/react/shallow';
-import { emitUpdateWidget } from '@/common/api/socket';
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuGitBranch } from 'react-icons/lu';
 
 function GitConventionWidget() {
-  const { widgetId } = useWidgetIdAndType();
-  const content = useWorkspaceWidgetStore(
-    useShallow(
-      (state) =>
-        state.widgetList.find((widget) => widget.widgetId === widgetId)
-          ?.content,
-    ),
-  );
-  // GitConventionContentDto 임을 명시하고, 이후에 data 사용
-  const gitConventionContent = content as GitConventionData;
-
   const { strategy, branchRules, commitConvention, isModalOpen, actions } =
-    useGitConvention({
-      data: gitConventionContent,
-      onDataChange: (nextData) => {
-        emitUpdateWidget(widgetId, nextData);
-      },
-    });
+    useGitConvention();
 
   return (
     <WidgetFrame

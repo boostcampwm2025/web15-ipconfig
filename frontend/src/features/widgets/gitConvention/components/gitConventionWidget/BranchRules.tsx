@@ -15,17 +15,25 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
 
   const handleAddPrefix = () => {
     if (!newPrefix.trim()) return;
-    if (rules.prefixes.includes(newPrefix.trim())) return;
+    if (rules.prefixes.selectedIds.includes(newPrefix.trim())) return;
 
     onChange({
-      prefixes: [...rules.prefixes, newPrefix.trim()],
+      prefixes: {
+        ...rules.prefixes,
+        selectedIds: [...rules.prefixes.selectedIds, newPrefix.trim()],
+      },
     });
     setNewPrefix('');
   };
 
   const handleRemovePrefix = (prefixToRemove: string) => {
     onChange({
-      prefixes: rules.prefixes.filter((p) => p !== prefixToRemove),
+      prefixes: {
+        ...rules.prefixes,
+        selectedIds: rules.prefixes.selectedIds.filter(
+          (p) => p !== prefixToRemove,
+        ),
+      },
     });
   };
 
@@ -88,7 +96,7 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
           </Button>
         </div>
         <div className="mt-1 flex flex-wrap gap-1.5">
-          {rules.prefixes.map((prefix) => (
+          {rules.prefixes.selectedIds.map((prefix) => (
             <Badge
               key={prefix}
               variant="secondary"
@@ -104,7 +112,7 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
               </button>
             </Badge>
           ))}
-          {rules.prefixes.length === 0 && (
+          {rules.prefixes.selectedIds.length === 0 && (
             <span className="text-muted-foreground ml-1 text-xs italic">
               No prefixes configured.
             </span>

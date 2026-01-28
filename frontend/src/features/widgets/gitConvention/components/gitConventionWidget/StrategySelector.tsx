@@ -1,10 +1,11 @@
+import type { Selector } from '@/common/types/yjsDoc';
 import { STRATEGY_OPTIONS } from '../../constants/presets';
 import type { GitStrategy } from '../../types/gitConvention';
 import { cn } from '@/common/lib/utils';
 import { LuCheck, LuCircle, LuCircleDot } from 'react-icons/lu';
 
 interface StrategySelectorProps {
-  value: GitStrategy;
+  value: Selector;
   onChange: (value: GitStrategy) => void;
 }
 
@@ -16,7 +17,7 @@ export function StrategySelector({ value, onChange }: StrategySelectorProps) {
       </label>
       <div className="flex flex-col gap-1.5">
         {STRATEGY_OPTIONS.map((option) => {
-          const isSelected = value === option.value;
+          const isSelected = value.selectedId === option.value;
           return (
             <button
               key={option.value}
