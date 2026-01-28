@@ -1,13 +1,8 @@
 import type { Camera } from '@/common/types/camera';
-import {
-  useRef,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-} from 'react';
+import { useRef, type Dispatch, type SetStateAction, useCallback } from 'react';
 import { createContext } from '@/common/contexts/createContext';
 import type { FrameInfo } from '@/common/types/canvas';
+import { useCanvasStore } from '@/common/store/canvas';
 
 interface CanvasContext {
   camera: Camera;
@@ -23,7 +18,7 @@ const [CanvasContextProvider, useCanvasContext] = createContext<CanvasContext>({
 });
 
 export function CanvasProvider({ children }: { children: React.ReactNode }) {
-  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, scale: 1 });
+  const { camera, setCamera } = useCanvasStore();
   const frameRef = useRef<HTMLDivElement>(null);
 
   const getFrameInfo = useCallback(() => {
