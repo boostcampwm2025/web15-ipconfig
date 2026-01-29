@@ -33,11 +33,7 @@ export function ExportSettingFilesDialog() {
   return (
     <DialogContent className="z-999 sm:max-w-2xl">
       <DialogHeader>
-        <div className="flex items-center justify-between">
-          <DialogTitle className="flex items-center gap-2">
-            <LuSettings size={18} className="text-primary-600" />
-            {selectedConfig ? selectedConfig.label : '설정 파일 내보내기'}
-          </DialogTitle>
+        <div className="flex items-center gap-2">
           {selectedConfig && (
             <Button
               variant="ghost"
@@ -50,6 +46,10 @@ export function ExportSettingFilesDialog() {
               <span className="sr-only">뒤로가기</span>
             </Button>
           )}
+          <DialogTitle className="flex items-center gap-2">
+            <LuSettings size={18} className="text-primary-600" />
+            {selectedConfig ? selectedConfig.label : '설정 파일 내보내기'}
+          </DialogTitle>
         </div>
         <DialogDescription>
           {selectedConfig
