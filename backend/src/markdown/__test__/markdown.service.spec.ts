@@ -167,7 +167,14 @@ describe('MarkdownService', () => {
       layout: { x: 0, y: 0, width: 300, height: 300 },
       createdAt: Date.now(),
       content: {
-        techItems: [{ name: 'React' }, { name: 'NestJS' }],
+        subject: {
+          selectedId: 's1',
+          options: { s1: { value: 'Frontend', createdAt: 0 } },
+        },
+        techItems: [
+          { id: 't1', name: 'React', category: 'Library' },
+          { id: 't2', name: 'TypeScript', category: 'Language' },
+        ],
       } as Record<string, unknown>,
     };
 
@@ -176,8 +183,9 @@ describe('MarkdownService', () => {
     const markdown = service.generateMarkdown(workspaceId);
 
     expect(markdown).toContain('## 🛠 기술 스택');
+    expect(markdown).toContain('### Frontend');
     expect(markdown).toContain('React');
-    expect(markdown).toContain('NestJS');
+    expect(markdown).toContain('TypeScript');
   });
 
   it('GIT_CONVENTION 위젯이 있으면 그라운드 룰 마크다운을 생성한다.', () => {
