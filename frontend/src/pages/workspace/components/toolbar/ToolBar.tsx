@@ -1,6 +1,12 @@
 import ToolButton from './ToolButton';
-import { LuMousePointer2, LuGitBranch } from 'react-icons/lu';
-import { LuLayers, LuUsers, LuMessageSquare } from 'react-icons/lu';
+import {
+  LuMousePointer2,
+  LuGitBranch,
+  LuLayers,
+  LuUsers,
+  LuMessageSquare,
+  LuPalette,
+} from 'react-icons/lu';
 import { RiFontSizeAi } from 'react-icons/ri';
 import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
 import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/constants/initial';
@@ -8,6 +14,8 @@ import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/i
 import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
 import { checkWidgetLimit } from '@/common/lib/widget';
+import { INITIAL_FORMAT_DATA } from '@/features/widgets/format/constants/initial';
+import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
 
 function ToolBar() {
   return (
@@ -35,7 +43,7 @@ function ToolBar() {
         />
         <ToolButton
           icon={<LuGitBranch size={20} />}
-          label="Git Convention"
+          label="깃 컨벤션"
           onClick={() => {
             if (!checkWidgetLimit('GIT_CONVENTION', 'Git Convention')) return;
 
@@ -86,7 +94,21 @@ function ToolBar() {
               widgetId,
               type: 'NAMING_CONVENTION',
               layout: { x: 200, y: 200 },
-              content: {},
+              content: NAMING_CONVENTION_INITIAL_CONTENT,
+            });
+          }}
+        />
+        <ToolButton
+          icon={<LuPalette size={20} />}
+          label="포매팅"
+          onClick={() => {
+            if (!checkWidgetLimit('CODE_FORMAT', '포매팅')) return;
+            const widgetId = 'CODE_FORMAT';
+            createWidgetAction({
+              widgetId,
+              type: 'CODE_FORMAT',
+              layout: { x: 200, y: 200 },
+              content: INITIAL_FORMAT_DATA,
             });
           }}
         />

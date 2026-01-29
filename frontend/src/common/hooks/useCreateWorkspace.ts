@@ -8,7 +8,7 @@ import {
   type CreateInviteCode,
 } from '@/common/schemas/createInviteCodeSchema';
 
-export const useCreateWorkspace = () => {
+export function useCreateWorkspace() {
   const navigate = useNavigate();
 
   const {
@@ -48,4 +48,4 @@ export const useCreateWorkspace = () => {
     errors,
     onSubmit,
   };
-};
+}

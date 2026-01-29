@@ -23,7 +23,7 @@ function JoinCard() {
           placeholder="코드 입력 (예: 1a2b3c)"
           {...register('code')}
           maxLength={32}
-          className="h-12 text-center text-base focus-visible:border-blue-500 focus-visible:ring-blue-500/50"
+          className={`h-12 text-center text-base transition-all duration-300 focus-visible:border-blue-500 focus-visible:ring-blue-500/50 ${errors.code ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50' : ''}`}
         />
         {errors.code && (
           <p className="text-left font-mono text-sm text-red-400">
