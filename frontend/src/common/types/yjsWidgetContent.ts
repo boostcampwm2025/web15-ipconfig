@@ -1,4 +1,5 @@
 import type { MultiSelector, Selector } from './yjsDoc';
+import type { Category as NamingConventionCategory } from '@/features/widgets/namingConvention/types/category';
 
 // Union Content Type
 export type WidgetContent =
@@ -7,6 +8,7 @@ export type WidgetContent =
   | CommunicationContent
   | CollaborationContent
   | FormatContent
+  | NamingConventionContent
   | PostItContent
   | Record<string, unknown>;
 
@@ -88,6 +90,9 @@ export interface FormatContent {
   arrowParens: string;
   singleAttributePerLine: boolean;
 }
+export type NamingConventionContent = {
+  [key in NamingConventionCategory]?: Record<string, string>;
+};
 
 // 5. POST_IT (Example placeholder)
 export interface PostItContent {
