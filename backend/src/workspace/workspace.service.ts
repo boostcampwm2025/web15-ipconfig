@@ -7,7 +7,7 @@ import { JoinUserDTO } from './dto/join-user.dto';
 import { User } from './dto/join-user.dto';
 import generateNickname from 'ko-nickname/src/index.js';
 import { customAlphabet } from 'nanoid';
-import { WorkSpaceResponse } from './dto/workspace-response.dto';
+import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
 
 // 유저 정보는 저장해야 함
 interface UserSession {
@@ -26,7 +26,7 @@ export class WorkspaceService {
   private readonly workspaces = new Map<string, WorkspaceInfo>();
   private readonly userSessions = new Map<string, UserSession>();
 
-  public joinWorkSpace(workspaceId: string): WorkSpaceResponse {
+  public joinWorkSpace(workspaceId: string): JoinWorkspaceResponse {
     if (!this.isExistsWorkspace(workspaceId)) {
       throw new NotFoundException(`'${workspaceId}' 는 존재하지 않습니다.`);
     }
@@ -36,7 +36,7 @@ export class WorkspaceService {
     };
   }
 
-  public makeWorkspace(workspaceId?: string): WorkSpaceResponse {
+  public createWorkspace(workspaceId?: string) {
     let newWorkspaceId = workspaceId;
     if (!newWorkspaceId) {
       newWorkspaceId = customAlphabet(
@@ -54,11 +54,10 @@ export class WorkspaceService {
         throw new ConflictException(`'${workspaceId}' 는 이미 존재합니다.`);
       }
     }
-    this.createWorkspace(newWorkspaceId);
+    this.saveWorkspaceIdInMemory(newWorkspaceId);
 
     return {
       workspaceId: newWorkspaceId,
-      nickname: this.createRandomUserNickname(),
     };
   }
 
@@ -66,7 +65,7 @@ export class WorkspaceService {
     return generateNickname();
   }
 
-  public createWorkspace(workspaceId: string): void {
+  private saveWorkspaceIdInMemory(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
       // 7일 후 만료
       expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),

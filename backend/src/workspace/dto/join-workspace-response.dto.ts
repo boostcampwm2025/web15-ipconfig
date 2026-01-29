@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class WorkSpaceResponse {
+export class JoinWorkspaceResponse {
   @ApiProperty({
     description: '워크스페이스의 ID',
     example: '271acg455v',

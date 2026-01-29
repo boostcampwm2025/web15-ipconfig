@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
-import { WorkSpaceResponse } from './dto/workspace-response.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { WorkspaceIdPipe } from './workspcae.pipe';
+import { CreateWorkspaceRequest } from './dto/create-workspace-request.dto';
+import { CreateWorkspaceResponse } from './dto/create-workspace-response.dto';
 
 @Controller('workspace')
 export class WorkspaceController {
@@ -12,11 +14,11 @@ export class WorkspaceController {
   @ApiResponse({
     status: 200,
     description: '워크스페이스 입장',
-    type: WorkSpaceResponse,
+    type: JoinWorkspaceResponse,
   })
   joinWorkspaceById(
     @Param('workspaceId', WorkspaceIdPipe) workspaceId: string,
-  ): WorkSpaceResponse {
+  ): JoinWorkspaceResponse {
     return this.workspaceService.joinWorkSpace(workspaceId);
   }
 
@@ -24,21 +26,12 @@ export class WorkspaceController {
   @ApiResponse({
     status: 200,
     description: '워크스페이스 생성',
-    type: WorkSpaceResponse,
+    type: CreateWorkspaceResponse,
   })
-  createWorkspaceWithRandomIdMake(): WorkSpaceResponse {
-    return this.workspaceService.makeWorkspace();
-  }
-
-  @Post('make/:workspaceId')
-  @ApiResponse({
-    status: 200,
-    description: '지정된 ID로 워크스페이스 생성',
-    type: WorkSpaceResponse,
-  })
-  createWorkspaceWithId(
-    @Param('workspaceId', WorkspaceIdPipe) workspaceId: string,
-  ) {
-    return this.workspaceService.makeWorkspace(workspaceId);
+  @ApiBody({ type: CreateWorkspaceRequest, required: false })
+  createWorkspaceWithRandomIdMake(
+    @Body() body: CreateWorkspaceRequest,
+  ): CreateWorkspaceResponse {
+    return this.workspaceService.createWorkspace(body?.workspaceId);
   }
 }
