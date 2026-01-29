@@ -14,6 +14,9 @@ import {
 
 import type { PropsWithChildren } from 'react';
 import { useUserStore } from '@/common/store/user';
+import { useShallow } from 'zustand/react/shallow';
+import { cn } from '@/common/lib/utils';
+import { getContrastClass } from '@/utils/color';
 
 function WidgetContainer({ children }: PropsWithChildren) {
   const { widgetId } = useWidgetIdAndType();
@@ -30,6 +33,20 @@ function WidgetContainer({ children }: PropsWithChildren) {
       state.userList.find(
         (user) => user.manipulationState?.widgetId === widgetId,
       )?.manipulationState,
+  );
+
+  // 이 위젯을 조작하고 있는 유저
+  const manipulatingUser = useUserStore(
+    useShallow((state) => {
+      const user = state.userList.find(
+        (user) => user.manipulationState?.widgetId === widgetId,
+      );
+      return {
+        id: user?.id,
+        nickname: user?.nickname,
+        color: user?.color,
+      };
+    }),
   );
 
   if (!widgetLayout) {
@@ -137,16 +154,28 @@ function WidgetContainer({ children }: PropsWithChildren) {
 
   return (
     <div
-      className="pointer-events-auto absolute w-fit rounded-xl border border-gray-700 bg-gray-800 transition-shadow duration-200"
+      className="pointer-events-auto absolute w-fit rounded-xl border-[1.5px] border-gray-700 bg-gray-800 transition-shadow duration-200"
       style={{
         left: renderedPos.x,
         top: renderedPos.y,
         width: width ?? 'auto',
         height: height ?? 'auto',
         zIndex: zIndex ?? 1,
+        borderColor: manipulatingUser.color,
       }}
       onPointerDown={handlePointerDown}
     >
+      <div
+        className={cn(
+          'absolute top-0 left-1/2 -translate-x-1/2 rounded-xs px-2 text-[9px] font-semibold',
+          manipulatingUser.color && getContrastClass(manipulatingUser.color),
+        )}
+        style={{
+          backgroundColor: manipulatingUser.color,
+        }}
+      >
+        {manipulatingUser.nickname}
+      </div>
       <div className="cursor-auto rounded-xl p-5">{children}</div>
     </div>
   );

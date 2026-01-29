@@ -1,10 +1,11 @@
-import { LuGithub, LuSettings } from 'react-icons/lu';
+import { LuCheck, LuCopy, LuGithub } from 'react-icons/lu';
 import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
 
 import ExportGroupDropdownButton from '@/features/export/components/ExportGroupDropdownButton';
-import UserListInfo from './UserListInfo';
+import { UserListCard } from '@/features/userListCard';
+import InviteButton from './InviteButton';
 
 function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
@@ -31,7 +32,7 @@ function TitleInput() {
 
 function WorkspaceHeader() {
   return (
-    <header className="pointer-events-none flex shrink-0 items-center justify-between bg-transparent px-4 py-2">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex shrink-0 items-center justify-between bg-transparent px-3.5 py-4">
       <RoundedContainer>
         <img
           src="/teamconfig-logo.png"
@@ -44,12 +45,13 @@ function WorkspaceHeader() {
       </RoundedContainer>
 
       <RoundedContainer className="gap-2">
-        <UserListInfo />
+        <UserListCard />
         <ExportGroupDropdownButton />
         <Button size="sm" variant="secondary">
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
+        <InviteButton />
       </RoundedContainer>
     </header>
   );

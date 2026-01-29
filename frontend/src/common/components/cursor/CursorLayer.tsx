@@ -14,7 +14,7 @@ function CursorLayer() {
             style={{
               left: `${x}px`,
               top: `${y}px`,
-              transition: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+              transition: 'all 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
             }}
           >
             <CursorWithName nickname={nickname} color={color} x={x} y={y} />
