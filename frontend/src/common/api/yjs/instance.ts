@@ -37,10 +37,15 @@ export const connectProvider = (workspaceId: string) => {
       url,
       name: `workspace:${workspaceId}`, // 방 이름
       document: doc,
-      onConnect: () => {
-        doc.transact(() => {
-          initializeYDoc(doc, workspaceId);
-        });
+      onSynced: () => {
+        const root = doc.getMap('root');
+        const isFirstTime = root.size === 0 || !root.has('schemaVersion');
+
+        if (isFirstTime) {
+          doc.transact(() => {
+            initializeYDoc(doc, workspaceId);
+          });
+        }
       },
       onAwarenessChange({ states }: onAwarenessChangeParameters) {
         const setUserList = useUserStore.getState().setUserList;
