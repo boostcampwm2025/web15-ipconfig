@@ -35,7 +35,6 @@ export default function NamingConventionWidget() {
     <WidgetFrame
       title="네이밍 컨벤션"
       icon={<RiFontSizeAi className="text-white-500" />}
-      defaultLayout={{ x: 200, y: 800 }}
     >
       <div className="flex h-full flex-col overflow-y-auto p-4">
         {/* Category Buttons */}

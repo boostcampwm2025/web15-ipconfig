@@ -69,7 +69,6 @@ function FormatWidget() {
     <WidgetFrame
       title="코드 포맷"
       icon={<LuPalette className="text-pink-500" />}
-      defaultLayout={{ x: 1500, y: 250 }}
       actions={[
         <div className="flex">
           <Button

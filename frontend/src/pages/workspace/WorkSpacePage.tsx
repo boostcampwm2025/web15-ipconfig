@@ -1,63 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useParams } from 'react-router';
-
-import type { UserExtended } from '@/common/types/user';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router';
+// import type { UserExtended } from '@/common/types/user';
 
 // Page-specific components
 import WorkspaceHeader from './components/header/WorkspaceHeader';
-import RightSidebar from './components/infoPanel/InfoPanel';
-import UserHoverCard from './components/UserHoverCard';
-import CompactPanel from './components/infoPanel/CompactPanel';
-import { INITIAL_USERS } from '@/common/mocks/users';
+// import UserHoverCard from './components/UserHoverCard';
 import { Canvas } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
+import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
-import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
-import { generateCurrentUser } from '@/common/lib/user';
-import useUserStore from '@/common/store/user';
-import { setLocalUser } from '@/common/api/yjs/awareness';
 import { LoadingSpinner } from '@/common/components/LoadingSpinner';
+import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
 
 function WorkSpacePage() {
+  const navigate = useNavigate();
+
   // Workspace State
   const { workspaceId } = useParams<{ workspaceId: string }>();
-  const [isSidebarExpanded, setSidebarExpanded] = useState(false);
-  const setUser = useUserStore((state) => state.setUser);
+  const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
+  // const setUser = useUserStore((state) => state.setUser);
 
   const isWorkspaceReady = useWorkspaceGuard(workspaceId);
   useCollaboration(isWorkspaceReady && workspaceId ? workspaceId : '');
 
-  useEffect(() => {
-    if (!workspaceId) return;
-
-    const user = generateCurrentUser();
-    setUser(user);
-    setLocalUser({
-      id: user.id,
-      nickname: user.nickname,
-      color: user.color,
-      backgroundColor: user.backgroundColor,
-    });
-  }, [workspaceId, setUser]);
-
   // UI State
-  const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
-  const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
+  // const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
+  // const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
+  // const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
+  useEffect(() => {
+    if (!workspaceId) {
+      navigate('/'); // 나중에 에러페이지 만들기
+      return;
+    }
+    setWorkspaceId(workspaceId);
+  }, [workspaceId, setWorkspaceId, navigate]);
+
+  useCollaboration(workspaceId || '');
   // User Hover Logic
-  const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoverPosition({
-      top: Math.min(rect.top, window.innerHeight - 250),
-      left: rect.left - 280,
-    });
-    setHoveredUser(user);
-  };
+  // const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
+  //   const rect = e.currentTarget.getBoundingClientRect();
+  //   setHoverPosition({
+  //     top: Math.min(rect.top, window.innerHeight - 250),
+  //     left: rect.left - 280,
+  //   });
+  //   setHoveredUser(user);
+  // };
 
-  const handleUserLeave = () => {
-    setHoveredUser(null);
-  };
+  // const handleUserLeave = () => {
+  //   setHoveredUser(null);
+  // };
 
   if (!isWorkspaceReady) {
     return <LoadingSpinner />;
@@ -85,7 +77,7 @@ function WorkSpacePage() {
           <div className="absolute top-0 left-0">
             <ToolBar />
           </div>
-          <AnimatePresence mode="sync">
+          {/* <AnimatePresence mode="sync">
             {isSidebarExpanded ? (
               <motion.div
                 key="sidebar"
@@ -119,13 +111,13 @@ function WorkSpacePage() {
                 />
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
         </div>
       </div>
 
-      {hoveredUser && (
+      {/* {hoveredUser && (
         <UserHoverCard user={hoveredUser} position={hoverPosition} />
-      )}
+      )} */}
     </div>
   );
 }

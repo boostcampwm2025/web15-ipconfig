@@ -8,11 +8,9 @@ import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
 import { WidgetProvider } from './context/WidgetContext';
 import { GitConventionWidget } from '@/features/widgets/gitConvention';
-import { useWidgetAwareness } from '@/common/hooks/useWidgetAwareness';
 import { FormatWidget } from '@/features/widgets/format';
 
 function WidgetLayer() {
-  useWidgetAwareness();
   const widgetKeys = useWorkspaceWidgetStore(
     useShallow((state) =>
       state.widgetList.map((widget) => `${widget.widgetId}::${widget.type}`),

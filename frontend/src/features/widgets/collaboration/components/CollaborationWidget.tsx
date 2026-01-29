@@ -19,7 +19,6 @@ export default function CollaborationWidget() {
     <WidgetFrame
       title="작업 및 협업"
       icon={<LuUsers className="text-purple-500" />}
-      defaultLayout={{ x: 1000, y: 1000 }}
     >
       <div className="grid w-[800px] grid-cols-1 gap-2 md:grid-cols-2">
         <div className="w-full justify-self-center">
