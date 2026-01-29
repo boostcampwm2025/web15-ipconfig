@@ -32,24 +32,24 @@ function WorkSpacePage() {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
-      {/* 캔버스: 화면 전체 */}
-      <CanvasProvider>
+    <CanvasProvider>
+      <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
+        {/* 캔버스: 화면 전체 */}
         <WorkspaceHeader />
         <main className="absolute inset-0">
           <Canvas />
         </main>
-      </CanvasProvider>
 
-      {/* HUD 레이어 */}
-      <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
-        <div className="pointer-events-auto">
-          <div className="absolute top-0 left-0">
-            <ToolBar />
+        {/* HUD 레이어 */}
+        <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
+          <div className="pointer-events-auto">
+            <div className="absolute top-0 left-0">
+              <ToolBar />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </CanvasProvider>
   );
 }
 
