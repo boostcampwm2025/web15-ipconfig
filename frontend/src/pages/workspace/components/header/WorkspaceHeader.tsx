@@ -1,10 +1,11 @@
-import { LuGithub, LuSettings } from 'react-icons/lu';
+import { LuCheck, LuCopy, LuGithub } from 'react-icons/lu';
 import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
 
 import ExportGroupDropdownButton from '@/features/export/components/ExportGroupDropdownButton';
 import { UserListCard } from '@/features/userListCard';
+import InviteButton from './InviteButton';
 
 function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
@@ -50,6 +51,7 @@ function WorkspaceHeader() {
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
+        <InviteButton />
       </RoundedContainer>
     </header>
   );
