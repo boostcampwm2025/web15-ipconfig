@@ -46,7 +46,7 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
           transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`,
           transformOrigin: '0 0',
         }}
-        className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
+        className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible transition-transform"
       >
         {children}
       </div>
