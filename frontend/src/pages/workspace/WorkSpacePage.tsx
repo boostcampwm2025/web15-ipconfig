@@ -23,11 +23,6 @@ function WorkSpacePage() {
   const isWorkspaceReady = useWorkspaceGuard(workspaceId);
   useCollaboration(isWorkspaceReady && workspaceId ? workspaceId : '');
 
-  // UI State
-  // const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
-  // const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
-  // const [isSidebarExpanded, setSidebarExpanded] = useState(false);
-
   useEffect(() => {
     if (!workspaceId) {
       navigate('/'); // 나중에 에러페이지 만들기
@@ -35,21 +30,6 @@ function WorkSpacePage() {
     }
     setWorkspaceId(workspaceId);
   }, [workspaceId, setWorkspaceId, navigate]);
-
-  useCollaboration(workspaceId || '');
-  // User Hover Logic
-  // const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
-  //   const rect = e.currentTarget.getBoundingClientRect();
-  //   setHoverPosition({
-  //     top: Math.min(rect.top, window.innerHeight - 250),
-  //     left: rect.left - 280,
-  //   });
-  //   setHoveredUser(user);
-  // };
-
-  // const handleUserLeave = () => {
-  //   setHoveredUser(null);
-  // };
 
   if (!isWorkspaceReady) {
     return <LoadingSpinner />;
