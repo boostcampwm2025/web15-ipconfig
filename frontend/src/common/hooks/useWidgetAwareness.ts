@@ -5,7 +5,7 @@ import { handleWidgetInteractionChange } from '../api/yjs/awareness';
 // 싱글톤 패턴으로 이벤트 리스너가 중복 등록되지 않도록 관리
 let widgetAwarenessHandler: (() => void) | null = null;
 
-export const useWidgetAwareness = () => {
+export function useWidgetAwareness() {
   useEffect(() => {
     onProviderReady((provider) => {
       const awareness = provider.awareness;
@@ -21,4 +21,4 @@ export const useWidgetAwareness = () => {
       awareness.on('change', widgetAwarenessHandler);
     });
   }, []);
-};
+}

@@ -5,7 +5,7 @@ import { handleAwarenessChange } from '../lib/awareness';
 // 싱글톤
 let awarenessHandler: (() => void) | null = null;
 
-export const useCursorAwareness = () => {
+export function useCursorAwareness() {
   useEffect(() => {
     onProviderReady((provider) => {
       const awareness = provider.awareness;
@@ -24,4 +24,4 @@ export const useCursorAwareness = () => {
       awareness.on('change', awarenessHandler);
     });
   }, []);
-};
+}

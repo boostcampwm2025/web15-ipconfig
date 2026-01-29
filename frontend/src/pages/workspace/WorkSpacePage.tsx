@@ -1,54 +1,49 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 
 import type { UserExtended } from '@/common/types/user';
-
-import { useMarkdown } from '@/common/hooks/useMarkdown';
 
 // Page-specific components
 import WorkspaceHeader from './components/header/WorkspaceHeader';
 import RightSidebar from './components/infoPanel/InfoPanel';
 import UserHoverCard from './components/UserHoverCard';
-import ExportModal from './components/ExportModal';
 import CompactPanel from './components/infoPanel/CompactPanel';
 import { INITIAL_USERS } from '@/common/mocks/users';
 import { Canvas } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
-import { joinRoom, leaveRoom } from '@/common/api/socket';
-import { useWorkspaceInfoStore } from '@/common/store/workspace';
-import { generateCurrentUser } from '@/common/lib/user';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
+import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
+import { generateCurrentUser } from '@/common/lib/user';
+import useUserStore from '@/common/store/user';
+import { setLocalUser } from '@/common/api/yjs/awareness';
+import { LoadingSpinner } from './LoadingSpinner';
 
 function WorkSpacePage() {
-  const navigate = useNavigate();
-
   // Workspace State
   const { workspaceId } = useParams<{ workspaceId: string }>();
-  const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
+  const [isSidebarExpanded, setSidebarExpanded] = useState(false);
+  const setUser = useUserStore((state) => state.setUser);
+
+  const isWorkspaceReady = useWorkspaceGuard(workspaceId);
+  useCollaboration(isWorkspaceReady && workspaceId ? workspaceId : '');
+
+  useEffect(() => {
+    if (!workspaceId) return;
+
+    const user = generateCurrentUser();
+    setUser(user);
+    setLocalUser({
+      id: user.id,
+      nickname: user.nickname,
+      color: user.color,
+      backgroundColor: user.backgroundColor,
+    });
+  }, [workspaceId, setUser]);
 
   // UI State
   const [hoveredUser, setHoveredUser] = useState<UserExtended | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 });
-  const [isSidebarExpanded, setSidebarExpanded] = useState(false);
-
-  useEffect(() => {
-    if (!workspaceId) {
-      navigate('/'); // 나중에 에러페이지 만들기
-      return;
-    }
-    setWorkspaceId(workspaceId);
-  }, [workspaceId, setWorkspaceId, navigate]);
-
-  useCollaboration(workspaceId || '');
-
-  useEffect(() => {
-    if (!workspaceId) return;
-    joinRoom(generateCurrentUser());
-    return () => {
-      leaveRoom();
-    };
-  }, [workspaceId]);
 
   // User Hover Logic
   const handleUserHover = (e: React.MouseEvent, user: UserExtended) => {
@@ -63,6 +58,10 @@ function WorkSpacePage() {
   const handleUserLeave = () => {
     setHoveredUser(null);
   };
+
+  if (!isWorkspaceReady) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">

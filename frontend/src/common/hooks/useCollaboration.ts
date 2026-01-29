@@ -4,7 +4,7 @@ import { connectProvider } from '../api/yjs/instance';
 import { setLocalUser } from '../api/yjs/awareness';
 import { bindYjsToZustand } from '../api/yjs/sync';
 
-export const useCollaboration = (documentName: string) => {
+export function useCollaboration(documentName: string) {
   const user = useUserStore((state) => state.user);
 
   useEffect(() => {
@@ -29,4 +29,4 @@ export const useCollaboration = (documentName: string) => {
       cleanupSync();
     };
   }, [documentName, user]);
-};
+}

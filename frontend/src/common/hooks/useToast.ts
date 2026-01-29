@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-export const useToast = () => {
+export function useToast() {
   const [isVisible, setIsVisible] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -29,4 +29,4 @@ export const useToast = () => {
     message,
     showToast,
   };
-};
+}
