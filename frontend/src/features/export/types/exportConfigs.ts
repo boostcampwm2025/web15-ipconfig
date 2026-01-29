@@ -1,20 +1,12 @@
 import 'github-markdown-css/github-markdown.css';
-import type { WidgetList } from '@/common/types/widgetData';
 
 export interface ExportConfig {
   id: string;
   label: string;
   description: string;
+  type: string;
   fileName: string;
   icon: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getContent: (widgetList: any[]) => string;
-}
-
-export function getContent(widgetList: WidgetList, type: string) {
-  const widget = widgetList.find((w) => w.type === type);
-  const content = widget?.content || '아직 작성되지 않았습니다!';
-  return JSON.stringify(content, null, 2);
 }
 
 // function getDockerContent(widgetList: WidgetList) {

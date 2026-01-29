@@ -12,10 +12,10 @@ import { useState } from 'react';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import { EXPORT_CONFIGS } from '../constant/ExportConfigs';
+import { getWidgetContents } from '../hooks/getWidgetContents';
 
 export function ExportSettingFilesDialog() {
   const { isCopied, handleCopyToClipboard } = useClipboard();
-  // 선택된 설정 파일 ID (null이면 리스트 뷰)
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { widgetList } = useWorkspaceWidgetStore(
@@ -24,9 +24,10 @@ export function ExportSettingFilesDialog() {
     })),
   );
 
-  // 선택된 설정 정보 및 콘텐츠 생성
   const selectedConfig = EXPORT_CONFIGS.find((c) => c.id === selectedId);
-  const content = selectedConfig ? selectedConfig.getContent(widgetList) : '';
+  const content = selectedConfig
+    ? getWidgetContents(widgetList, selectedConfig.type)
+    : '';
 
   const handleBack = () => {
     setSelectedId(null);
@@ -40,7 +41,6 @@ export function ExportSettingFilesDialog() {
             <LuSettings size={18} className="text-primary-600" />
             {selectedConfig ? selectedConfig.label : '설정 파일 내보내기'}
           </DialogTitle>
-          {/* 상세 뷰일 때 헤더 오른쪽에 뒤로가기 버튼 표시 */}
           {selectedConfig && (
             <Button
               variant="ghost"
@@ -63,12 +63,10 @@ export function ExportSettingFilesDialog() {
 
       <div className="flex h-[45vh] flex-col overflow-y-auto rounded-lg bg-[#0C1117] px-4 py-3">
         {selectedConfig ? (
-          // [Detail View] 설정 파일 내용 표시
           <div className="h-full w-full overflow-auto font-mono text-sm whitespace-pre text-gray-300">
             {content}
           </div>
         ) : (
-          // [List View] 내보내기 가능한 항목 리스트 표시
           <div className="flex flex-col gap-2">
             {EXPORT_CONFIGS.map((config) => (
               <Button
