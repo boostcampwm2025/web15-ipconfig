@@ -219,7 +219,7 @@ export class MarkdownService {
         this.createTableRow('줄 길이', `${content.printWidth ?? '-'}`),
       );
       lines.push(
-        this.createTableRow('탭 사용', content.useTabs ? '스페이스' : '탭'),
+        this.createTableRow('탭 사용', content.useTabs ? '탭' : '스페이스'),
       );
       lines.push(
         this.createTableRow('들여쓰기 폭', `${content.tabWidth ?? '-'}`),
