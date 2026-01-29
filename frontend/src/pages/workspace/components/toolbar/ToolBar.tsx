@@ -7,8 +7,7 @@ import { COLLABORATION_INITIAL_CONTENT } from '@/features/widgets/collaboration/
 import { INITIAL_TECH_STACK_DATA } from '@/features/widgets/techStack/constant/initial';
 import { INITIAL_GIT_CONVENTION_DATA } from '@/features/widgets/gitConvention/constants/initial';
 import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/constants/initial';
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
-import { toast } from 'sonner';
+import { checkWidgetLimit } from '@/common/lib/widget';
 
 function ToolBar() {
   return (
@@ -38,15 +37,7 @@ function ToolBar() {
           icon={<LuGitBranch size={20} />}
           label="Git Convention"
           onClick={() => {
-            const { widgetList } = useWorkspaceWidgetStore.getState();
-            const hasGitConvention = widgetList.some(
-              (widget) => widget.type === 'GIT_CONVENTION',
-            );
-
-            if (hasGitConvention) {
-              toast.warning('Git Convention 위젯은 하나만 생성할 수 있습니다.');
-              return;
-            }
+            if (!checkWidgetLimit('GIT_CONVENTION', 'Git Convention')) return;
 
             const widgetId = 'GIT_CONVENTION';
             createWidgetAction({
@@ -61,7 +52,8 @@ function ToolBar() {
           icon={<LuUsers size={20} />}
           label="작업 및 협업"
           onClick={() => {
-            const widgetId = crypto.randomUUID();
+            if (!checkWidgetLimit('COLLABORATION', '작업 및 협업')) return;
+            const widgetId = 'COLLABORATION';
             createWidgetAction({
               widgetId,
               type: 'COLLABORATION',
@@ -74,7 +66,8 @@ function ToolBar() {
           icon={<LuMessageSquare size={20} />}
           label="커뮤니케이션"
           onClick={() => {
-            const widgetId = crypto.randomUUID();
+            if (!checkWidgetLimit('COMMUNICATION', '커뮤니케이션')) return;
+            const widgetId = 'COMMUNICATION';
             createWidgetAction({
               widgetId,
               type: 'COMMUNICATION',
@@ -87,7 +80,8 @@ function ToolBar() {
           icon={<RiFontSizeAi size={20} />}
           label="네이밍 컨벤션"
           onClick={() => {
-            const widgetId = crypto.randomUUID();
+            if (!checkWidgetLimit('NAMING_CONVENTION', '네이밍 컨벤션')) return;
+            const widgetId = 'NAMING_CONVENTION';
             createWidgetAction({
               widgetId,
               type: 'NAMING_CONVENTION',
