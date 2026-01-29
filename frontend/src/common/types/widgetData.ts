@@ -3,12 +3,14 @@ import type { CommunicationData } from '@/features/widgets/communication/types/c
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 import type { NamingConventionData } from '@/features/widgets/namingConvention/types/namingConvention';
+import type { FormatData } from '@/features/widgets/format/types/format';
 
 export type {
   CollaborationData,
   CommunicationData,
   GitConventionData,
   TechStack,
+  FormatData,
 };
 
 export type WidgetType =
@@ -24,7 +26,8 @@ export type WidgetContent =
   | GitConventionData
   | CommunicationData
   | CollaborationData
-  | NamingConventionData;
+  | NamingConventionData
+  | FormatData;
 
 import type { TechStackWidgetData } from '@/features/widgets/techStack/types/TechStackWidgetData';
 export type { TechStackWidgetData };
