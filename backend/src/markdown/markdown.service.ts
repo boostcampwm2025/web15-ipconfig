@@ -215,9 +215,11 @@ export class MarkdownService {
 
       lines.push('| 설정 (Setting) | 값 (Value) |');
       lines.push('| :--- | :--- |');
-      lines.push(this.createTableRow('줄 길이', `${content.line ?? '-'}`));
       lines.push(
-        this.createTableRow('탭 사용', content.useTabs ? '스페이스' : '탭'),
+        this.createTableRow('줄 길이', `${content.printWidth ?? '-'}`),
+      );
+      lines.push(
+        this.createTableRow('탭 사용', content.useTabs ? '탭' : '스페이스'),
       );
       lines.push(
         this.createTableRow('들여쓰기 폭', `${content.tabWidth ?? '-'}`),
@@ -249,13 +251,13 @@ export class MarkdownService {
       lines.push(
         this.createTableRow(
           '화살표 괄호',
-          content.arrowParens ? '사용' : '미사용',
+          content.arrowParens === 'avoid' ? '미사용' : '사용',
         ),
       );
       lines.push(
         this.createTableRow(
           '속성 줄바꿈',
-          content.attributePerLine ? '줄바꿈' : '한 줄에 배치',
+          content.singleAttributePerLine ? '줄바꿈' : '한 줄에 배치',
         ),
       );
       lines.push('');
@@ -447,7 +449,7 @@ export class MarkdownService {
 
     // 코드 포맷
     const formatWidgets = allWidgets.filter(
-      (widget) => widget.type === 'FORMAT',
+      (widget) => widget.type === 'CODE_FORMAT',
     );
     markdownParts.push(...this.buildFormatSection(formatWidgets));
 
