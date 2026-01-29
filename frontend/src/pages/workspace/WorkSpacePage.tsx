@@ -18,6 +18,7 @@ import { generateCurrentUser } from '@/common/lib/user';
 import useUserStore from '@/common/store/user';
 import { setLocalUser } from '@/common/api/yjs/awareness';
 import { LoadingSpinner } from '@/common/components/LoadingSpinner';
+import { CanvasProvider } from '@/common/components/canvas/context/CanvasProvider';
 
 function WorkSpacePage() {
   // Workspace State
@@ -64,69 +65,71 @@ function WorkSpacePage() {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
-      {/* 헤더: 최상단 오버레이 */}
-      <div className="pointer-events-none absolute top-0 left-0 z-50 w-full">
-        <div className="pointer-events-auto">
-          <WorkspaceHeader />
-        </div>
-      </div>
-
-      {/* 캔버스: 화면 전체 */}
-      <div className="absolute inset-0">
-        <main className="relative h-full w-full flex-1">
-          <Canvas />
-        </main>
-      </div>
-
-      {/* HUD 레이어 */}
-      <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
-        <div className="pointer-events-auto">
-          <div className="absolute top-0 left-0">
-            <ToolBar />
+    <CanvasProvider>
+      <div className="relative h-screen overflow-hidden bg-gray-900 text-gray-100 [--header-h:4rem]">
+        {/* 헤더: 최상단 오버레이 */}
+        <div className="pointer-events-none absolute top-0 left-0 z-50 w-full">
+          <div className="pointer-events-auto">
+            <WorkspaceHeader />
           </div>
-          <AnimatePresence mode="sync">
-            {isSidebarExpanded ? (
-              <motion.div
-                key="sidebar"
-                initial={{ x: 300, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 300, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="pointer-events-auto absolute top-0 right-0 bottom-0"
-              >
-                <RightSidebar
-                  onUserHover={handleUserHover}
-                  onUserLeave={handleUserLeave}
-                  onToggle={() => setSidebarExpanded((p) => !p)}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="compact"
-                initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                transition={{ duration: 0.3 }}
-                className="absolute top-18 right-6"
-              >
-                <CompactPanel
-                  members={INITIAL_USERS}
-                  currentAgenda=""
-                  currentTime=""
-                  isExpanded={false}
-                  onToggle={() => setSidebarExpanded((p) => !p)}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-      </div>
 
-      {hoveredUser && (
-        <UserHoverCard user={hoveredUser} position={hoverPosition} />
-      )}
-    </div>
+        {/* 캔버스: 화면 전체 */}
+        <div className="absolute inset-0">
+          <main className="relative h-full w-full flex-1">
+            <Canvas />
+          </main>
+        </div>
+
+        {/* HUD 레이어 */}
+        <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
+          <div className="pointer-events-auto">
+            <div className="absolute top-0 left-0">
+              <ToolBar />
+            </div>
+            <AnimatePresence mode="sync">
+              {isSidebarExpanded ? (
+                <motion.div
+                  key="sidebar"
+                  initial={{ x: 300, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 300, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  className="pointer-events-auto absolute top-0 right-0 bottom-0"
+                >
+                  <RightSidebar
+                    onUserHover={handleUserHover}
+                    onUserLeave={handleUserLeave}
+                    onToggle={() => setSidebarExpanded((p) => !p)}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="compact"
+                  initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute top-18 right-6"
+                >
+                  <CompactPanel
+                    members={INITIAL_USERS}
+                    currentAgenda=""
+                    currentTime=""
+                    isExpanded={false}
+                    onToggle={() => setSidebarExpanded((p) => !p)}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {hoveredUser && (
+          <UserHoverCard user={hoveredUser} position={hoverPosition} />
+        )}
+      </div>
+    </CanvasProvider>
   );
 }
 

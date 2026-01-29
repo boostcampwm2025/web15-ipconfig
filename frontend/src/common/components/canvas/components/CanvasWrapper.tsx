@@ -18,7 +18,8 @@ import { updateLocalCursor } from '@/common/api/yjs/awareness';
 import { useThrottledCallback } from '@/common/hooks/useThrottledCallback';
 
 export function CanvasWrapper({ children }: PropsWithChildren) {
-  const { camera, setCamera, frameRef, getFrameInfo } = useCanvas();
+  const { camera, setCamera, frameRef, getFrameInfo, clickedFollow } =
+    useCanvas();
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePos = useRef<Position | null>(null);
 
@@ -120,7 +121,10 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
           transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`,
           transformOrigin: '0 0',
         }}
-        className="pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible"
+        className={cn(
+          'pointer-events-none absolute top-0 left-0 h-0 w-0 overflow-visible',
+          clickedFollow && 'transition-transform duration-300',
+        )}
       >
         {children}
       </div>

@@ -17,10 +17,10 @@ function CanvasContent() {
 
 function Canvas() {
   return (
-    <CanvasProvider>
+    <>
       <CanvasContent />
       <ZoomControls />
-    </CanvasProvider>
+    </>
   );
 }
 

@@ -16,8 +16,11 @@ import { INITIAL_COMMUNICATION_DATA } from '@/features/widgets/communication/con
 import { checkWidgetLimit } from '@/common/lib/widget';
 import { INITIAL_FORMAT_DATA } from '@/features/widgets/format/constants/initial';
 import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
+import { useFocusWidget } from '@/common/hooks/useFocusWidget';
 
 function ToolBar() {
+  const { focusWidget } = useFocusWidget();
+
   return (
     <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border border-gray-700 bg-gray-800 p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105">
       <div className="flex items-center justify-center gap-2">
@@ -45,7 +48,15 @@ function ToolBar() {
           icon={<LuGitBranch size={20} />}
           label="깃 컨벤션"
           onClick={() => {
-            if (!checkWidgetLimit('GIT_CONVENTION', 'Git Convention')) return;
+            if (
+              !checkWidgetLimit(
+                'GIT_CONVENTION',
+                'Git Convention',
+                1,
+                focusWidget,
+              )
+            )
+              return;
 
             const widgetId = 'GIT_CONVENTION';
             createWidgetAction({
@@ -60,7 +71,10 @@ function ToolBar() {
           icon={<LuUsers size={20} />}
           label="작업 및 협업"
           onClick={() => {
-            if (!checkWidgetLimit('COLLABORATION', '작업 및 협업')) return;
+            if (
+              !checkWidgetLimit('COLLABORATION', '작업 및 협업', 1, focusWidget)
+            )
+              return;
             const widgetId = 'COLLABORATION';
             createWidgetAction({
               widgetId,
@@ -74,7 +88,10 @@ function ToolBar() {
           icon={<LuMessageSquare size={20} />}
           label="커뮤니케이션"
           onClick={() => {
-            if (!checkWidgetLimit('COMMUNICATION', '커뮤니케이션')) return;
+            if (
+              !checkWidgetLimit('COMMUNICATION', '커뮤니케이션', 1, focusWidget)
+            )
+              return;
             const widgetId = 'COMMUNICATION';
             createWidgetAction({
               widgetId,
@@ -88,7 +105,15 @@ function ToolBar() {
           icon={<RiFontSizeAi size={20} />}
           label="네이밍 컨벤션"
           onClick={() => {
-            if (!checkWidgetLimit('NAMING_CONVENTION', '네이밍 컨벤션')) return;
+            if (
+              !checkWidgetLimit(
+                'NAMING_CONVENTION',
+                '네이밍 컨벤션',
+                1,
+                focusWidget,
+              )
+            )
+              return;
             const widgetId = 'NAMING_CONVENTION';
             createWidgetAction({
               widgetId,
@@ -102,7 +127,8 @@ function ToolBar() {
           icon={<LuPalette size={20} />}
           label="포매팅"
           onClick={() => {
-            if (!checkWidgetLimit('CODE_FORMAT', '포매팅')) return;
+            if (!checkWidgetLimit('CODE_FORMAT', '포매팅', 1, focusWidget))
+              return;
             const widgetId = 'CODE_FORMAT';
             createWidgetAction({
               widgetId,
