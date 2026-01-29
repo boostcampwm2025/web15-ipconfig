@@ -6,8 +6,6 @@ import { getCameraByCursorPosition } from '@/common/components/canvas/lib/positi
 
 export function useFocusWidget() {
   const { camera, setCamera, getFrameInfo, setClickedFollow } = useCanvas();
-  // The user deleted useSmoothCamera in Step 188 and switched to CSS transition logic in ToolBar.
-  // So I should replicate the logic from ToolBar, not use useSmoothCamera.
 
   const focusWidget = useCallback(
     (widget: WidgetData) => {
