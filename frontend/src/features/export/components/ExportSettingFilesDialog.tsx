@@ -30,10 +30,6 @@ export function ExportSettingFilesDialog() {
     ? getWidgetContents(widgetList, selectedConfig.type)
     : '';
 
-  const handleBack = () => {
-    setSelectedId(null);
-  };
-
   return (
     <DialogContent className="z-999 sm:max-w-2xl">
       <DialogHeader>
@@ -46,7 +42,7 @@ export function ExportSettingFilesDialog() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleBack}
+              onClick={() => setSelectedId(null)}
               className="h-8 w-8"
               title="목록으로 돌아가기"
             >
