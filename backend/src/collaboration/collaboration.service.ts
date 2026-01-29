@@ -6,53 +6,48 @@ import {
 } from '@nestjs/common';
 import { Hocuspocus, Extension } from '@hocuspocus/server';
 import { Redis as RedisExtension } from '@hocuspocus/extension-redis';
+import { Database } from '@hocuspocus/extension-database';
 import { IncomingMessage } from 'http';
 import { Duplex } from 'stream';
 import { WebSocketServer } from 'ws';
-import Redis from 'ioredis';
+import { StorageAdapter } from './storage/storage.interface';
 
 @Injectable()
 export class CollaborationService implements OnModuleInit, OnModuleDestroy {
   private hocuspocus: Hocuspocus;
   private wss: WebSocketServer;
-  private redis: Redis | null = null;
   private readonly logger = new Logger(CollaborationService.name);
+
+  constructor(private readonly storageAdapter: StorageAdapter) {}
 
   onModuleInit() {
     // WebSocket 서버 생성 (noServer 모드)
     this.wss = new WebSocketServer({ noServer: true });
 
-    // Redis 설정
+    // Redis 설정 (Extension용)
     const redisHost = process.env.REDIS_HOST || 'localhost';
     const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
     const redisPassword = process.env.REDIS_PASSWORD;
     const useRedisExtension = process.env.USE_REDIS_EXTENSION === 'true';
 
-    this.logger.log(`Connecting to Redis at ${redisHost}:${redisPort}`);
-
-    // Redis 클라이언트 생성 (yjsdoc 저장용)
-    this.redis = new Redis({
-      host: redisHost,
-      port: redisPort,
-      password: redisPassword,
-      retryStrategy: (times) => {
-        // 재연결 시도 간격 (최대 3초)
-        return Math.min(times * 100, 3000);
-      },
-      maxRetriesPerRequest: 3,
-    });
-
-    this.redis.on('connect', () => {
-      this.logger.log('Redis connected for document storage');
-    });
-
-    this.redis.on('error', (err) => {
-      this.logger.error('Redis connection error:', err.message);
-    });
-
     // RedisExtension은 Scale-out 시에만 사용
     const extensions: Extension[] = [];
 
+    // Database Extension (영속성)
+    extensions.push(
+      new Database({
+        fetch: async ({ documentName }) => {
+          this.logger.debug(`Fetching document ${documentName} from storage`);
+          return this.storageAdapter.get(`yjs:doc:${documentName}`);
+        },
+        store: async ({ documentName, state }) => {
+          this.logger.debug(`Storing document ${documentName} to storage`);
+          await this.storageAdapter.set(`yjs:doc:${documentName}`, state);
+        },
+      }),
+    );
+
+    // Redis Extension (Scale-out Pub/Sub)
     if (useRedisExtension) {
       this.logger.log('Enabling Redis Extension for multi-server sync');
       extensions.push(
@@ -84,17 +79,13 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
     });
 
     this.logger.log(
-      `Hocuspocus collaboration server initialized ${useRedisExtension ? 'with Redis Extension' : 'without Redis Extension'}`,
+      `Hocuspocus collaboration server initialized with StorageAdapter and ${useRedisExtension ? 'Redis Extension' : 'no Redis Extension'}`,
     );
   }
 
   onModuleDestroy() {
     if (this.wss) {
       this.wss.close();
-    }
-    if (this.redis) {
-      this.redis.disconnect();
-      this.logger.log('Redis connection closed');
     }
     if (this.hocuspocus) {
       this.hocuspocus.closeConnections();

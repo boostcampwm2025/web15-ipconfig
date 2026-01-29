@@ -1,9 +1,9 @@
 import { StorageAdapter } from './storage.interface';
 import Redis from 'ioredis';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 
 @Injectable()
-export class RedisStorageAdapter implements StorageAdapter {
+export class RedisStorageAdapter implements StorageAdapter, OnModuleDestroy {
   private readonly logger = new Logger(RedisStorageAdapter.name);
 
   constructor(private readonly redis: Redis) {}
@@ -48,5 +48,13 @@ export class RedisStorageAdapter implements StorageAdapter {
       this.logger.error(`Failed to delete key ${key} from Redis`, error);
       throw error;
     }
+  }
+
+  /**
+   * 모듈 종료 시 Redis 연결을 정리합니다.
+   */
+  onModuleDestroy() {
+    this.logger.log('Closing Redis connection...');
+    this.redis.disconnect();
   }
 }
