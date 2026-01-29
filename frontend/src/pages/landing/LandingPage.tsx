@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import BackgroundGradient from './components/BackgroundGradient';
-import Navbar from './components/Navbar';
+import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import Footer from './components/Footer';
 

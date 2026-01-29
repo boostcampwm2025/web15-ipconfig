@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 // 버튼 색이 마음에 안 듬...
-function Navbar({ scrolled }: NavbarProps) {
+export function Navbar({ scrolled }: NavbarProps) {
   return (
     <nav
       className={`fixed z-50 w-full transition-all duration-300 ${
@@ -30,17 +30,7 @@ function Navbar({ scrolled }: NavbarProps) {
             team<span className="text-green-400">.config</span>
           </span>
         </Link>
-        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-          <Button className="rounded-full border border-slate-700 bg-green-600 px-5 py-2 text-white transition-all hover:bg-green-500">
-            Log in
-          </Button>
-          <Button className="rounded-full border border-slate-700 bg-slate-800 px-5 py-2 text-white transition-all hover:bg-slate-700">
-            Sign In
-          </Button>
-        </div>
       </div>
     </nav>
   );
 }
-
-export default Navbar;

@@ -1,3 +1,5 @@
+import type { FormatContent } from '@/common/types/yjsWidgetContent';
+
 // Prettier 설정 가능한 옵션 항목
 export interface PrettierConfig {
   printWidth: number;
@@ -31,3 +33,5 @@ export interface ActiveTip {
   description: string;
   recommendation?: string;
 }
+
+export type FormatData = FormatContent;
