@@ -7,6 +7,7 @@ export type WidgetContent =
   | GitConventionContent
   | CommunicationContent
   | CollaborationContent
+  | FormatContent
   | NamingConventionContent
   | PostItContent
   | Record<string, unknown>;
@@ -77,6 +78,18 @@ export interface CollaborationContent {
   };
 }
 
+export interface FormatContent {
+  printWidth: number;
+  useTabs: boolean;
+  tabWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  jsxSingleQuote: boolean;
+  trailingComma: string;
+  bracketSpacing: boolean;
+  arrowParens: string;
+  singleAttributePerLine: boolean;
+}
 export type NamingConventionContent = {
   [key in NamingConventionCategory]?: Record<string, string>;
 };

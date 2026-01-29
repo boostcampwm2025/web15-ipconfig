@@ -14,9 +14,22 @@ function isWidgetData(value: WidgetData | null): value is WidgetData {
   return value !== null;
 }
 
-/**
- * Yjs Doc 데이터를 Zustand Store와 동기화하는 함수
- */
+const isWidgetDataEqual = (prev: WidgetData, next: WidgetData): boolean => {
+  if (prev.widgetId !== next.widgetId) return false;
+  if (prev.type !== next.type) return false;
+
+  if (prev.layout.x !== next.layout.x || prev.layout.y !== next.layout.y)
+    return false;
+  if (
+    prev.layout.width !== next.layout.width ||
+    prev.layout.height !== next.layout.height
+  )
+    return false;
+  if (prev.layout.zIndex !== next.layout.zIndex) return false;
+
+  return JSON.stringify(prev.content) === JSON.stringify(next.content);
+};
+
 export const bindYjsToZustand = (): (() => void) => {
   const { setWidgetList } = useWorkspaceWidgetStore.getState();
 
@@ -32,6 +45,8 @@ export const bindYjsToZustand = (): (() => void) => {
     // widgetOrder 배열을 기준으로 정렬된 위젯 리스트 생성
     const orderedIds = widgetOrderYArr.toArray();
 
+    const currentList = useWorkspaceWidgetStore.getState().widgetList;
+
     const widgetList = orderedIds
       .map((id: string, index: number): WidgetData | null => {
         const yWidget = widgetsYMap.get(id);
@@ -39,9 +54,19 @@ export const bindYjsToZustand = (): (() => void) => {
 
         // zIndex는 widgetOrder 배열의 index를 그대로 사용
         const yjsWidgetData = yWidgetToWidgetData(id, yWidget, index);
+        const newWidgetData = yjsWidgetData as unknown as WidgetData;
 
-        // yjsDoc.WidgetData를 widgetData.WidgetData로 변환
-        return yjsWidgetData as unknown as WidgetData;
+        // 기존 위젯과 비교하여 동일한 경우, 기존 위젯을 반환
+        const existingWidget = currentList.find((w) => w.widgetId === id);
+
+        if (
+          existingWidget &&
+          isWidgetDataEqual(existingWidget, newWidgetData)
+        ) {
+          return existingWidget;
+        }
+
+        return newWidgetData;
       })
       .filter(isWidgetData);
 

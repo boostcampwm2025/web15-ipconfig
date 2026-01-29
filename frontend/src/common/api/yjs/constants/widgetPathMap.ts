@@ -66,6 +66,18 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     // 3. MultiSelectors
     labelRules: ['prRules', 'labelRules'],
   },
+  CODE_FORMAT: {
+    printWidth: ['printWidth'],
+    useTabs: ['useTabs'],
+    tabWidth: ['tabWidth'],
+    semi: ['semi'],
+    singleQuote: ['singleQuote'],
+    jsxSingleQuote: ['jsxSingleQuote'],
+    trailingComma: ['trailingComma'],
+    bracketSpacing: ['bracketSpacing'],
+    arrowParens: ['arrowParens'],
+    singleAttributePerLine: ['singleAttributePerLine'],
+  },
   NAMING_CONVENTION: {
     // Frontend
     'frontend.variable': ['frontend', 'variable'],
