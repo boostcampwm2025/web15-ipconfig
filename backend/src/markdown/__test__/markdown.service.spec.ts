@@ -305,11 +305,11 @@ describe('MarkdownService', () => {
   it('FORMAT 위젯이 있으면 코드 포맷 마크다운을 생성한다.', () => {
     const formatWidget: YjsWidgetData = {
       widgetId: 'format-1',
-      type: 'FORMAT',
+      type: 'CODE_FORMAT',
       layout: { x: 0, y: 0, width: 300, height: 300 },
       createdAt: Date.now(),
       content: {
-        line: 80,
+        printWidth: 80,
         useTabs: false,
         tabWidth: 2,
         semi: true,
@@ -317,8 +317,8 @@ describe('MarkdownService', () => {
         jsxSingleQuote: false,
         bracketSpacing: true,
         trailingComma: 'all',
-        arrowParens: true,
-        attributePerLine: true,
+        arrowParens: 'always',
+        singleAttributePerLine: true,
       } as Record<string, unknown>,
     };
 
