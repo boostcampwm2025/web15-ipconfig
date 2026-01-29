@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import WorkspaceHeader from './header/WorkspaceHeader';
+import WorkspaceHeader from './WorkspaceHeader';
 
 const meta = {
   title: 'Pages/Workspace/WorkspaceHeader',
