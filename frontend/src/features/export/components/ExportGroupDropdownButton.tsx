@@ -15,7 +15,7 @@ import 'github-markdown-css/github-markdown.css';
 import { ExportDocDialog } from './ExportDocDialog';
 import { ExportSettingFilesDialog } from './ExportSettingFilesDialog';
 
-function ExportGroupDropdownButton() {
+export function ExportGroupDropdownButton() {
   const [dialogMenu, setDialogMenu] = useState<string>('none');
   const { markdown, isLoading, error, fetchMarkdown } = useMarkdown();
   const { workspaceId } = useWorkspaceInfoStore();
@@ -82,5 +82,3 @@ function ExportGroupDropdownButton() {
     </Dialog>
   );
 }
-
-export default ExportGroupDropdownButton;
