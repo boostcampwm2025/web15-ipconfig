@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
 import { WidgetProvider } from './context/WidgetContext';
 import { GitConventionWidget } from '@/features/widgets/gitConvention';
+import { FormatWidget } from '@/features/widgets/format';
 
 function WidgetLayer() {
   const widgetKeys = useWorkspaceWidgetStore(
@@ -50,6 +51,8 @@ function WidgetContent({ type }: WidgetContentProps) {
       return <CommunicationWidget />;
     case 'NAMING_CONVENTION':
       return <NamingConventionWidget />;
+    case 'CODE_FORMAT':
+      return <FormatWidget />;
     default:
       return null;
   }

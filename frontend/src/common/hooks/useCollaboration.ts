@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { connectProvider } from '../api/yjs/instance';
 import { bindYjsToZustand } from '../api/yjs/sync';
 
-export const useCollaboration = (documentName: string) => {
+export function useCollaboration(documentName: string) {
   useEffect(() => {
     if (!documentName) return;
 
@@ -15,4 +15,4 @@ export const useCollaboration = (documentName: string) => {
       cleanupSync();
     };
   }, [documentName]);
-};
+}

@@ -7,6 +7,8 @@ import { Canvas, CanvasProvider } from '@/common/components/canvas';
 import ToolBar from './components/toolbar/ToolBar';
 import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
+import { LoadingSpinner } from '@/common/components/LoadingSpinner';
+import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
 
 function WorkSpacePage() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ function WorkSpacePage() {
   // Workspace State
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
+  const isWorkspaceReady = useWorkspaceGuard(workspaceId);
+  useCollaboration(isWorkspaceReady && workspaceId ? workspaceId : '');
 
   useEffect(() => {
     if (!workspaceId) {
@@ -23,7 +27,9 @@ function WorkSpacePage() {
     setWorkspaceId(workspaceId);
   }, [workspaceId, setWorkspaceId, navigate]);
 
-  useCollaboration(workspaceId || '');
+  if (!isWorkspaceReady) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">

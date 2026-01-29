@@ -5,7 +5,7 @@ export type YjsWidgetType =
   | 'COLLABORATION'
   | 'COMMUNICATION'
   | 'NAMING_CONVENTION'
-  | 'FORMAT';
+  | 'CODE_FORMAT';
 
 // Selector 공통 타입
 export interface YjsOptionItem {
@@ -141,7 +141,7 @@ export interface YjsNamingConventionContent {
 
 // FORMAT
 export interface YjsFormatContent {
-  line: number;
+  printWidth: number;
   useTabs: boolean;
   tabWidth: number;
   semi: boolean;
@@ -149,6 +149,6 @@ export interface YjsFormatContent {
   jsxSingleQuote: boolean;
   bracketSpacing: boolean;
   trailingComma: string;
-  arrowParens: boolean;
-  attributePerLine: boolean;
+  arrowParens: string;
+  singleAttributePerLine: boolean;
 }
