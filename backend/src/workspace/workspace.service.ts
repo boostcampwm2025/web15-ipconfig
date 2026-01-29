@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JoinUserDTO } from './dto/join-user.dto';
 import { User } from './dto/join-user.dto';
+import { StorageAdapter } from '../collaboration/storage/storage.interface';
 
 // 유저 정보는 저장해야 함
 interface UserSession {
@@ -9,7 +10,7 @@ interface UserSession {
   user: User;
 }
 
-// 7일 저장하기(만료되면 삭제)
+// 3일 저장하기(만료되면 삭제)
 interface WorkspaceInfo {
   expirationTime: Date;
 }
@@ -19,21 +20,39 @@ export class WorkspaceService {
   private readonly workspaces = new Map<string, WorkspaceInfo>();
   private readonly userSessions = new Map<string, UserSession>();
 
+  constructor(private readonly storageAdapter: StorageAdapter) {}
+
   public createWorkspace(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
-      // 7일 후 만료
-      expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      // 3일 후 만료
+      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
   }
 
-  public isExistsWorkspace(workspaceId: string): boolean {
-    return this.workspaces.has(workspaceId);
+  public async isExistsWorkspace(workspaceId: string): Promise<boolean> {
+    // 메모리에 있는지 확인
+    if (this.workspaces.has(workspaceId)) {
+      return true;
+    }
+
+    // Redis(Storage)에 있는지 확인 (Lazy Loading)
+    const existsInStorage = await this.storageAdapter.get(
+      `yjs:doc:workspace:${workspaceId}`,
+    );
+
+    if (existsInStorage) {
+      // Redis에는 있는데 메모리에 없으면, 메모리에 복구 (TTL 3일 연장)
+      this.createWorkspace(workspaceId);
+      return true;
+    }
+
+    return false;
   }
 
   public updateWorkspace(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
-      // 만약 유저가 접속했으면 만료 시간 업데이트
-      expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      // 만약 유저가 접속했으면 만료 시간 업데이트 (3일)
+      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
   }
 
