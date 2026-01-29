@@ -30,11 +30,11 @@ describe('WorkspaceController', () => {
   });
 
   describe('joinWorkspaceByPath', () => {
-    it('워크스페이스가 존재하면 workspaceId를 반환한다', () => {
+    it('워크스페이스가 존재하면 workspaceId를 반환한다', async () => {
       const workspaceId = 'abc123def4';
-      workspaceService.isExistsWorkspace.mockReturnValue(true);
+      workspaceService.isExistsWorkspace.mockResolvedValue(true);
 
-      const result = controller.joinWorkspaceById(workspaceId);
+      const result = await controller.joinWorkspaceById(workspaceId);
 
       expect(workspaceService.isExistsWorkspace).toHaveBeenCalledWith(
         workspaceId,
@@ -42,25 +42,25 @@ describe('WorkspaceController', () => {
       expect(result).toEqual({ workspaceId });
     });
 
-    it('워크스페이스가 존재하지 않으면 NotFoundException을 던진다', () => {
+    it('워크스페이스가 존재하지 않으면 NotFoundException을 던진다', async () => {
       const workspaceId = 'notexist1';
-      workspaceService.isExistsWorkspace.mockReturnValue(false);
+      workspaceService.isExistsWorkspace.mockResolvedValue(false);
 
-      expect(() => controller.joinWorkspaceById(workspaceId)).toThrow(
+      await expect(controller.joinWorkspaceById(workspaceId)).rejects.toThrow(
         NotFoundException,
       );
     });
   });
 
   describe('createWorkspaceWithRandomIdMake', () => {
-    it('중복되지 않는 랜덤 workspaceId를 생성하고 반환한다', () => {
+    it('중복되지 않는 랜덤 workspaceId를 생성하고 반환한다', async () => {
       let capturedId: string | undefined;
-      workspaceService.isExistsWorkspace.mockReturnValue(false);
+      workspaceService.isExistsWorkspace.mockResolvedValue(false);
       workspaceService.createWorkspace.mockImplementation((id: string) => {
         capturedId = id;
       });
 
-      const result = controller.createWorkspaceWithRandomIdMake();
+      const result = await controller.createWorkspaceWithRandomIdMake();
 
       expect(workspaceService.isExistsWorkspace).toHaveBeenCalled();
       expect(workspaceService.createWorkspace).toHaveBeenCalledTimes(1);
@@ -68,19 +68,19 @@ describe('WorkspaceController', () => {
       expect(result).toEqual({ workspaceId: capturedId });
     });
 
-    it('이미 존재하는 ID라면 새로운 ID를 생성해 사용한다', () => {
+    it('이미 존재하는 ID라면 새로운 ID를 생성해 사용한다', async () => {
       const existingId = 'duplicate1';
       let createWorkspaceCalledWith: string | undefined;
 
       workspaceService.isExistsWorkspace
-        .mockReturnValueOnce(true)
-        .mockReturnValueOnce(false);
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
 
       workspaceService.createWorkspace.mockImplementation((id: string) => {
         createWorkspaceCalledWith = id;
       });
 
-      const result = controller.createWorkspaceWithRandomIdMake();
+      const result = await controller.createWorkspaceWithRandomIdMake();
 
       expect(workspaceService.isExistsWorkspace).toHaveBeenCalledTimes(2);
       expect(createWorkspaceCalledWith).toBeDefined();
@@ -90,11 +90,11 @@ describe('WorkspaceController', () => {
   });
 
   describe('createWorkspaceWithId', () => {
-    it('존재하지 않는 워크스페이스라면 생성하고 workspaceId를 반환한다', () => {
+    it('존재하지 않는 워크스페이스라면 생성하고 workspaceId를 반환한다', async () => {
       const workspaceId = 'newspace1';
-      workspaceService.isExistsWorkspace.mockReturnValue(false);
+      workspaceService.isExistsWorkspace.mockResolvedValue(false);
 
-      const result = controller.createWorkspaceWithId(workspaceId);
+      const result = await controller.createWorkspaceWithId(workspaceId);
 
       expect(workspaceService.isExistsWorkspace).toHaveBeenCalledWith(
         workspaceId,
@@ -105,13 +105,13 @@ describe('WorkspaceController', () => {
       expect(result).toEqual({ workspaceId });
     });
 
-    it('이미 존재하는 워크스페이스라면 ConflictException을 던진다', () => {
+    it('이미 존재하는 워크스페이스라면 ConflictException을 던진다', async () => {
       const workspaceId = 'existspc1';
-      workspaceService.isExistsWorkspace.mockReturnValue(true);
+      workspaceService.isExistsWorkspace.mockResolvedValue(true);
 
-      expect(() => controller.createWorkspaceWithId(workspaceId)).toThrow(
-        ConflictException,
-      );
+      await expect(
+        controller.createWorkspaceWithId(workspaceId),
+      ).rejects.toThrow(ConflictException);
       expect(workspaceService.createWorkspace).not.toHaveBeenCalled();
     });
   });
