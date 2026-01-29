@@ -38,12 +38,12 @@ export const createWidgetAction = ({
 
     if (widgetsMap.has(widgetId)) return;
 
-    // Singleton 위젯 체크: GIT_CONVENTION 타입이 이미 존재하면 생성 중단
-    if (type === 'GIT_CONVENTION') {
+    // TECH_STACK 제외한 모든 위젯은 하나만 생성 가능
+    if (type !== 'TECH_STACK') {
       let isExists = false;
       for (const widget of widgetsMap.values()) {
         const widgetType = (widget as Y.Map<unknown>).get('type');
-        if (widgetType === 'GIT_CONVENTION') {
+        if (widgetType === type) {
           isExists = true;
           break;
         }

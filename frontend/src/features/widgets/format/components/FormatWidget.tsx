@@ -16,9 +16,10 @@ import { LuPalette } from 'react-icons/lu';
 import ToggleItem from './ToggleItem';
 import ConfigSelectItem from './ConfigSelectItem';
 import Preview from './Preview';
+import { useFormatWidget } from '../hooks/useFormatWidget';
 
 function FormatWidget() {
-  const [config, setConfig] = useState<PrettierConfig>(DEFAULT_CONFIG);
+  const { config, updateConfig, resetConfig } = useFormatWidget();
 
   const [formattedCode, setFormattedCode] = useState(SAMPLE_CODE);
   const [activeTip, setActiveTip] = useState<ActiveTip | null>(null);
@@ -30,6 +31,8 @@ function FormatWidget() {
           parser: 'babel',
           plugins: [prettierPluginBabel, prettierPluginEstree],
           ...config,
+          trailingComma: config.trailingComma as 'none' | 'es5' | 'all',
+          arrowParens: config.arrowParens as 'avoid' | 'always',
         });
         setFormattedCode(formatted.trim());
       } catch {
@@ -40,18 +43,18 @@ function FormatWidget() {
   }, [config]);
 
   const handleToggle = (key: keyof PrettierConfig) => {
-    setConfig((prev) => ({ ...prev, [key]: !prev[key] }));
+    updateConfig(key, !config[key]);
   };
 
   const handleChange = (
     key: keyof PrettierConfig,
     value: string | number | boolean,
   ) => {
-    setConfig((prev) => ({ ...prev, [key]: value }));
+    updateConfig(key, value);
   };
 
   const handleReset = () => {
-    setConfig(DEFAULT_CONFIG);
+    resetConfig(DEFAULT_CONFIG);
   };
 
   const handleHover = (
@@ -66,7 +69,6 @@ function FormatWidget() {
     <WidgetFrame
       title="코드 포맷"
       icon={<LuPalette className="text-pink-500" />}
-      defaultLayout={{ x: 1500, y: 250 }}
       actions={[
         <div className="flex">
           <Button

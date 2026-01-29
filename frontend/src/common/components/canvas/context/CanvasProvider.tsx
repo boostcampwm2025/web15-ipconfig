@@ -1,5 +1,11 @@
 import type { Camera } from '@/common/types/camera';
-import { useRef, type Dispatch, type SetStateAction, useCallback } from 'react';
+import {
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useState,
+} from 'react';
 import { createContext } from '@/common/contexts/createContext';
 import type { FrameInfo } from '@/common/types/canvas';
 import { useCanvasStore } from '@/common/store/canvas';
@@ -9,6 +15,8 @@ interface CanvasContext {
   setCamera: Dispatch<SetStateAction<Camera>>;
   frameRef: React.RefObject<HTMLDivElement | null>;
   getFrameInfo: () => FrameInfo;
+  clickedFollow: boolean;
+  setClickedFollow: Dispatch<SetStateAction<boolean>>;
 }
 
 const [CanvasContextProvider, useCanvasContext] = createContext<CanvasContext>({
@@ -18,7 +26,8 @@ const [CanvasContextProvider, useCanvasContext] = createContext<CanvasContext>({
 });
 
 export function CanvasProvider({ children }: { children: React.ReactNode }) {
-  const { camera, setCamera } = useCanvasStore();
+  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, scale: 1 });
+  const [clickedFollow, setClickedFollow] = useState<boolean>(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const getFrameInfo = useCallback(() => {
@@ -34,7 +43,14 @@ export function CanvasProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CanvasContextProvider
-      value={{ camera, setCamera, frameRef, getFrameInfo }}
+      value={{
+        camera,
+        setCamera,
+        frameRef,
+        getFrameInfo,
+        clickedFollow,
+        setClickedFollow,
+      }}
     >
       {children}
     </CanvasContextProvider>

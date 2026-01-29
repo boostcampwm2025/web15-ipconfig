@@ -2,8 +2,8 @@ import { Input } from '@/common/components/shadcn/input';
 import { Badge } from '@/common/components/shadcn/badge';
 import { Button } from '@/common/components/shadcn/button';
 import { LuPlus, LuX } from 'react-icons/lu';
-import { useState } from 'react';
 import type { BranchRuleState } from '../../types/gitConvention';
+import { useBranchPrefix } from '@/common/hooks/useBranchPrefix';
 
 interface BranchRulesProps {
   rules: BranchRuleState;
@@ -11,20 +11,21 @@ interface BranchRulesProps {
 }
 
 export function BranchRules({ rules, onChange }: BranchRulesProps) {
-  const [newPrefix, setNewPrefix] = useState('');
+  const { register, handleSubmit, setValue, errors } = useBranchPrefix();
 
-  const handleAddPrefix = () => {
-    if (!newPrefix.trim()) return;
-    if (rules.prefixes.selectedIds.includes(newPrefix.trim())) return;
+  const handleAddPrefix = handleSubmit((data) => {
+    const value = data.prefix.trim();
+    if (!value) return;
+    if (rules.prefixes.selectedIds.includes(value)) return;
 
     onChange({
       prefixes: {
         ...rules.prefixes,
-        selectedIds: [...rules.prefixes.selectedIds, newPrefix.trim()],
+        selectedIds: [...rules.prefixes.selectedIds, value],
       },
     });
-    setNewPrefix('');
-  };
+    setValue('prefix', '');
+  });
 
   const handleRemovePrefix = (prefixToRemove: string) => {
     onChange({
@@ -80,11 +81,10 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
         </label>
         <div className="flex gap-2">
           <Input
-            value={newPrefix}
-            onChange={(e) => setNewPrefix(e.target.value)}
+            {...register('prefix')}
             onKeyDown={handleKeyDown}
             placeholder="Add prefix..."
-            className="h-9"
+            className={`h-9 ${errors.prefix ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50' : ''}`}
           />
           <Button
             variant="outline"
@@ -95,6 +95,11 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
             <LuPlus size={14} />
           </Button>
         </div>
+        {errors.prefix && (
+          <span className="text-destructive mt-1 ml-1 text-xs">
+            {errors.prefix.message}
+          </span>
+        )}
         <div className="mt-1 flex flex-wrap gap-1.5">
           {rules.prefixes.selectedIds.map((prefix) => (
             <Badge

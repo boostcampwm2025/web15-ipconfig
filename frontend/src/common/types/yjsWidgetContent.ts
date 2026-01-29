@@ -1,4 +1,5 @@
 import type { MultiSelector, Selector } from './yjsDoc';
+import type { Category as NamingConventionCategory } from '@/features/widgets/namingConvention/types/category';
 
 // Union Content Type
 export type WidgetContent =
@@ -6,6 +7,8 @@ export type WidgetContent =
   | GitConventionContent
   | CommunicationContent
   | CollaborationContent
+  | FormatContent
+  | NamingConventionContent
   | PostItContent
   | Record<string, unknown>;
 
@@ -74,6 +77,22 @@ export interface CollaborationContent {
     cycleUnit: string;
   };
 }
+
+export interface FormatContent {
+  printWidth: number;
+  useTabs: boolean;
+  tabWidth: number;
+  semi: boolean;
+  singleQuote: boolean;
+  jsxSingleQuote: boolean;
+  trailingComma: string;
+  bracketSpacing: boolean;
+  arrowParens: string;
+  singleAttributePerLine: boolean;
+}
+export type NamingConventionContent = {
+  [key in NamingConventionCategory]?: Record<string, string>;
+};
 
 // 5. POST_IT (Example placeholder)
 export interface PostItContent {

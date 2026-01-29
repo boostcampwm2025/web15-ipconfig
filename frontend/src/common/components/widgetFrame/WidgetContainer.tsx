@@ -4,39 +4,56 @@ import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { useCanvas } from '../canvas/context/CanvasProvider';
 import {
-  clearEditingState,
-  updateEditingState,
-  updateLocalCursor,
+  updateUserManipulationState,
+  clearUserManipulationState,
 } from '@/common/api/yjs/awareness';
 import {
   updateWidgetLayoutAction,
   bringToFrontAction,
 } from '@/common/api/yjs/actions/widgetFrame';
-import { useWidgetInteractionStore } from '@/common/store/widgetInteraction';
-import type { WidgetLayout } from '@/common/types/widgetData';
-import { browserToCanvasPosition } from '../canvas/lib/positionTransform';
 
-interface WidgetContainerProps {
-  children: React.ReactNode;
-  defaultLayout?: WidgetLayout;
-}
+import type { PropsWithChildren } from 'react';
+import { useUserStore } from '@/common/store/user';
+import { useShallow } from 'zustand/react/shallow';
+import { cn } from '@/common/lib/utils';
+import { getContrastClass } from '@/utils/color';
 
-function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
+function WidgetContainer({ children }: PropsWithChildren) {
   const { widgetId } = useWidgetIdAndType();
-  const { camera, getFrameInfo } = useCanvas();
-  const widgetData = useWorkspaceWidgetStore((state) =>
-    state.widgetList.find((widget) => widget.widgetId === widgetId),
+  const { camera } = useCanvas();
+  // 실제 YjsDoc에서 연동된 Zustand Store 값
+  const widgetLayout = useWorkspaceWidgetStore(
+    (state) =>
+      state.widgetList.find((widget) => widget.widgetId === widgetId)?.layout,
   );
 
-  const { x, y, width, height, zIndex } = widgetData?.layout ??
-    defaultLayout ?? {
-      x: 400,
-      y: 400,
-    };
-
-  const interaction = useWidgetInteractionStore((state) =>
-    state.getInteraction(widgetId),
+  // 이 위젯을 조작하고 있는 유저의 조작 상태
+  const activeManipulation = useUserStore(
+    (state) =>
+      state.userList.find(
+        (user) => user.manipulationState?.widgetId === widgetId,
+      )?.manipulationState,
   );
+
+  // 이 위젯을 조작하고 있는 유저
+  const manipulatingUser = useUserStore(
+    useShallow((state) => {
+      const user = state.userList.find(
+        (user) => user.manipulationState?.widgetId === widgetId,
+      );
+      return {
+        id: user?.id,
+        nickname: user?.nickname,
+        color: user?.color,
+      };
+    }),
+  );
+
+  if (!widgetLayout) {
+    throw new Error(`ID: ${widgetId} 유효하지 않은 위젯입니다.`);
+  }
+
+  const { x, y, width, height, zIndex } = widgetLayout;
 
   // 드래그 시작 시점의 데이터 저장
   const dragStartRef = useRef({
@@ -60,9 +77,9 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
     const isHeader = target.closest('[data-widget-header="true"]');
     if (!isHeader) return;
 
-    // 캔버스 패닝으로 이벤트가 전파되지 않도록 중단
-    e.stopPropagation();
-    e.preventDefault();
+    // // 캔버스 패닝으로 이벤트가 전파되지 않도록 중단
+    // e.stopPropagation();
+    // e.preventDefault();
 
     setIsDragging(true);
 
@@ -79,8 +96,6 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
     if (!isDragging) return;
 
     const handlePointerMove = (e: PointerEvent) => {
-      e.preventDefault();
-
       const { mouseX, mouseY, widgetX, widgetY } = dragStartRef.current;
 
       // 마우스 이동 거리 계산 (scale 보정)
@@ -96,46 +111,30 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
       if (now - lastEmitRef.current < 30) return;
       lastEmitRef.current = now;
 
-      // 드래그 중에는 awareness로 "프리뷰"만 전파 (내 상호작용도 이걸로 처리)
-      updateEditingState({
+      // awareness 업데이트 (위젯 이동)
+      updateUserManipulationState({
         widgetId,
-        kind: 'move',
-        preview: {
+        type: 'move',
+        layout: {
           x: actualX,
           y: actualY,
-          width: width ?? undefined,
-          height: height ?? undefined,
         },
       });
-
-      // 3) 드래그 중에도 커서 위치 동기화 (Mouse Move가 stopPropagation 되므로 여기서 직접 호출)
-      // 실제 마우스 위치를 캔버스 좌표로 변환하여 전송
-      const frameInfo = getFrameInfo();
-      const cursorCanvasPos = browserToCanvasPosition(
-        { x: e.clientX, y: e.clientY },
-        { x: frameInfo.left, y: frameInfo.top },
-        camera,
-      );
-      updateLocalCursor(cursorCanvasPos.x, cursorCanvasPos.y);
     };
 
     const handlePointerUp = () => {
       setIsDragging(false);
 
-      // 드래그 종료: 프리뷰 제거 + Doc에 최종 반영
-      // 종료 시점의 위치는 store에 있는 마지막 interaction 위치를 사용
-      const finalInteraction = useWidgetInteractionStore
-        .getState()
-        .getInteraction(widgetId);
-
-      clearEditingState();
-
-      if (finalInteraction) {
+      // 드래그 종료: Doc에 최종 반영 후 activeManipulation null 값으로 초기화
+      // Doc을 먼저 보내면 수신측에서 "awareness manipulationState 사라짐 → 폴백" 시점에 이미 새 좌표가 도착하도록 해 튕김 방지
+      if (activeManipulation) {
         updateWidgetLayoutAction(widgetId, {
-          x: finalInteraction.x,
-          y: finalInteraction.y,
+          x: activeManipulation.layout.x,
+          y: activeManipulation.layout.y,
         });
       }
+      // awareness activeManipulation 초기화 (위젯 이동 종료)
+      clearUserManipulationState();
     };
 
     window.addEventListener('pointermove', handlePointerMove);
@@ -145,29 +144,38 @@ function WidgetContainer({ children, defaultLayout }: WidgetContainerProps) {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [isDragging, widgetId, camera, width, height, getFrameInfo]);
+  }, [isDragging, widgetId, camera, activeManipulation, x, y]);
 
   const renderedPos = useMemo(() => {
-    // 1. Interaction(내꺼/남의꺼) 있으면 그거 우선
-    if (interaction) {
-      return { x: interaction.x, y: interaction.y };
-    }
-    // 2. 없으면 Yjs Doc state
+    if (activeManipulation)
+      return { x: activeManipulation.layout.x, y: activeManipulation.layout.y };
     return { x, y };
-  }, [interaction, x, y]);
+  }, [activeManipulation, x, y]);
 
   return (
     <div
-      className="pointer-events-auto absolute w-fit rounded-xl border border-gray-700 bg-gray-800 transition-shadow duration-200"
+      className="pointer-events-auto absolute w-fit rounded-xl border-[1.5px] border-gray-700 bg-gray-800 transition-shadow duration-200"
       style={{
         left: renderedPos.x,
         top: renderedPos.y,
         width: width ?? 'auto',
         height: height ?? 'auto',
         zIndex: zIndex ?? 1,
+        borderColor: manipulatingUser.color,
       }}
       onPointerDown={handlePointerDown}
     >
+      <div
+        className={cn(
+          'absolute top-0 left-1/2 -translate-x-1/2 rounded-xs px-2 text-[9px] font-semibold',
+          manipulatingUser.color && getContrastClass(manipulatingUser.color),
+        )}
+        style={{
+          backgroundColor: manipulatingUser.color,
+        }}
+      >
+        {manipulatingUser.nickname}
+      </div>
       <div className="cursor-auto rounded-xl p-5">{children}</div>
     </div>
   );

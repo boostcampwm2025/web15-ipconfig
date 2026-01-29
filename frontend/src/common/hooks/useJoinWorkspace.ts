@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { joinCodeSchema, type JoinCode } from '@/common/schemas/joinCodeSchema';
 
-export const useJoinWorkspace = () => {
+export function useJoinWorkspace() {
   const navigate = useNavigate();
 
   const {
@@ -44,4 +44,4 @@ export const useJoinWorkspace = () => {
     errors,
     onSubmit,
   };
-};
+}

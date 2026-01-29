@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { markdownApi } from '../api/markdownApi';
 import { toast } from 'sonner';
 
-interface UseMarkdownReturn {
+export interface UseMarkdownReturn {
   markdown: string;
   fetchMarkdown: (workspaceId: string) => Promise<void>;
   isLoading: boolean;
@@ -12,7 +12,7 @@ interface UseMarkdownReturn {
 /**
  * 마크다운 문서를 가져오고 관리하는 hook
  */
-export const useMarkdown = (): UseMarkdownReturn => {
+export function useMarkdown(): UseMarkdownReturn {
   const [markdown, setMarkdown] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,4 +39,4 @@ export const useMarkdown = (): UseMarkdownReturn => {
     isLoading,
     error,
   };
-};
+}
