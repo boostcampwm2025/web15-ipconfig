@@ -8,7 +8,7 @@ function HeroHeader() {
         <span className="font-mono text-green-400">team.config</span>{' '}
       </h1>
       <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-slate-400">
-        어색한 아이스브레이킹부터 그라운드 룰, README 자동 생성까지
+        그라운드 룰, README 자동 생성까지
         <br />
         개발자들의 언어로 소통하고, 프로젝트 세팅을 한번에 끝내세요
       </p>
