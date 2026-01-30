@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from 'axios';
 import { apiClient } from './apiClient';
 
 export interface CreateWorkspaceResponse {
@@ -36,10 +37,14 @@ export const workspaceApi = {
    * @returns 워크스페이스 ID
    * @throws NotFoundException 워크스페이스가 존재하지 않는 경우
    */
-  join: async (workspaceId: string): Promise<JoinWorkspaceResponse> => {
+  join: async (
+    workspaceId: string,
+    config?: AxiosRequestConfig,
+  ): Promise<JoinWorkspaceResponse> => {
     const response = await apiClient.post<JoinWorkspaceResponse>(
       `/workspace/join`,
       { workspaceId },
+      config,
     );
     return response.data;
   },
