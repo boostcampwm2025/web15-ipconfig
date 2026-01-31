@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "MBTI I__P들의 개발 인생 초기 설정",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "frontend",
     "backend"
