@@ -105,12 +105,6 @@ npm run dev:fe
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-2088FF?logo=github-actions&style=flat-square)
 ![Nginx](https://img.shields.io/badge/Nginx-Reverse_Proxy-009639?logo=nginx&style=flat-square)
 
-<br/>
-
-## 📜 그라운드룰 및 컨벤션
-
-> **팀의 상세한 컨벤션과 그라운드 룰 등 협업 과정은 [Team Wiki](https://github.com/boostcampwm2025/web15-ipconfig/wiki)에서 관리합니다.**
-
 ## 👨‍💻 팀 ipconfig
 
 **"I \_ \_ P" 개발자들의 모임**
@@ -160,7 +154,7 @@ npm run dev:fe
   </tbody>
 </table>
 
-### 🔗 Team Resources
+### 📜 그라운드룰 및 컨벤션
 
 - [🐙 그라운드룰 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%F0%9F%A4%9D-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
 - [📄 코딩 컨벤션 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%E2%9C%85-%EC%BD%94%EB%93%9C-%EC%BB%A8%EB%B2%A4%EC%85%98)
