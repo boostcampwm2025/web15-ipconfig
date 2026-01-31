@@ -1,33 +1,82 @@
-# web15-ipconfig
+<div align="center">
+  <a href="https://teamconfig.work">
+    <picture>
+      <img alt="team.config" src="/github/asset/teamconfig_github_cover.png" />
+    </picture>
+  </a>
+</div>
 
-MBTI I\_\_P들의 개발 인생 초기 설정
+<h3 align="center">
+  <a href="https://teamconfig.work">team.config</a> | 
+  <a href="https://github.com/boostcampwm2025/web15-ipconfig/wiki">wiki</a>
+</h3>
 
-# 💻 team.confing
+---
 
-> **"우리 팀의 0 번째 스프린트"**
-> <br/>
-> 그라운드 룰, README 자동 생성까지
-> team.config와 함께 개발자들의 언어로 소통하고, 프로젝트 세팅을 한번에 끝내보세요!
+<div align="center">
+<a href="https://teamconfig.work">
+  <picture>
+    <img alt="team.config" src="/github/asset/teamconfig_github_preview.png" />
+  </picture>
+</a>
 
-<br/>
-
-## 📸 미리보기
-
-https://teamconfig.work
-<br/>
+<h4>그라운드 룰 합의부터 README 자동 생성, 초기 세팅 코드까지.<br/><br/>
+개발자들의 언어로 소통하고, 프로젝트 세팅을 한 번에 끝내세요</h4>
+</div>
 
 ## 💡 프로젝트 소개
 
-**Team.config**는 사이드 프로젝트나 해커톤을 시작하는 개발 팀을 위한 서비스입니다</br>
-말로만 합의하던 규칙들을 시각적인 **위젯**으로 조율하고, 합의된 내용을 클릭 한 번으로 **마크다운** 문서와 **초기 세팅 가능한 코드**로 변환해 줍니다.
+**team.config**는 사이드 프로젝트나 해커톤을 시작하는 개발 팀을 위한 서비스입니다.</br>
+팀 빌딩 초기에 말로만 합의하고 흩어지던 규칙들을 **시각적인 위젯**으로 함께 조율하세요. 합의된 내용은 클릭 한 번으로 **잘 정리된 README.md 문서**와 **즉시 실행 가능한 초기 코드**로 변환됩니다.
 
-### 핵심 기능
+### ✨ 핵심 기능
 
-1.  **🛠️ 개발 컨벤션, 그라운드 룰 등을 위젯으로 함께 결정:** 사용할 기술 스택과 버전, 코딩 컨벤션 등 팀빌딩 시 결정해야할 사항들을 드래그 앤 드롭으로 시각적 합의
-2.  **📄 클릭 한번으로 문서화:** 위젯에 입력된 내용을 바탕으로 **마크다운 문서 자동 생성**
-3.  **💻 선택한 기술스택을 코드로:** 위젯에 입력된 내용을 바탕으로 **초기 세팅 코드 자동 생성**
+- **🛠️ 위젯 기반의 의사결정**
+  - 기술 스택, 코딩 컨벤션, 그라운드 룰 등 팀 빌딩 필수 항목을 위젯을 통해 시각적으로 합의합니다.
+- **📄 원클릭 문서화 (README Generator)**
+  - 위젯에 입력된 합의 내용을 바탕으로 완성도 높은 **README.md** 파일을 자동으로 생성합니다.
+- **💻 초기 세팅 코드 생성 (Boilerplate)**
+  - 선택한 기술 스택(React, NestJS 등)에 맞춰 **초기 세팅이 완료된 프로젝트 코드**를 제공합니다.
 
-<br/>
+## 🚀 시작하기
+
+### 방법 1: Docker로 한 번에 실행 (권장)
+
+Docker가 설치되어 있다면 가장 손쉽게 프로젝트를 실행할 수 있습니다.
+
+```bash
+docker compose up --build
+```
+
+### 방법 2: 로컬 환경에서 실행
+
+**1. 레포지토리 클론 및 의존성 설치**
+
+```bash
+git clone https://github.com/boostcampwm2025/web15-ipconfig.git
+cd web15-ipconfig
+npm install
+```
+
+**2. 환경 변수 설정**
+
+backend 디렉토리에 `.env` 파일을 생성하고 필요한 환경 변수를 설정합니다.
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+**3. 백엔드 실행** (로컬 실행 시 Redis가 실행 중이어야 합니다)
+
+```bash
+npm run dev:be
+```
+
+**4. 프론트엔드 실행**
+
+```bash
+npm run dev:fe
+```
 
 ## 🛠 기술 스택
 
@@ -59,14 +108,13 @@ https://teamconfig.work
 
 > **팀의 상세한 컨벤션과 그라운드 룰 등 협업 과정은 [Team Wiki](https://github.com/boostcampwm2025/web15-ipconfig/wiki)에서 관리합니다.**
 
-### 🔗 Quick Links
+## 👨‍💻 팀 ipconfig
 
-- [🐙 그라운드룰 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%F0%9F%A4%9D-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
-- [📄 코딩 컨벤션 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%E2%9C%85-%EC%BD%94%EB%93%9C-%EC%BB%A8%EB%B2%A4%EC%85%98)
+**"I \_ \_ P" 개발자들의 모임**
 
-<br/>
+개발 커리어를 설정(config)한다는 의미와 MBTI의 공통점(I, P)을 담아 **ipconfig**라는 팀명이 만들어졌습니다.
 
-## 팀원
+조급해하지 말고, 끝까지 즐겁게, 꾸준히 달리자는 목표를 갖고 함께 하고 있습니다.
 
 <table>
   <tbody>
@@ -108,3 +156,8 @@ https://teamconfig.work
     </tr>
   </tbody>
 </table>
+
+### 🔗 Team Resources
+
+- [🐙 그라운드룰 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%F0%9F%A4%9D-%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0)
+- [📄 코딩 컨벤션 상세](https://github.com/boostcampwm2025/web15-ipconfig/wiki/%E2%9C%85-%EC%BD%94%EB%93%9C-%EC%BB%A8%EB%B2%A4%EC%85%98)
