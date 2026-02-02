@@ -1,23 +1,15 @@
-import { useState, useMemo } from 'react';
-import { Check, ChevronsUpDown, Plus } from 'lucide-react';
+import { useState, useMemo, type KeyboardEvent } from 'react';
+import { Plus, Search } from 'lucide-react';
 import { cn } from '@/common/lib/utils';
-import { Button } from '@/common/components/shadcn/button';
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/common/components/shadcn/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/common/components/shadcn/popover';
-// 훅 경로는 실제 프로젝트에 맞게 확인해주세요
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/common/components/shadcn/select';
+import { Input } from '@/common/components/shadcn/input';
 import { useTeckStackSearch } from '@/common/hooks/useTeckStackSearch';
-
 import { SUBJECT_GROUPS } from '@/features/widgets/techStack/mocks/techStacks';
 
 interface SelectInputProps {
@@ -33,8 +25,7 @@ function SelectInput({
   customOptions = [],
   onCreateOption,
 }: SelectInputProps) {
-  const [open, setOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   const { setValue, errors, handleSubmit } = useTeckStackSearch();
 
@@ -45,6 +36,7 @@ function SelectInput({
     }));
 
     customOptions.forEach((fullValue) => {
+      // [커스텀 주제] 주제 이름 분리하는 정규식
       const match = fullValue.match(/^\[(.*?)\] (.*)$/);
       if (match) {
         const [, category, optionName] = match;
@@ -67,17 +59,17 @@ function SelectInput({
 
   const filteredGroupedOptions = useMemo(
     () =>
-      searchValue
+      searchText
         ? allGroupedOptions
             .map((group) => ({
               ...group,
               options: group.options.filter((opt) =>
-                opt.toLowerCase().includes(searchValue.toLowerCase()),
+                opt.toLowerCase().includes(searchText.toLowerCase()),
               ),
             }))
             .filter((group) => group.options.length > 0)
         : allGroupedOptions,
-    [searchValue, allGroupedOptions],
+    [searchText, allGroupedOptions],
   );
 
   const isExisting = useMemo(() => {
@@ -85,19 +77,19 @@ function SelectInput({
       group.options.some(
         (option) =>
           `[${group.category}] ${option}`.toLowerCase() ===
-          searchValue.toLowerCase(),
+          searchText.toLowerCase(),
       ),
     );
-  }, [allGroupedOptions, searchValue]);
+  }, [allGroupedOptions, searchText]);
 
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
     setValue('search', value, { shouldValidate: true });
   };
 
   const handleCreate = handleSubmit((data) => {
     const validSearchText = data.search;
-
     if (!validSearchText) return;
 
     const fullValue = `[커스텀 주제] ${validSearchText}`;
@@ -108,101 +100,104 @@ function SelectInput({
       setSelectedValue(fullValue);
     }
 
-    setSearchValue('');
+    setSearchText('');
     setValue('search', '', { shouldValidate: true });
-    setOpen(false);
   });
 
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (e.key === 'Enter' && !isExisting && !errors.search && searchText) {
+      e.preventDefault();
+      handleCreate();
+    }
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between px-3 font-normal"
-        >
-          {/* min-w-0으로 버튼 내부 텍스트가 줄어들 수 있게 허용하여 버튼 크기 유지 */}
-          <span className="min-w-0 flex-1 truncate text-left">
-            {selectedValue || '주제를 선택해주세요...'}
-          </span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
+    <Select value={selectedValue} onValueChange={setSelectedValue}>
+      <SelectTrigger className="w-full justify-between px-3 font-normal">
+        <span className="min-w-0 flex-1 truncate text-left">
+          <SelectValue placeholder="주제를 선택해주세요..." />
+        </span>
+      </SelectTrigger>
 
-      {/* [핵심 수정] 
-        className 대신 style 속성으로 CSS 변수를 직접 주입하여 
-        Shadcn 기본 클래스(w-72 등)나 Tailwind 병합 충돌을 원천 차단합니다.
-        이렇게 하면 드롭다운 너비가 트리거 버튼 너비와 정확히 일치하게 고정됩니다.
-      */}
-      <PopoverContent
-        className="p-0"
-        align="start"
-        style={{ width: 'var(--radix-popover-trigger-width)' }}
-      >
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder="원하는 주제를 입력하세요..."
-            value={searchValue}
-            onValueChange={handleSearchChange}
-          />
-
+      <SelectContent className="p-0" position="popper">
+        <div className="border-b p-2">
+          <div className="relative">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
+            <Input
+              placeholder="원하는 주제를 입력하세요..."
+              value={searchText}
+              onChange={handleSearchChange}
+              onKeyDown={handleInputKeyDown}
+              className="h-8 pl-8"
+              autoFocus
+            />
+          </div>
           {errors.search && (
-            <div className="text-destructive px-2 py-1.5 text-xs font-medium">
+            <div className="text-destructive mt-1.5 px-1 text-xs font-medium">
               {errors.search.message}
             </div>
           )}
+        </div>
 
-          <CommandList>
-            <CommandEmpty>
-              {!isExisting && searchValue && !errors.search ? (
-                <button
-                  onClick={handleCreate}
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm"
-                >
-                  <Plus className="h-4 w-4 shrink-0" />
-                  <span className="truncate">"{searchValue}" 추가하기</span>
-                </button>
-              ) : (
-                <span className="text-muted-foreground py-6 text-center text-sm">
-                  {errors.search ? '올바른 주제를 입력해주세요.' : '결과 없음'}
-                </span>
+        <div className="max-h-[300px] overflow-y-auto">
+          {filteredGroupedOptions.length > 0
+            ? filteredGroupedOptions.map((group) => (
+                <div key={group.category}>
+                  <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
+                    {group.category}
+                  </div>
+                  {group.options.map((option) => {
+                    const fullValue = `[${group.category}] ${option}`;
+                    return (
+                      <SelectItem
+                        key={fullValue}
+                        value={fullValue}
+                        className="cursor-pointer pl-8 text-sm"
+                      >
+                        <span className="block truncate">{option}</span>
+                      </SelectItem>
+                    );
+                  })}
+                </div>
+              ))
+            : !searchText && (
+                <div className="text-muted-foreground py-6 text-center text-sm">
+                  목록 없음
+                </div>
               )}
-            </CommandEmpty>
 
-            {filteredGroupedOptions.map((group) => (
-              <CommandGroup key={group.category} heading={group.category}>
-                {group.options.map((option) => {
-                  const fullValue = `[${group.category}] ${option}`;
-                  return (
-                    <CommandItem
-                      key={fullValue}
-                      value={fullValue}
-                      onSelect={() => {
-                        setSelectedValue(fullValue);
-                        setSearchValue('');
-                        setValue('search', '', { shouldValidate: true });
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          'mr-2 h-4 w-4 shrink-0',
-                          selectedValue === fullValue
-                            ? 'opacity-100'
-                            : 'opacity-0',
-                        )}
-                      />
-                      <span className="truncate">{option}</span>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            ))}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          {searchText && !isExisting && !errors.search && (
+            <div className="p-1">
+              <div className="text-muted-foreground px-2 py-1 text-[10px] font-semibold">
+                새로운 주제 추가
+              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleCreate();
+                }}
+                className={cn(
+                  'relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none select-none',
+                  'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                )}
+              >
+                <Plus className="h-4 w-4 shrink-0" />
+                <span className="truncate">"{searchText}" 추가하기</span>
+              </button>
+            </div>
+          )}
+
+          {searchText && !isExisting && errors.search && (
+            <div className="text-muted-foreground py-4 text-center text-sm">
+              올바른 주제를 입력해주세요.
+            </div>
+          )}
+        </div>
+      </SelectContent>
+    </Select>
   );
 }
 
