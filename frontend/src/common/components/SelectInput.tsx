@@ -1,4 +1,10 @@
-import { useState, useMemo, type KeyboardEvent } from 'react';
+import {
+  useState,
+  useRef,
+  useCallback,
+  type KeyboardEvent,
+  type ChangeEvent,
+} from 'react';
 import { Plus, Search } from 'lucide-react';
 import { cn } from '@/common/lib/utils';
 import {
@@ -10,7 +16,7 @@ import {
 } from '@/common/components/shadcn/select';
 import { Input } from '@/common/components/shadcn/input';
 import { useTeckStackSearch } from '@/common/hooks/useTeckStackSearch';
-import { SUBJECT_GROUPS } from '@/features/widgets/techStack/mocks/techStacks';
+import { useSelectOptions } from '@/common/hooks/useSelectOptions';
 
 interface SelectInputProps {
   selectedValue: string;
@@ -26,67 +32,27 @@ function SelectInput({
   onCreateOption,
 }: SelectInputProps) {
   const [searchText, setSearchText] = useState('');
-
   const { setValue, errors, handleSubmit } = useTeckStackSearch();
-
-  const allGroupedOptions = useMemo(() => {
-    const mergedGroups = SUBJECT_GROUPS.map((group) => ({
-      ...group,
-      options: [...group.options],
-    }));
-
-    customOptions.forEach((fullValue) => {
-      // [커스텀 주제] 주제 이름 분리하는 정규식
-      const match = fullValue.match(/^\[(.*?)\] (.*)$/);
-      if (match) {
-        const [, category, optionName] = match;
-        const groupIndex = mergedGroups.findIndex(
-          (g) => g.category === category,
-        );
-
-        if (groupIndex > -1) {
-          if (!mergedGroups[groupIndex].options.includes(optionName)) {
-            mergedGroups[groupIndex].options.push(optionName);
-          }
-        } else {
-          mergedGroups.push({ category, options: [optionName] });
-        }
-      }
-    });
-
-    return mergedGroups;
-  }, [customOptions]);
-
-  const filteredGroupedOptions = useMemo(
-    () =>
-      searchText
-        ? allGroupedOptions
-            .map((group) => ({
-              ...group,
-              options: group.options.filter((opt) =>
-                opt.toLowerCase().includes(searchText.toLowerCase()),
-              ),
-            }))
-            .filter((group) => group.options.length > 0)
-        : allGroupedOptions,
-    [searchText, allGroupedOptions],
+  const { filteredOptions, isExisting } = useSelectOptions(
+    searchText,
+    customOptions,
   );
+  // 입력으로 인한 focus 잃어버리는 거 해결
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const isExisting = useMemo(() => {
-    return allGroupedOptions.some((group) =>
-      group.options.some(
-        (option) =>
-          `[${group.category}] ${option}`.toLowerCase() ===
-          searchText.toLowerCase(),
-      ),
-    );
-  }, [allGroupedOptions, searchText]);
+  const handleSearchChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchText(value);
+      setValue('search', value, { shouldValidate: true });
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchText(value);
-    setValue('search', value, { shouldValidate: true });
-  };
+      // requestAnimationFrame을 써서 다음 프레임에 포커스를 확실하게 복구
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+    },
+    [setValue],
+  );
 
   const handleCreate = handleSubmit((data) => {
     const validSearchText = data.search;
@@ -94,18 +60,17 @@ function SelectInput({
 
     const fullValue = `[커스텀 주제] ${validSearchText}`;
 
-    if (onCreateOption) {
-      onCreateOption(fullValue);
-    } else {
-      setSelectedValue(fullValue);
-    }
+    if (onCreateOption) onCreateOption(fullValue);
+    else setSelectedValue(fullValue);
 
+    // 초기화
     setSearchText('');
     setValue('search', '', { shouldValidate: true });
   });
 
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     e.stopPropagation();
+
     if (e.key === 'Enter' && !isExisting && !errors.search && searchText) {
       e.preventDefault();
       handleCreate();
@@ -120,11 +85,16 @@ function SelectInput({
         </span>
       </SelectTrigger>
 
-      <SelectContent className="p-0" position="popper">
-        <div className="border-b p-2">
+      <SelectContent
+        className="p-0"
+        position="popper"
+        style={{ width: 'var(--radix-select-trigger-width)' }}
+      >
+        <div className="border-b p-2" onClick={(e) => e.stopPropagation()}>
           <div className="relative">
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
             <Input
+              ref={inputRef}
               placeholder="원하는 주제를 입력하세요..."
               value={searchText}
               onChange={handleSearchChange}
@@ -141,8 +111,8 @@ function SelectInput({
         </div>
 
         <div className="max-h-[300px] overflow-y-auto">
-          {filteredGroupedOptions.length > 0
-            ? filteredGroupedOptions.map((group) => (
+          {filteredOptions.length > 0
+            ? filteredOptions.map((group) => (
                 <div key={group.category}>
                   <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
                     {group.category}
