@@ -14,7 +14,9 @@ function TechStackWidget() {
     parsedSubject,
     techItems,
     isModalOpen,
+    customOptions,
     handleSubjectUpdate,
+    handleCreateSubject,
     actions,
   } = useTechStack();
 
@@ -29,11 +31,15 @@ function TechStackWidget() {
       >
         <section className="flex w-[450px] flex-col gap-4">
           <div className="flex items-center gap-2 font-bold">
-            <div className="shrink-0">주제 :</div>
-            <SelectInput
-              selectedValue={subject.selectedId}
-              setSelectedValue={handleSubjectUpdate}
-            />
+            <div className="w-10 shrink-0">주제 :</div>
+            <div className="flex-1">
+              <SelectInput
+                selectedValue={subject.selectedId}
+                setSelectedValue={handleSubjectUpdate}
+                customOptions={customOptions}
+                onCreateOption={handleCreateSubject}
+              />
+            </div>
           </div>
 
           {parsedSubject && (
