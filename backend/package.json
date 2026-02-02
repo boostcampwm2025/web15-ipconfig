@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@hocuspocus/extension-database": "^3.4.4",
     "@hocuspocus/extension-redis": "^3.4.3",
     "@hocuspocus/server": "^3.4.3",
     "@nestjs/common": "^11.0.1",

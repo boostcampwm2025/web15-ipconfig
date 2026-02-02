@@ -6,6 +6,7 @@ import { updatePrimitiveFieldAction } from '@/common/api/yjs/actions/widgetConte
 import type { FormatContent } from '@/common/types/yjsWidgetContent';
 import { INITIAL_FORMAT_DATA } from '../constants/initial';
 import type { PrettierConfig } from '../types/format';
+import { doc } from '@/common/api/yjs/instance';
 
 export function useFormatWidget() {
   const { widgetId, type } = useWidgetIdAndType();
@@ -28,13 +29,15 @@ export function useFormatWidget() {
 
   const resetConfig = useCallback(
     (newConfig: PrettierConfig) => {
-      Object.entries(newConfig).forEach(([key, value]) => {
-        updatePrimitiveFieldAction(
-          widgetId,
-          type,
-          key as keyof PrettierConfig,
-          value as string | number | boolean,
-        );
+      doc.transact(() => {
+        Object.entries(newConfig).forEach(([key, value]) => {
+          updatePrimitiveFieldAction(
+            widgetId,
+            type,
+            key as keyof PrettierConfig,
+            value as string | number | boolean,
+          );
+        });
       });
     },
     [widgetId, type],

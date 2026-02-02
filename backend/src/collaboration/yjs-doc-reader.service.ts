@@ -1,3 +1,4 @@
+/* eslint-disable -- Yjs(Y.Map, Y.Array) 등 외부 타입으로 인한 경고/에러 무시 */
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CollaborationService } from './collaboration.service';
 import * as Y from 'yjs';
@@ -92,15 +93,17 @@ export class YjsDocReaderService {
    */
   private yTypeToJSON(yValue: unknown): Record<string, unknown> {
     if (yValue instanceof Y.Map) {
+      const map = yValue as Y.Map<unknown>;
       const result: Record<string, unknown> = {};
-      yValue.forEach((value, key) => {
+      map.forEach((value, key) => {
         result[key] = this.yTypeToJSON(value);
       });
       return result;
     }
 
     if (yValue instanceof Y.Array) {
-      return yValue
+      const arr = yValue as Y.Array<unknown>;
+      return arr
         .toArray()
         .map((item) => this.yTypeToJSON(item)) as unknown as Record<
         string,

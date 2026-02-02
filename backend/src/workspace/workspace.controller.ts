@@ -19,7 +19,9 @@ export class WorkspaceController {
     type: JoinWorkspaceResponse,
   })
   @ApiBody({ type: JoinWorkspaceRequest, required: true })
-  joinWorkspaceById(@Body() body: JoinWorkspaceRequest): JoinWorkspaceResponse {
+  joinWorkspaceById(
+    @Body() body: JoinWorkspaceRequest,
+  ): Promise<JoinWorkspaceResponse> {
     return this.workspaceService.joinWorkSpace(body.workspaceId);
   }
 
@@ -32,7 +34,7 @@ export class WorkspaceController {
   @ApiBody({ type: CreateWorkspaceRequest, required: false })
   createWorkspaceWithRandomIdMake(
     @Body() body: CreateWorkspaceRequest,
-  ): CreateWorkspaceResponse {
+  ): Promise<CreateWorkspaceResponse> {
     return this.workspaceService.createWorkspace(body?.workspaceId);
   }
 
@@ -42,9 +44,10 @@ export class WorkspaceController {
     description: '워크스페이스 존재 여부 조회',
     type: CheckWorkspaceResponse,
   })
-  getWorkspaceById(
+  async getWorkspaceById(
     @Param('workspaceId', WorkspaceIdPipe) workspaceId: string,
-  ): CheckWorkspaceResponse {
-    return { exists: this.workspaceService.isExistsWorkspace(workspaceId) };
+  ): Promise<CheckWorkspaceResponse> {
+    const exists = await this.workspaceService.isExistsWorkspace(workspaceId);
+    return { exists };
   }
 }

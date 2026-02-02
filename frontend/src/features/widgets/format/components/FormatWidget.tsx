@@ -83,7 +83,7 @@ function FormatWidget() {
         </div>,
       ]}
     >
-      <div className="relative flex flex-col gap-4 p-4">
+      <div className="relative flex w-[550px] flex-col gap-4 p-4">
         {/* Settings Grid */}
         <div className="grid w-[500px] grid-cols-2 gap-4 gap-x-8">
           {CONFIG_OPTIONS.map((option) =>

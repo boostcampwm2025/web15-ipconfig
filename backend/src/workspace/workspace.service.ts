@@ -8,6 +8,7 @@ import { User } from './dto/join-user.dto';
 import generateNickname from 'ko-nickname/src/index.js';
 import { customAlphabet } from 'nanoid';
 import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
+import { StorageAdapter } from '../collaboration/storage/storage.interface';
 
 // 유저 정보는 저장해야 함
 interface UserSession {
@@ -16,7 +17,7 @@ interface UserSession {
   user: User;
 }
 
-// 7일 저장하기(만료되면 삭제)
+// 3일 저장하기(만료되면 삭제)
 interface WorkspaceInfo {
   expirationTime: Date;
 }
@@ -26,8 +27,13 @@ export class WorkspaceService {
   private readonly workspaces = new Map<string, WorkspaceInfo>();
   private readonly userSessions = new Map<string, UserSession>();
 
-  public joinWorkSpace(workspaceId: string): JoinWorkspaceResponse {
-    if (!this.isExistsWorkspace(workspaceId)) {
+  constructor(private readonly storageAdapter: StorageAdapter) {}
+
+  public async joinWorkSpace(
+    workspaceId: string,
+  ): Promise<JoinWorkspaceResponse> {
+    const exists = await this.isExistsWorkspace(workspaceId);
+    if (!exists) {
       throw new NotFoundException(`'${workspaceId}' 는 존재하지 않습니다.`);
     }
     return {
@@ -36,21 +42,25 @@ export class WorkspaceService {
     };
   }
 
-  public createWorkspace(workspaceId?: string) {
+  public async createWorkspace(
+    workspaceId?: string,
+  ): Promise<{ workspaceId: string }> {
     let newWorkspaceId = workspaceId;
     if (!newWorkspaceId) {
       newWorkspaceId = customAlphabet(
         '0123456789abcdefghijklmnopqrstuvwxyz',
         10,
       )();
-      while (this.isExistsWorkspace(newWorkspaceId)) {
+      const exists = await this.isExistsWorkspace(newWorkspaceId);
+      while (exists) {
         newWorkspaceId = customAlphabet(
           '0123456789abcdefghijklmnopqrstuvwxyz',
           10,
         )();
       }
     } else {
-      if (this.isExistsWorkspace(newWorkspaceId)) {
+      const exists = await this.isExistsWorkspace(newWorkspaceId);
+      if (exists) {
         throw new ConflictException(`'${newWorkspaceId}' 는 이미 존재합니다.`);
       }
     }
@@ -67,19 +77,35 @@ export class WorkspaceService {
 
   private saveWorkspaceIdInMemory(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
-      // 7일 후 만료
-      expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      // 3일 후 만료
+      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
   }
 
-  public isExistsWorkspace(workspaceId: string): boolean {
-    return this.workspaces.has(workspaceId);
+  public async isExistsWorkspace(workspaceId: string): Promise<boolean> {
+    // 메모리에 있는지 확인
+    if (this.workspaces.has(workspaceId)) {
+      return true;
+    }
+
+    // Redis(Storage)에 있는지 확인 (Lazy Loading)
+    const existsInStorage = await this.storageAdapter.get(
+      `yjs:doc:workspace:${workspaceId}`,
+    );
+
+    if (existsInStorage) {
+      // Redis에는 있는데 메모리에 없으면, 메모리에 복구 (TTL 3일 연장)
+      this.saveWorkspaceIdInMemory(workspaceId);
+      return true;
+    }
+
+    return false;
   }
 
   public updateWorkspace(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
-      // 만약 유저가 접속했으면 만료 시간 업데이트
-      expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      // 만약 유저가 접속했으면 만료 시간 업데이트 (3일)
+      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
   }
 

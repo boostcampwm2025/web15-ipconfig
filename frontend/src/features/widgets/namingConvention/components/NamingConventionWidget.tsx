@@ -36,7 +36,7 @@ export default function NamingConventionWidget() {
       title="네이밍 컨벤션"
       icon={<RiFontSizeAi className="text-white-500" />}
     >
-      <div className="flex h-full flex-col overflow-y-auto p-4">
+      <div className="flex h-full w-[500px] flex-col overflow-y-auto p-4">
         {/* Category Buttons */}
         <div className="mb-4 flex gap-2">
           {CATEGORIES.map((category) => {

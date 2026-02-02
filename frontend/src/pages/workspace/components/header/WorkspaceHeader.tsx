@@ -3,7 +3,7 @@ import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
 
-import ExportGroupDropdownButton from '@/features/export/components/ExportGroupDropdownButton';
+import { ExportGroupDropdownButton } from '@/features/export/components/ExportGroupDropdownButton';
 import { UserListCard } from '@/features/userListCard';
 import InviteButton from './InviteButton';
 

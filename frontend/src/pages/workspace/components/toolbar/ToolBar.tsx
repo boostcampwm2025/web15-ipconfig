@@ -17,9 +17,12 @@ import { checkWidgetLimit } from '@/common/lib/widget';
 import { INITIAL_FORMAT_DATA } from '@/features/widgets/format/constants/initial';
 import { NAMING_CONVENTION_INITIAL_CONTENT } from '@/features/widgets/namingConvention/constants/initial';
 import { useFocusWidget } from '@/common/hooks/useFocusWidget';
+import { getRandomWidgetLocation } from '@/common/lib/widgetLocation';
+import { useCanvas } from '@/common/components/canvas/context/CanvasProvider';
 
 function ToolBar() {
   const { focusWidget } = useFocusWidget();
+  const { camera } = useCanvas();
 
   return (
     <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border border-gray-700 bg-gray-800 p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105">
@@ -39,7 +42,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'TECH_STACK',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_TECH_STACK_DATA,
             });
           }}
@@ -62,7 +65,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'GIT_CONVENTION',
-              layout: { x: 500, y: 500 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_GIT_CONVENTION_DATA,
             });
           }}
@@ -79,7 +82,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'COLLABORATION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: COLLABORATION_INITIAL_CONTENT,
             });
           }}
@@ -96,7 +99,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'COMMUNICATION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_COMMUNICATION_DATA,
             });
           }}
@@ -118,7 +121,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'NAMING_CONVENTION',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: NAMING_CONVENTION_INITIAL_CONTENT,
             });
           }}
@@ -133,7 +136,7 @@ function ToolBar() {
             createWidgetAction({
               widgetId,
               type: 'CODE_FORMAT',
-              layout: { x: 200, y: 200 },
+              layout: getRandomWidgetLocation(camera),
               content: INITIAL_FORMAT_DATA,
             });
           }}
