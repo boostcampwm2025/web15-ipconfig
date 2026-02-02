@@ -29,7 +29,7 @@ export interface GitConventionContent {
   strategy: Selector;
   branchRules: {
     mainBranch: string;
-    developBranch?: string;
+    developBranch?: string | null;
     prefixes: MultiSelector;
   };
   commitConvention: {
