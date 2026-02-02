@@ -7,6 +7,7 @@ export type WidgetContent =
   | CommunicationContent
   | CollaborationContent
   | PostItContent
+  | DockerfileData
   | Record<string, unknown>;
 
 // 이 밑에서부터는 위젯별 컨텐츠 타입이라 각 위젯 연결할때 세분화하면 좋을 것 같습니다.
@@ -79,4 +80,12 @@ export interface CollaborationContent {
 export interface PostItContent {
   text: string;
   color: string;
+}
+
+// 6. DOCKERFILE
+export interface DockerfileData {
+  framework: 'Node.js';
+  version: string;
+  port: number;
+  packageManager?: 'npm' | 'yarn' | 'pnpm' | 'bun';
 }

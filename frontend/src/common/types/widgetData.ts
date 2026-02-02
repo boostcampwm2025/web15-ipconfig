@@ -2,13 +2,18 @@ import type { CollaborationData } from '@/features/widgets/collaboration/types/C
 import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 import type { GitConventionData } from '@/features/widgets/gitConvention/types/gitConvention';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
+import type { TechStackWidgetData } from '@/features/widgets/techStack/types/TechStackWidgetData';
 import type { NamingConventionData } from '@/features/widgets/namingConvention/types/namingConvention';
+import type { DockerfileData } from '@/features/widgets/dockerfile/types/wizard';
 
 export type {
   CollaborationData,
   CommunicationData,
   GitConventionData,
   TechStack,
+  TechStackWidgetData,
+  DockerfileData,
+  NamingConventionData,
 };
 
 export type WidgetType =
@@ -17,17 +22,16 @@ export type WidgetType =
   | 'COLLABORATION'
   | 'COMMUNICATION'
   | 'NAMING_CONVENTION'
-  | 'CODE_FORMAT';
+  | 'CODE_FORMAT'
+  | 'DOCKERFILE';
 
 export type WidgetContent =
   | TechStackWidgetData
   | GitConventionData
   | CommunicationData
   | CollaborationData
-  | NamingConventionData;
-
-import type { TechStackWidgetData } from '@/features/widgets/techStack/types/TechStackWidgetData';
-export type { TechStackWidgetData };
+  | NamingConventionData
+  | DockerfileData;
 
 export interface WidgetData {
   widgetId: string;
