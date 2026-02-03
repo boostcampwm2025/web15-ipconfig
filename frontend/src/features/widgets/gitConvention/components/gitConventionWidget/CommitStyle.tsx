@@ -25,9 +25,12 @@ export function CommitStyle({ convention, onChange }: CommitStyleProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="text-muted-foreground ml-1 text-xs font-medium">
+      <label
+        htmlFor="commit-types"
+        className="text-muted-foreground ml-1 text-xs font-medium"
+      >
         Commit Types
-      </div>
+      </label>
 
       <div className="grid grid-cols-2 gap-2">
         {DEFAULT_COMMIT_TYPES.map((type) => {
