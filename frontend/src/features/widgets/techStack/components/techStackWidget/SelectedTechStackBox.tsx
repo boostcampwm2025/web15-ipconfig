@@ -5,6 +5,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/common/lib/utils';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
+import { Button } from '@/common/components/shadcn/button';
 
 interface SelectedTechStackBoxProps {
   selectedTechStacks: TechStack[];
@@ -41,13 +42,14 @@ function SelectedTechStackBox({
           onRemove={() => handleRemoveTech(tech.id)}
         />
       ))}
-      <button
-        className="hover:border-primary flex h-25 w-25 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-600 bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70"
+      <Button
+        variant={'ghost'}
+        className="hover:border-primary flex h-25 w-25 cursor-pointer flex-col rounded-lg border border-dashed border-gray-600 bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70"
         onClick={() => setIsTechStackModalOpen(true)}
       >
         <LuPlus size={20} />
         <span>추가하기</span>
-      </button>
+      </Button>
     </main>
   );
 }

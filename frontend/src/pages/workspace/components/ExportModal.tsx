@@ -1,3 +1,4 @@
+import { Button } from '@/common/components/shadcn/button';
 import { LuFileText, LuX, LuCopy, LuCheck } from 'react-icons/lu';
 
 interface ExportModalProps {
@@ -26,12 +27,13 @@ function ExportModal({ isOpen, onClose, markdown }: ExportModalProps) {
               </p>
             </div>
           </div>
-          <button
+          <Button
+            variant="ghost"
             onClick={onClose}
             className="text-gray-400 transition-colors hover:text-white"
           >
             <LuX size={24} />
-          </button>
+          </Button>
         </div>
 
         <div className="group relative flex-1 overflow-auto bg-[#0d1117] p-0">

@@ -108,13 +108,14 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
               className="border-border bg-background hover:bg-accent hover:text-accent-foreground flex cursor-default items-center gap-1.5 border px-2.5 py-1 pr-1.5 text-sm font-medium shadow-sm transition-colors"
             >
               {prefix}
-              <button
+              <Button
+                variant={'ghost'}
                 onClick={() => handleRemovePrefix(prefix)}
-                className="hover:text-destructive hover:bg-muted-foreground/20 rounded-full p-0.5 transition-colors focus:outline-none"
+                className="hover:text-destructive hover:bg-muted-foreground/20 h-3 w-3 rounded-full p-0.5 transition-colors focus:outline-none"
                 aria-label={`Remove ${prefix}`}
               >
                 <LuX size={14} />
-              </button>
+              </Button>
             </Badge>
           ))}
           {rules.prefixes.selectedIds.length === 0 && (
