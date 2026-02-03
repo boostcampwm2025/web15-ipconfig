@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
@@ -8,6 +8,17 @@ import { updatePrimitiveFieldAction } from '@/common/api/yjs/actions/widgetConte
 
 import type { Category } from '../types/category';
 import type { NamingConventionData } from '../types/namingConvention';
+
+// Helper to deep compare simple objects
+const isContentEqual = (
+  obj1: Record<string, string>,
+  obj2: Record<string, string>,
+) => {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) return false;
+  return keys1.every((key) => obj1[key] === obj2[key]);
+};
 
 export default function useNamingConventionWidget(activeCategory: Category) {
   const { widgetId, type } = useWidgetIdAndType();
@@ -21,7 +32,7 @@ export default function useNamingConventionWidget(activeCategory: Category) {
 
   const namingContent = (content as NamingConventionContent) ?? {};
 
-  // Merge with initial content to ensure all fields exist
+  // Merge with initial content
   const mergedContent: NamingConventionContent = {
     frontend: {
       ...NAMING_CONVENTION_INITIAL_CONTENT.frontend,
@@ -41,6 +52,52 @@ export default function useNamingConventionWidget(activeCategory: Category) {
     },
   };
 
+  const [unreadTabs, setUnreadTabs] = useState<Set<Category>>(new Set());
+  const prevContentRef = useRef<NamingConventionContent>(mergedContent);
+  const isFirstRender = useRef(true);
+
+  // Detect changes in other tabs
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      prevContentRef.current = mergedContent;
+      return;
+    }
+
+    const categories: Category[] = [
+      'frontend',
+      'backend',
+      'database',
+      'common',
+    ];
+
+    categories.forEach((cat) => {
+      // Skip if it's the active category (user sees changes immediately)
+      if (cat === activeCategory) return;
+
+      const currentCatContent = mergedContent[cat] || {};
+      const prevCatContent = prevContentRef.current[cat] || {};
+
+      if (!isContentEqual(currentCatContent, prevCatContent)) {
+        setUnreadTabs((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(cat);
+          return newSet;
+        });
+      }
+    });
+
+    prevContentRef.current = mergedContent;
+  }, [mergedContent, activeCategory]);
+
+  const clearUnread = useCallback((category: Category) => {
+    setUnreadTabs((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(category);
+      return newSet;
+    });
+  }, []);
+
   const currentConvention =
     (mergedContent[
       activeCategory
@@ -48,7 +105,6 @@ export default function useNamingConventionWidget(activeCategory: Category) {
 
   const handleUpdate = useCallback(
     (section: string, key: string, value: string) => {
-      // fieldKey format: "frontend.variable"
       const fieldKey = `${section}.${key}`;
       updatePrimitiveFieldAction(widgetId, type, fieldKey, value);
     },
@@ -59,5 +115,7 @@ export default function useNamingConventionWidget(activeCategory: Category) {
     content: mergedContent,
     currentConvention,
     handleUpdate,
+    unreadTabs,
+    clearUnread,
   };
 }
