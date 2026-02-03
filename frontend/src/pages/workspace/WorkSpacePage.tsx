@@ -9,6 +9,7 @@ import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
 import { LoadingSpinner } from '@/common/components/LoadingSpinner';
 import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
+import WorkspaceTour from './components/tour/WorkspaceTour';
 
 function WorkSpacePage() {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function WorkSpacePage() {
 
   return (
     <CanvasProvider>
+      <WorkspaceTour />
       <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
         {/* 캔버스: 화면 전체 */}
         <WorkspaceHeader />
