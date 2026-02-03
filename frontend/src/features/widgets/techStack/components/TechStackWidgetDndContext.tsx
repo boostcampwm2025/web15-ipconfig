@@ -1,10 +1,12 @@
 import { DndContext, pointerWithin } from '@dnd-kit/core';
 import { type ReactNode } from 'react';
 
-interface TechStackWidgetGroupProps {
+interface TechStackWidgetDndContextProps {
   children: ReactNode;
 }
 
-export function TechStackWidgetGroup({ children }: TechStackWidgetGroupProps) {
+export function TechStackWidgetDndContext({
+  children,
+}: TechStackWidgetDndContextProps) {
   return <DndContext collisionDetection={pointerWithin}>{children}</DndContext>;
 }
