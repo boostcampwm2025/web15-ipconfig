@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
 import { WidgetProvider } from './context/WidgetContext';
 import { GitConventionWidget } from '@/features/widgets/gitConvention';
+import { DockerfileBuilderWidget } from '@/features/widgets/dockerfile';
 import { FormatWidget } from '@/features/widgets/format';
 
 function WidgetLayer() {
@@ -68,6 +69,8 @@ function WidgetContent({ type }: WidgetContentProps) {
       return <NamingConventionWidget />;
     case 'CODE_FORMAT':
       return <FormatWidget />;
+    case 'DOCKERFILE':
+      return <DockerfileBuilderWidget />;
     default:
       return null;
   }

@@ -1,31 +1,40 @@
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { customStyle, codeTagProps } from '../constants/syntaxHighlighter';
+import {
+  customStyle,
+  codeTagProps,
+} from '@/features/widgets/format/constants/syntaxHighlighter';
 
-interface PreviewProps {
-  formattedCode: string;
+interface WidgetPreviewProps {
+  code: string;
+  fileName?: string;
+  language?: string;
 }
 
-function Preview({ formattedCode }: PreviewProps) {
+export function WidgetPreview({
+  code,
+  fileName = 'component.tsx',
+  language = 'tsx',
+}: WidgetPreviewProps) {
   return (
     <div className="absolute top-1/2 right-[calc(100%+80px)] w-[800px] -translate-y-1/2">
       <div className="border-border w-full overflow-hidden rounded-xl border bg-slate-900/50 shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-700/50 bg-slate-800/30 px-3 py-2">
           <span className="text-xs font-medium text-slate-400">미리보기</span>
           <span className="font-mono text-[10px] text-slate-500">
-            component.tsx
+            {fileName}
           </span>
         </div>
-        <div className="overflow-x-auto">
+        <div className="max-h-[600px] overflow-x-auto">
           <SyntaxHighlighter
-            language="tsx"
+            language={language}
             style={vscDarkPlus}
             customStyle={customStyle}
             codeTagProps={{
               style: codeTagProps,
             }}
           >
-            {formattedCode}
+            {code}
           </SyntaxHighlighter>
         </div>
       </div>
@@ -36,5 +45,3 @@ function Preview({ formattedCode }: PreviewProps) {
     </div>
   );
 }
-
-export default Preview;

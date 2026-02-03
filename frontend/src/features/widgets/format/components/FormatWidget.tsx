@@ -15,7 +15,7 @@ import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuPalette } from 'react-icons/lu';
 import ToggleItem from './ToggleItem';
 import ConfigSelectItem from './ConfigSelectItem';
-import Preview from './Preview';
+import { WidgetPreview } from '@/common/components/widgetFrame/WidgetPreview';
 import { useFormatWidget } from '../hooks/useFormatWidget';
 
 function FormatWidget() {
@@ -138,7 +138,7 @@ function FormatWidget() {
           )}
         </div>
 
-        <Preview formattedCode={formattedCode} />
+        <WidgetPreview code={formattedCode} />
       </div>
     </WidgetFrame>
   );
