@@ -47,7 +47,7 @@ export function WorkspaceTitleInput() {
       className={cn(
         'focus:border-primary-600/50 focus:ring-primary-600/50 w-full rounded-md border border-transparent bg-transparent px-1 text-base font-bold text-white outline-none focus:ring',
         errors.title &&
-          'border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500',
+          'border-red-500 ring-red-500 focus:border-red-500/50 focus:ring-red-500',
       )}
     />
   );
