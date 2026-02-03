@@ -6,7 +6,10 @@ import {
   getWidgetsMap,
 } from './utils/getMaps';
 
-import { useWorkspaceWidgetStore } from '@/common/store/workspace';
+import {
+  useWorkspaceWidgetStore,
+  useWorkspaceInfoStore,
+} from '@/common/store/workspace';
 import { yWidgetToWidgetData } from './utils/translateData';
 import type { WidgetData } from '@/common/types/widgetData';
 
@@ -73,6 +76,20 @@ export const bindYjsToZustand = (): (() => void) => {
     setWidgetList(widgetList);
   };
 
+  const syncWorkspaceToStore = (): void => {
+    const root = getRootMap();
+    const workspace = root.get('workspace') as Y.Map<unknown>;
+    if (!workspace) return;
+
+    const title = workspace.get('title') as string;
+    const { setWorkspaceInfo } = useWorkspaceInfoStore.getState();
+
+    setWorkspaceInfo({
+      workspaceId: workspace.get('id') as string,
+      workspaceName: title || '제목 없음',
+    });
+  };
+
   /* ------------------------------------------------------------------
    * 2. widgets / widgetOrder observer 관리
    * ------------------------------------------------------------------ */
@@ -89,15 +106,27 @@ export const bindYjsToZustand = (): (() => void) => {
       syncWidgetsToStore();
     };
 
+    const workspaceYMap = getRootMap().get('workspace') as Y.Map<unknown>;
+    const workspaceObserver = (): void => {
+      syncWorkspaceToStore();
+    };
+
     widgetsYMap.observeDeep(observer);
     widgetOrderYArr.observe(observer);
+    if (workspaceYMap) {
+      workspaceYMap.observe(workspaceObserver);
+    }
 
     // observer 연결 직후 초기 동기화
     syncWidgetsToStore();
+    syncWorkspaceToStore();
 
     return (): void => {
       widgetsYMap.unobserveDeep(observer);
       widgetOrderYArr.unobserve(observer);
+      if (workspaceYMap) {
+        workspaceYMap.unobserve(workspaceObserver);
+      }
     };
   };
 
