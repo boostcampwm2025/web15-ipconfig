@@ -13,6 +13,7 @@ export function initializeYDoc(doc: Y.Doc, workspaceId: string) {
   if (!root.has('workspace')) {
     const ws = new Y.Map();
     ws.set('id', workspaceId);
+    ws.set('title', '제목 없는 워크스페이스');
     ws.set('createdAt', Date.now());
     root.set('workspace', ws);
   }
