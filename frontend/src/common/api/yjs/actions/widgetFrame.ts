@@ -1,25 +1,21 @@
 import * as Y from 'yjs';
-import { doc } from '../instance';
-import {
-  getWidgetsMap,
-  getWidgetOrderArray,
-  getWidgetMap,
-} from '../utils/getMaps';
-import { toYType } from '../utils/translateData';
-import type { WidgetData } from '../../../types/yjsDoc';
+import { doc } from '@/common/api/yjs/instance';
+import { getWidgetsMap, getWidgetMap } from '@/common/api/yjs/utils/getMaps';
+import { toYType } from '@/common/api/yjs/utils/translateData';
+import type { WidgetData } from '@/common/types/yjsDoc';
 
 // 1. 위젯 생성
-export type CreateWidgetParams = {
+export interface CreateWidgetParams {
   type: WidgetData['type'];
   content: WidgetData['content'];
-  layout?: Partial<WidgetData['layout']>;
+  layout: WidgetData['layout'];
   widgetId?: string;
-};
+}
 
 /**
  * 위젯 생성 액션
  *
- * 새로운 위젯을 생성하여 Yjs Map에 추가하고, 위젯 순서 배열(widgetOrder)에 등록합니다.
+ * 새로운 위젯을 생성하여 Yjs Map에 추가합니다.
  *
  * @param params.type - 생성할 위젯의 타입 (예: TECH_STACK)
  * @param params.content - 위젯의 초기 데이터 콘텐츠, 아직은 위젯별 초기 데이터가 상수로 정의되어 있지 않은 상황입니다
@@ -29,12 +25,11 @@ export type CreateWidgetParams = {
 export const createWidgetAction = ({
   type,
   content,
-  layout = {},
+  layout,
   widgetId = crypto.randomUUID(),
 }: CreateWidgetParams) => {
   doc.transact(() => {
     const widgetsMap = getWidgetsMap();
-    const widgetOrder = getWidgetOrderArray();
 
     if (widgetsMap.has(widgetId)) return;
 
@@ -55,21 +50,14 @@ export const createWidgetAction = ({
     const newWidget: WidgetData = {
       widgetId,
       type,
-      layout: {
-        x: 0,
-        y: 0,
-        zIndex: 0,
-        ...layout,
-      },
+      layout,
       content,
       createdAt: Date.now(),
+      focusedAt: Date.now(),
     };
 
     // JSON -> Y.Map 자동 변환
     widgetsMap.set(widgetId, toYType(newWidget) as Y.Map<unknown>);
-
-    // 순서 배열에 ID 추가 (가장 마지막이 최상단 zIndex)
-    widgetOrder.push([widgetId]);
   });
 };
 
@@ -77,23 +65,17 @@ export const createWidgetAction = ({
 /**
  * 위젯 삭제 액션
  *
- * 특정 위젯의 데이터를 Yjs Map에서 제거하고, 순서 배열(widgetOrder)에서도 제거합니다.
+ * 특정 위젯의 데이터를 Yjs Map에서 제거합니다.
  *
  * @param widgetId - 삭제할 위젯의 ID
  */
 export const deleteWidgetAction = (widgetId: string) => {
   doc.transact(() => {
     const widgetsMap = getWidgetsMap();
-    const widgetOrder = getWidgetOrderArray();
 
     // 데이터 삭제
     if (widgetsMap.has(widgetId)) {
       widgetsMap.delete(widgetId);
-    }
-
-    const index = widgetOrder.toArray().indexOf(widgetId);
-    if (index > -1) {
-      widgetOrder.delete(index, 1);
     }
   });
 };
@@ -130,22 +112,33 @@ export const updateWidgetLayoutAction = (
   });
 };
 
-// 4. 위젯 최상단으로 가져오기 (z-Index 변경)
+// 4. 위젯 최상단으로 가져오기
+
 /**
- * 위젯 최상단으로 가져오기 (z-Index 변경 효과)
+ * bringToFront 순수 로직 (테스트 가능)
  *
- * 위젯 순서 배열(widgetOrder)에서 해당 위젯 ID를 맨 뒤로 이동시켜,
- * 렌더링 시 가장 높은 z-index를 갖게 합니다.
+ * 위젯 데이터 Map에 focusedAt 시간을 업데이트합니다.
  *
- * @param widgetId - 최상단으로 올릴 위젯 ID
+ * @param widgetMap - Yjs 위젯 데이터 Map
+ */
+
+export const bringToFrontLogic = (widgetMap: Y.Map<unknown>) => {
+  if (!widgetMap) return;
+  widgetMap.set('focusedAt', Date.now());
+};
+
+/**
+ * 위젯 최상단으로 가져오기
+ *
+ * 위젯 데이터 Map에 focusedAt 시간을 업데이트합니다.
+ * 렌더링 시 가장 높은 레이어에 위치하도록 합니다.
+ *
+ * @param widgetMap - Yjs 위젯 데이터 Map
  */
 export const bringToFrontAction = (widgetId: string) => {
   doc.transact(() => {
-    const widgetOrder = getWidgetOrderArray();
-    const index = widgetOrder.toArray().indexOf(widgetId);
-    if (index > -1) {
-      widgetOrder.delete(index, 1);
-      widgetOrder.push([widgetId]);
-    }
+    const widgetMap = getWidgetMap(widgetId);
+    if (!widgetMap) return;
+    bringToFrontLogic(widgetMap);
   });
 };

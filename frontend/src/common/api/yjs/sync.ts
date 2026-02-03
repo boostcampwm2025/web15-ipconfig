@@ -1,10 +1,6 @@
 import * as Y from 'yjs';
 
-import {
-  getRootMap,
-  getWidgetOrderArray,
-  getWidgetsMap,
-} from './utils/getMaps';
+import { getRootMap, getWidgetsMap } from './utils/getMaps';
 
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { yWidgetToWidgetData } from './utils/translateData';
@@ -38,66 +34,41 @@ export const bindYjsToZustand = (): (() => void) => {
    * ------------------------------------------------------------------ */
   const syncWidgetsToStore = (): void => {
     const widgetsYMap = getWidgetsMap();
-    const widgetOrderYArr = getWidgetOrderArray();
 
-    if (!widgetsYMap || !widgetOrderYArr) return;
-
-    // widgetOrder 배열을 기준으로 정렬된 위젯 리스트 생성
-    const orderedIds = widgetOrderYArr.toArray();
-
-    const currentList = useWorkspaceWidgetStore.getState().widgetList;
-
-    const widgetList = orderedIds
-      .map((id: string, index: number): WidgetData | null => {
-        const yWidget = widgetsYMap.get(id);
-        if (!yWidget || !(yWidget instanceof Y.Map)) return null;
-
-        // zIndex는 widgetOrder 배열의 index를 그대로 사용
-        const yjsWidgetData = yWidgetToWidgetData(id, yWidget, index);
-        const newWidgetData = yjsWidgetData as unknown as WidgetData;
-
-        // 기존 위젯과 비교하여 동일한 경우, 기존 위젯을 반환
-        const existingWidget = currentList.find((w) => w.widgetId === id);
-
-        if (
-          existingWidget &&
-          isWidgetDataEqual(existingWidget, newWidgetData)
-        ) {
-          return existingWidget;
-        }
-
-        return newWidgetData;
+    // TODO: 리렌더링 개선
+    const widgets = [...widgetsYMap.entries()]
+      .map(([id, yWidget]) => {
+        return yWidgetToWidgetData(id, yWidget);
       })
-      .filter(isWidgetData);
+      .sort((a, b) => a.focusedAt - b.focusedAt);
 
-    setWidgetList(widgetList);
+    if (!widgetsYMap) return;
+
+    setWidgetList(widgets as WidgetData[]);
   };
 
   /* ------------------------------------------------------------------
-   * 2. widgets / widgetOrder observer 관리
+   * 2. widgets observer 관리
    * ------------------------------------------------------------------ */
   let cleanupCurrentObservers: (() => void) | null = null;
 
   const attachObservers = (): (() => void) | null => {
     const widgetsYMap = getWidgetsMap();
-    const widgetOrderYArr = getWidgetOrderArray();
 
     // Yjs 구조가 아직 준비되지 않은 경우
-    if (!widgetsYMap || !widgetOrderYArr) return null;
+    if (!widgetsYMap) return null;
 
     const observer = (): void => {
       syncWidgetsToStore();
     };
 
     widgetsYMap.observeDeep(observer);
-    widgetOrderYArr.observe(observer);
 
     // observer 연결 직후 초기 동기화
     syncWidgetsToStore();
 
     return (): void => {
       widgetsYMap.unobserveDeep(observer);
-      widgetOrderYArr.unobserve(observer);
     };
   };
 
@@ -109,10 +80,7 @@ export const bindYjsToZustand = (): (() => void) => {
   const rootObserver = (event: Y.YMapEvent<unknown>): void => {
     const keys = event.keysChanged;
 
-    const shouldReattach =
-      !cleanupCurrentObservers ||
-      keys.has('widgets') ||
-      keys.has('widgetOrder');
+    const shouldReattach = !cleanupCurrentObservers || keys.has('widgets');
 
     if (!shouldReattach) return;
 

@@ -52,20 +52,17 @@ export const toYType = (value: unknown): YValue => {
 
 /**
  * Y.Map 데이터를 리액트용 WidgetData(JSON)로 변환
- * widgetOrder 배열의 index를 기반으로 zIndex를 주입
  *
  * Yjs의 공유 데이터(Y.Map)를 React 컴포넌트에서 렌더링하기 쉬운
  * 일반 JSON 객체 형태(WidgetData)로 변환합니다.
  *
  * @param widgetId - 변환할 위젯의 ID
  * @param widgetMap - Yjs 내부의 위젯 데이터 Map
- * @param derivedZIndex - 위젯 순서에 따라 계산된 z-index 값
  * @returns {WidgetData} - React에서 사용할 위젯 데이터 객체
  */
 export const yWidgetToWidgetData = (
   widgetId: string,
   widgetMap: Y.Map<unknown>,
-  derivedZIndex: number,
 ): WidgetData => {
   //layout이나 content가 없을 경우 빈 Map 처리
   const layout =
@@ -81,9 +78,9 @@ export const yWidgetToWidgetData = (
       y: layout.get('y') ?? 0,
       width: layout.get('width'),
       height: layout.get('height'),
-      zIndex: derivedZIndex,
     },
     content: content.toJSON() as WidgetContent,
     createdAt: (widgetMap.get('createdAt') as number) ?? Date.now(),
+    focusedAt: (widgetMap.get('focusedAt') as number) ?? Date.now(),
   };
 };

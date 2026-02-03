@@ -1,4 +1,3 @@
-/* eslint-disable -- Yjs(Y.Map, Y.Array) 등 외부 타입으로 인한 경고/에러 무시 */
 // TODO: Yjs(Y.Map, Y.Array) 등 외부 타입으로 인한 경고/에러 무시
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CollaborationService } from './collaboration.service';

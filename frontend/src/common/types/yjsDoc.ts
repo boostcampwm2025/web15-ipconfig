@@ -26,10 +26,10 @@ export interface WidgetData<T extends WidgetContent = WidgetContent> {
     y: number;
     width?: number;
     height?: number;
-    zIndex: number;
   };
   content: T; // 위젯별 커스텀
   createdAt: number;
+  focusedAt: number;
 }
 
 export interface WorkspaceData {
@@ -40,7 +40,6 @@ export interface WorkspaceData {
       createdAt: number;
     };
     widgets: Record<string, WidgetData>;
-    widgetOrder: string[];
   };
 }
 
