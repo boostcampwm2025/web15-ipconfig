@@ -66,6 +66,16 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     // 3. MultiSelectors
     labelRules: ['prRules', 'labelRules'],
   },
+  DOCKERFILE: {
+    // 공통
+    framework: ['framework'],
+    version: ['version'],
+    port: ['port'],
+
+    // Node.js
+    packageManager: ['packageManager'],
+    command: ['command'],
+  },
   CODE_FORMAT: {
     printWidth: ['printWidth'],
     useTabs: ['useTabs'],

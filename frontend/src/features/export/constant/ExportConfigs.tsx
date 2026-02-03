@@ -9,10 +9,10 @@ export const EXPORT_CONFIGS: ExportConfig[] = [
     fileName: '.prettierrc',
   },
   {
-    id: 'docker',
-    label: 'Docker 설정',
-    description: 'Dockerfile을 생성합니다. (준비 중)',
-    type: 'TECH_STACK',
+    id: 'dockerfile',
+    label: 'Dockerfile',
+    description: 'Dockerfile을 생성합니다.',
+    type: 'DOCKERFILE',
     fileName: 'Dockerfile',
   },
 ];
