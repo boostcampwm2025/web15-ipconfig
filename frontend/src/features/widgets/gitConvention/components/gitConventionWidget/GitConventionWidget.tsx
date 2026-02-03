@@ -20,7 +20,11 @@ function GitConventionWidget() {
           onChange={actions.requestChangeStrategy}
         />
         <div className="bg-border my-1 h-px" />
-        <BranchRules rules={branchRules} onChange={actions.updateBranchRules} />
+        <BranchRules
+          strategy={strategy.selectedId}
+          rules={branchRules}
+          onChange={actions.updateBranchRules}
+        />
         <div className="bg-border my-1 h-px" />
         <CommitStyle
           convention={commitConvention}

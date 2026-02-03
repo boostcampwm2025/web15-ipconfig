@@ -6,11 +6,12 @@ import type { BranchRuleState } from '../../types/gitConvention';
 import { useBranchPrefix } from '@/common/hooks/useBranchPrefix';
 
 interface BranchRulesProps {
+  strategy: string;
   rules: BranchRuleState;
   onChange: (rules: Partial<BranchRuleState>) => void;
 }
 
-export function BranchRules({ rules, onChange }: BranchRulesProps) {
+export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
   const { register, handleSubmit, setValue, errors } = useBranchPrefix();
 
   const handleAddPrefix = handleSubmit((data) => {
@@ -59,14 +60,13 @@ export function BranchRules({ rules, onChange }: BranchRulesProps) {
         />
       </div>
 
-      {/* Develop Branch (Optional) */}
-      {rules.developBranch !== undefined && (
+      {strategy === 'GIT_FLOW' && (
         <div className="flex flex-col gap-1.5">
           <label className="text-muted-foreground ml-1 text-xs font-medium">
             Develop Branch
           </label>
           <Input
-            value={rules.developBranch}
+            value={rules.developBranch || ''}
             onChange={(e) => onChange({ developBranch: e.target.value })}
             className="h-9"
             placeholder="e.g. develop"

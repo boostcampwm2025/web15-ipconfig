@@ -11,7 +11,7 @@ export function mappingIcon(type: string) {
           className="text-primary-600 h-5 w-5"
         />
       );
-    case 'DOCKER':
+    case 'DOCKERFILE':
       return (
         <LuContainer
           size={18}

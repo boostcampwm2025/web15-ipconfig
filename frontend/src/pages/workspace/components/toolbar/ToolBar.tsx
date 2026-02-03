@@ -6,6 +6,7 @@ import {
   LuUsers,
   LuMessageSquare,
   LuPalette,
+  LuContainer,
 } from 'react-icons/lu';
 import { RiFontSizeAi } from 'react-icons/ri';
 import { createWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
@@ -138,6 +139,21 @@ function ToolBar() {
               type: 'CODE_FORMAT',
               layout: getRandomWidgetLocation(camera),
               content: INITIAL_FORMAT_DATA,
+            });
+          }}
+        />
+        <ToolButton
+          icon={<LuContainer size={20} />}
+          label="Dockerfile"
+          onClick={() => {
+            if (!checkWidgetLimit('DOCKERFILE', 'Dockerfile', 1, focusWidget))
+              return;
+            const widgetId = 'DOCKERFILE';
+            createWidgetAction({
+              widgetId,
+              type: 'DOCKERFILE',
+              layout: getRandomWidgetLocation(camera),
+              content: {},
             });
           }}
         />

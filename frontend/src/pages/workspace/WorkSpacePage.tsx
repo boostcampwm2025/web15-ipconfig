@@ -16,8 +16,12 @@ function WorkSpacePage() {
   // Workspace State
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const setWorkspaceId = useWorkspaceInfoStore((state) => state.setWorkspaceId);
-  const isWorkspaceReady = useWorkspaceGuard(workspaceId);
-  useCollaboration(isWorkspaceReady && workspaceId ? workspaceId : '');
+  const { isReady: isWorkspaceReady, userNickname } =
+    useWorkspaceGuard(workspaceId);
+  useCollaboration(
+    isWorkspaceReady && workspaceId ? workspaceId : '',
+    userNickname,
+  );
 
   useEffect(() => {
     if (!workspaceId) {

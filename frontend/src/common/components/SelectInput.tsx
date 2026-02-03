@@ -1,4 +1,10 @@
-import { useState, useMemo } from 'react';
+import {
+  useState,
+  useRef,
+  useCallback,
+  type KeyboardEvent,
+  type ChangeEvent,
+} from 'react';
 import { Plus, Search } from 'lucide-react';
 import { cn } from '@/common/lib/utils';
 import {
@@ -9,126 +15,156 @@ import {
   SelectValue,
 } from '@/common/components/shadcn/select';
 import { Input } from '@/common/components/shadcn/input';
-
-import { SUBJECT_GROUPS } from '@/features/widgets/techStack/mocks/techStacks';
+import { useTeckStackSearch } from '@/common/hooks/useTeckStackSearch';
+import { useSelectOptions } from '@/common/hooks/useSelectOptions';
 
 interface SelectInputProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
+  customOptions?: string[];
+  onCreateOption?: (value: string) => void;
 }
 
-function SelectInput({ selectedValue, setSelectedValue }: SelectInputProps) {
+function SelectInput({
+  selectedValue,
+  setSelectedValue,
+  customOptions = [],
+  onCreateOption,
+}: SelectInputProps) {
   const [searchText, setSearchText] = useState('');
-  const [groupedOptions, setGroupedOptions] = useState(SUBJECT_GROUPS);
+  const { setValue, errors, handleSubmit } = useTeckStackSearch();
+  const { filteredOptions, isExisting } = useSelectOptions(
+    searchText,
+    customOptions,
+  );
+  // 입력으로 인한 focus 잃어버리는 거 해결
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // 입력값으로 필터링된 옵션들
-  const filteredGroupedOptions = useMemo(
-    () =>
-      searchText
-        ? groupedOptions.filter((group) =>
-            group.options.some((option) =>
-              option.toLowerCase().includes(searchText.toLowerCase()),
-            ),
-          )
-        : groupedOptions,
-    [searchText, groupedOptions],
+  const handleSearchChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchText(value);
+      setValue('search', value, { shouldValidate: true });
+
+      // requestAnimationFrame을 써서 다음 프레임에 포커스를 확실하게 복구
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+    },
+    [setValue],
   );
 
-  // 현재 입력값이 기존 옵션에 정확히 존재하는지 확인
-  const isExisting = useMemo(
-    () =>
-      groupedOptions.some((group) =>
-        group.options.some(
-          (option) =>
-            `[${group.category}] ${option}`.toLowerCase() ===
-            searchText.toLowerCase(),
-        ),
-      ),
-    [searchText, groupedOptions],
-  );
+  const handleCreate = handleSubmit((data) => {
+    const validSearchText = data.search;
+    if (!validSearchText) return;
 
-  const handleValueChange = (value: string) => {
-    setSelectedValue(value);
-    setSearchText(''); // 선택 시 검색어 초기화
-  };
+    const fullValue = `[커스텀 주제] ${validSearchText}`;
 
-  const handleCreateOption = () => {
-    if (!searchText) return;
+    if (onCreateOption) onCreateOption(fullValue);
+    else setSelectedValue(fullValue);
 
-    const newOption = searchText;
-
-    setGroupedOptions((prev) => [
-      ...prev,
-      { category: '커스텀 주제', options: [newOption] },
-    ]);
-    setSelectedValue(`[커스텀 주제] ${newOption}`);
+    // 초기화
     setSearchText('');
+    setValue('search', '', { shouldValidate: true });
+  });
+
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+
+    if (e.key === 'Enter' && !isExisting && !errors.search && searchText) {
+      e.preventDefault();
+      handleCreate();
+    }
   };
 
   return (
-    <Select value={selectedValue} onValueChange={handleValueChange}>
-      <SelectTrigger className="w-full flex-1 justify-between">
-        <SelectValue placeholder="주제를 선택해주세요..." />
+    <Select value={selectedValue} onValueChange={setSelectedValue}>
+      <SelectTrigger className="w-full justify-between px-3 font-normal">
+        <span className="min-w-0 flex-1 truncate text-left">
+          <SelectValue placeholder="주제를 선택해주세요..." />
+        </span>
       </SelectTrigger>
-      <SelectContent className="p-0">
-        {/* 검색 입력 필드 */}
-        <div className="border-b p-2">
+
+      <SelectContent
+        className="p-0"
+        position="popper"
+        style={{
+          width: `${Math.max(100, Number('var(--radix-select-trigger-width)'))}px`,
+        }}
+      >
+        <div className="border-b p-2" onClick={(e) => e.stopPropagation()}>
           <div className="relative">
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
             <Input
+              ref={inputRef}
               placeholder="원하는 주제를 입력하세요..."
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={handleSearchChange}
+              onKeyDown={handleInputKeyDown}
               className="h-8 pl-8"
-              onClick={(e) => e.stopPropagation()}
-              onKeyDown={(e) => {
-                e.stopPropagation();
-                if (e.key === 'Enter' && searchText && !isExisting) {
-                  handleCreateOption();
-                }
-              }}
+              autoFocus
             />
           </div>
+          {errors.search && (
+            <div className="text-destructive mt-1.5 px-1 text-xs font-medium">
+              {errors.search.message}
+            </div>
+          )}
         </div>
 
-        {/* 필터링된 옵션 목록 */}
         <div className="max-h-[300px] overflow-y-auto">
-          {filteredGroupedOptions.map((groupedOption) => (
-            <div key={groupedOption.category}>
-              <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
-                {groupedOption.category}
-              </div>
-              {groupedOption.options.map((option) => {
-                const value = `[${groupedOption.category}] ${option}`;
-                return (
-                  <SelectItem
-                    key={value}
-                    value={value}
-                    className="pl-6 text-sm"
-                  >
-                    {option}
-                  </SelectItem>
-                );
-              })}
-            </div>
-          ))}
+          {filteredOptions.length > 0
+            ? filteredOptions.map((group) => (
+                <div key={group.category}>
+                  <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
+                    {group.category}
+                  </div>
+                  {group.options.map((option) => {
+                    const fullValue = `[${group.category}] ${option}`;
+                    return (
+                      <SelectItem
+                        key={fullValue}
+                        value={fullValue}
+                        className="cursor-pointer pl-8 text-sm"
+                      >
+                        <span className="block truncate">{option}</span>
+                      </SelectItem>
+                    );
+                  })}
+                </div>
+              ))
+            : !searchText && (
+                <div className="text-muted-foreground py-6 text-center text-sm">
+                  목록 없음
+                </div>
+              )}
 
-          {/* 입력값이 있고 기존 목록에 없을 때만 '추가' 버튼 노출 */}
-          {searchText && !isExisting && (
-            <div>
-              <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
+          {searchText && !isExisting && !errors.search && (
+            <div className="p-1">
+              <div className="text-muted-foreground px-2 py-1 text-[10px] font-semibold">
                 새로운 주제 추가
               </div>
               <button
                 type="button"
-                onClick={handleCreateOption}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleCreate();
+                }}
                 className={cn(
-                  'relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-6 text-sm outline-none select-none',
+                  'relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none select-none',
                   'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                 )}
               >
-                <Plus className="h-4 w-4" />"{searchText}" 추가하기
+                <Plus className="h-4 w-4 shrink-0" />
+                <span className="truncate">"{searchText}" 추가하기</span>
               </button>
+            </div>
+          )}
+
+          {searchText && !isExisting && errors.search && (
+            <div className="text-muted-foreground py-4 text-center text-sm">
+              올바른 주제를 입력해주세요.
             </div>
           )}
         </div>

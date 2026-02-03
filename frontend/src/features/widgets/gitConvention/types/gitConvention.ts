@@ -4,7 +4,7 @@ export type GitStrategy = 'GITHUB_FLOW' | 'GIT_FLOW' | 'TRUNK_BASED';
 
 export interface BranchRuleState {
   mainBranch: string;
-  developBranch?: string;
+  developBranch?: string | null;
   prefixes: MultiSelector;
 }
 

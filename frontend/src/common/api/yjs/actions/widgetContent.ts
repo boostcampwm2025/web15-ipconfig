@@ -19,7 +19,7 @@ export const updatePrimitiveFieldAction = (
   widgetId: string,
   type: WidgetType,
   fieldKey: string,
-  value: string | number | boolean,
+  value: string | number | boolean | null,
 ) => {
   doc.transact(() => {
     // 1. 전체 경로 가져오기 (예: ['commitConvention', 'useGitmoji'])

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { WorkspaceService } from '../workspace.service';
 import { JoinUserDTO } from '../dto/join-user.dto';
 import { StorageAdapter } from '../../collaboration/storage/storage.interface';
@@ -34,6 +35,61 @@ describe('WorkspaceService', () => {
 
   it('서비스 인스턴스 생성', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('joinWorkSpace', () => {
+    it('워크스페이스가 존재하면 workspaceId와 nickname을 반환한다', async () => {
+      const workspaceId = 'w1';
+      // 먼저 워크스페이스 생성
+      await service.createWorkspace(workspaceId);
+
+      const result = await service.joinWorkSpace(workspaceId);
+
+      expect(result.workspaceId).toBe(workspaceId);
+      expect(result.nickname).toBeDefined();
+      expect(typeof result.nickname).toBe('string');
+    });
+
+    it('워크스페이스가 존재하지 않으면 NotFoundException을 던진다', async () => {
+      const workspaceId = 'notexist';
+      storageAdapter.get.mockResolvedValue(null);
+
+      await expect(service.joinWorkSpace(workspaceId)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('createWorkspace', () => {
+    it('workspaceId 없이 호출하면 랜덤 ID를 생성한다', async () => {
+      storageAdapter.get.mockResolvedValue(null);
+
+      const result = await service.createWorkspace();
+
+      expect(result.workspaceId).toBeDefined();
+      expect(typeof result.workspaceId).toBe('string');
+      expect(result.workspaceId.length).toBe(10);
+    });
+
+    it('workspaceId를 지정하면 해당 ID로 생성한다', async () => {
+      const workspaceId = 'myworkspace';
+      storageAdapter.get.mockResolvedValue(null);
+
+      const result = await service.createWorkspace(workspaceId);
+
+      expect(result.workspaceId).toBe(workspaceId);
+    });
+
+    it('이미 존재하는 workspaceId를 지정하면 ConflictException을 던진다', async () => {
+      const workspaceId = 'existing';
+      // 먼저 생성
+      await service.createWorkspace(workspaceId);
+
+      // 같은 ID로 다시 생성 시도
+      await expect(service.createWorkspace(workspaceId)).rejects.toThrow(
+        ConflictException,
+      );
+    });
   });
 
   describe('joinUser', () => {
@@ -253,12 +309,17 @@ describe('WorkspaceService', () => {
   });
 
   describe('isExistsWorkspace', () => {
-    it('메모리에 있으면 true를 반환한다', async () => {
+    it('메모리에 있으면 true를 반환하고 storage 조회를 하지 않는다', async () => {
       const workspaceId = 'w1';
-      service.createWorkspace(workspaceId);
+      storageAdapter.get.mockResolvedValue(null);
+      await service.createWorkspace(workspaceId);
+
+      // createWorkspace 중 storage.get 호출을 clear
+      storageAdapter.get.mockClear();
 
       const result = await service.isExistsWorkspace(workspaceId);
       expect(result).toBe(true);
+      // 메모리에 있으므로 storage 조회를 하지 않아야 함
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(storageAdapter.get).not.toHaveBeenCalled();
     });
@@ -294,10 +355,10 @@ describe('WorkspaceService', () => {
   });
 
   describe('expiration logic', () => {
-    it('워크스페이스 생성 시 만료 시간은 현재로부터 약 3일 후여야 한다', () => {
+    it('워크스페이스 생성 시 만료 시간은 현재로부터 약 3일 후여야 한다', async () => {
       const workspaceId = 'w1';
       const before = Date.now();
-      service.createWorkspace(workspaceId);
+      await service.createWorkspace(workspaceId);
       const after = Date.now();
 
       // private 필드 접근을 위해 타입 우회

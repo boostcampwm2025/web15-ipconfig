@@ -7,13 +7,13 @@ import { initializeYDoc, initializeUserAwareness } from './utils/initialize';
 import { useUserStore } from '@/common/store/user';
 
 // Doc은 앱 실행 시 바로 생성 (싱글톤)
-export const doc = new Y.Doc();
+export let doc = new Y.Doc();
 
 // Provider는 나중에 방(workspaceId)에 들어갈 때 초기화
 let provider: HocuspocusProvider | null = null;
 let currentWorkspaceId: string | null = null;
 
-export const connectProvider = (workspaceId: string) => {
+export const connectProvider = (workspaceId: string, userNickname: string) => {
   // 같은 workspaceId면 재연결하지 않음
   if (provider && currentWorkspaceId === workspaceId) {
     return provider;
@@ -24,6 +24,9 @@ export const connectProvider = (workspaceId: string) => {
     provider.destroy();
     provider = null;
     currentWorkspaceId = null;
+
+    doc.destroy();
+    doc = new Y.Doc();
   }
 
   const url = `${
@@ -60,7 +63,7 @@ export const connectProvider = (workspaceId: string) => {
       },
     });
 
-    initializeUserAwareness(provider);
+    initializeUserAwareness(provider, userNickname);
     currentWorkspaceId = workspaceId;
   } catch (error) {
     provider = null;

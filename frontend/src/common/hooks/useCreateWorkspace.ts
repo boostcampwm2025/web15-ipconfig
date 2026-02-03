@@ -26,12 +26,9 @@ export function useCreateWorkspace() {
 
   const onSubmit = async (data: CreateInviteCode) => {
     try {
-      let workspaceId: string;
-      if (data.code) {
-        workspaceId = await workspaceApi.makeWithId(data.code);
-      } else {
-        workspaceId = await workspaceApi.make();
-      }
+      const { workspaceId } = await workspaceApi.create({
+        workspaceId: data.code === '' ? undefined : data.code,
+      });
       navigate(`/workspace/${workspaceId}`);
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 409) {
