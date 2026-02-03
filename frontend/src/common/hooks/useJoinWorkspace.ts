@@ -23,9 +23,13 @@ export function useJoinWorkspace() {
 
   const onSubmit = async (data: JoinCode) => {
     try {
-      const workspaceId = await workspaceApi.join(data.code);
-      if (data.code) {
-        navigate(`/workspace/${workspaceId}`);
+      if (data.code !== '') {
+        const { exists } = await workspaceApi.get(data.code);
+        if (exists) navigate(`/workspace/${data.code}`);
+        else
+          setError('code', {
+            message: '존재하지 않는 워크스페이스 코드입니다.',
+          });
       } else {
         setError('code', { message: '코드를 입력해주세요.' });
       }

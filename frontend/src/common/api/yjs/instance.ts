@@ -13,7 +13,7 @@ export let doc = new Y.Doc();
 let provider: HocuspocusProvider | null = null;
 let currentWorkspaceId: string | null = null;
 
-export const connectProvider = (workspaceId: string) => {
+export const connectProvider = (workspaceId: string, userNickname: string) => {
   // 같은 workspaceId면 재연결하지 않음
   if (provider && currentWorkspaceId === workspaceId) {
     return provider;
@@ -63,7 +63,7 @@ export const connectProvider = (workspaceId: string) => {
       },
     });
 
-    initializeUserAwareness(provider);
+    initializeUserAwareness(provider, userNickname);
     currentWorkspaceId = workspaceId;
   } catch (error) {
     provider = null;

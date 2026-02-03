@@ -1,6 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JoinUserDTO } from './dto/join-user.dto';
 import { User } from './dto/join-user.dto';
+import generateNickname from 'ko-nickname/src/index.js';
+import { customAlphabet } from 'nanoid';
+import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
 import { StorageAdapter } from '../collaboration/storage/storage.interface';
 
 // 유저 정보는 저장해야 함
@@ -22,7 +29,53 @@ export class WorkspaceService {
 
   constructor(private readonly storageAdapter: StorageAdapter) {}
 
-  public createWorkspace(workspaceId: string): void {
+  public async joinWorkSpace(
+    workspaceId: string,
+  ): Promise<JoinWorkspaceResponse> {
+    const exists = await this.isExistsWorkspace(workspaceId);
+    if (!exists) {
+      throw new NotFoundException(`'${workspaceId}' 는 존재하지 않습니다.`);
+    }
+    return {
+      workspaceId,
+      nickname: this.createRandomUserNickname(),
+    };
+  }
+
+  public async createWorkspace(
+    workspaceId?: string,
+  ): Promise<{ workspaceId: string }> {
+    let newWorkspaceId = workspaceId;
+    if (!newWorkspaceId) {
+      newWorkspaceId = customAlphabet(
+        '0123456789abcdefghijklmnopqrstuvwxyz',
+        10,
+      )();
+      const exists = await this.isExistsWorkspace(newWorkspaceId);
+      while (exists) {
+        newWorkspaceId = customAlphabet(
+          '0123456789abcdefghijklmnopqrstuvwxyz',
+          10,
+        )();
+      }
+    } else {
+      const exists = await this.isExistsWorkspace(newWorkspaceId);
+      if (exists) {
+        throw new ConflictException(`'${newWorkspaceId}' 는 이미 존재합니다.`);
+      }
+    }
+    this.saveWorkspaceIdInMemory(newWorkspaceId);
+
+    return {
+      workspaceId: newWorkspaceId,
+    };
+  }
+
+  private createRandomUserNickname(): string {
+    return generateNickname();
+  }
+
+  private saveWorkspaceIdInMemory(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
       // 3일 후 만료
       expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
@@ -42,7 +95,7 @@ export class WorkspaceService {
 
     if (existsInStorage) {
       // Redis에는 있는데 메모리에 없으면, 메모리에 복구 (TTL 3일 연장)
-      this.createWorkspace(workspaceId);
+      this.saveWorkspaceIdInMemory(workspaceId);
       return true;
     }
 

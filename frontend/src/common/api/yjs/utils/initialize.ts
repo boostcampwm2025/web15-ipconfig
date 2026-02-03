@@ -32,13 +32,16 @@ export function initializeYDoc(doc: Y.Doc, workspaceId: string) {
   return root;
 }
 
-export const initializeUserAwareness = (provider: HocuspocusProvider) => {
+export const initializeUserAwareness = (
+  provider: HocuspocusProvider,
+  userNickname: string,
+) => {
   const clientId = provider?.awareness?.clientID;
   if (clientId) {
     // 내 정보 등록 (Awareness)
     provider?.awareness?.setLocalStateField('user', {
       id: clientId.toString(),
-      nickname: `임시 유저 ${clientId}`,
+      nickname: userNickname,
       color: getRandomColor(),
     });
     // 커서 위치 등록 (Awareness)

@@ -6,7 +6,7 @@ export class WorkspaceIdPipe implements PipeTransform {
     const isValid = regex.test(value);
     if (!isValid) {
       throw new BadRequestException(
-        `'${value}' 는 유효하지 않은 워크스페이스 ID입니다.`,
+        '워크스페이스 ID는 영소문자와 숫자만 1~32자 사용 가능합니다.',
       );
     }
     return value;
