@@ -26,6 +26,17 @@ export default defineConfig({
   },
   test: {
     projects: [
+      // 단위 테스트 프로젝트
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          include: ['src/**/*.test.ts'], // __tests__ 폴더 제한 제거
+          environment: 'node',
+          globals: true,
+        },
+      },
+      // Storybook 테스트 프로젝트
       {
         extends: true,
         plugins: [

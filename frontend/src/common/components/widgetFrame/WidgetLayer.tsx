@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import type { WidgetType } from '@/common/types/widgetData';
 import CollaborationWidget from '@/features/widgets/collaboration/components/CollaborationWidget';
 import CommunicationWidget from '@/features/widgets/communication/components/communicationWidget/CommunicationWidget';
-import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
-import { TechStackWidgetGroup } from '@/features/widgets/techStack/components/TechStackWidgetGroup';
+import { TechStackWidgetDndContext } from '@/features/widgets/techStack/components/TechStackWidgetDndContext';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import NamingConventionWidget from '@/features/widgets/namingConvention/components/NamingConventionWidget';
@@ -11,6 +10,7 @@ import { WidgetProvider } from './context/WidgetContext';
 import { GitConventionWidget } from '@/features/widgets/gitConvention';
 import { DockerfileBuilderWidget } from '@/features/widgets/dockerfile';
 import { FormatWidget } from '@/features/widgets/format';
+import TechStackWidget from '@/features/widgets/techStack/components/techStackWidget/TechStackWidget';
 
 function WidgetLayer() {
   const widgetKeys = useWorkspaceWidgetStore(
@@ -28,28 +28,14 @@ function WidgetLayer() {
     [widgetKeys],
   );
 
-  const techStackWidgets = widgetIds.filter(
-    ({ type }) => type === 'TECH_STACK',
-  );
-
-  const otherWidgets = widgetIds.filter(({ type }) => type !== 'TECH_STACK');
-
   return (
-    <>
-      <TechStackWidgetGroup>
-        {techStackWidgets.map(({ widgetId, type }) => (
-          <WidgetProvider key={widgetId} widgetId={widgetId} type={type}>
-            <TechStackWidget />
-          </WidgetProvider>
-        ))}
-      </TechStackWidgetGroup>
-
-      {otherWidgets.map(({ widgetId, type }) => (
+    <TechStackWidgetDndContext>
+      {widgetIds.map(({ widgetId, type }) => (
         <WidgetProvider key={widgetId} widgetId={widgetId} type={type}>
           <WidgetContent type={type} />
         </WidgetProvider>
       ))}
-    </>
+    </TechStackWidgetDndContext>
   );
 }
 
@@ -59,6 +45,8 @@ interface WidgetContentProps {
 
 function WidgetContent({ type }: WidgetContentProps) {
   switch (type) {
+    case 'TECH_STACK':
+      return <TechStackWidget />;
     case 'GIT_CONVENTION':
       return <GitConventionWidget />;
     case 'COLLABORATION':
