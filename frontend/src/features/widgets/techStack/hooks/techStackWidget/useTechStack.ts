@@ -76,7 +76,8 @@ export function useTechStack() {
       if (!active.data.current || !active.data.current?.content) {
         return;
       }
-      if (!active.data.current.support.includes(String(over?.id))) return;
+      // 'techStackWidget'을 지원하는 아이템인지 확인 (특정 ID가 아닌 타입으로 체크)
+      if (!active.data.current.support.includes('techStackWidget')) return;
 
       // 내 위젯의 드롭존에 드롭되었는지 확인
       if (over && over.id === `tech-stack-dropzone-${widgetId}`) {
