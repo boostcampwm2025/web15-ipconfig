@@ -9,52 +9,78 @@
  * 4) 스트레스: 랜덤 전달 순서에서도 일관성 유지
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as Y from 'yjs';
 import { bringToFrontLogic } from './widgetFrame';
+import { toYType } from '../utils/translateData';
+import type { WidgetData } from '@/common/types/yjsDoc';
+
+/**
+ * ID 배열로부터 focusedAt 순서가 반영된 WidgetData[] 생성.
+ * fake timer 환경에서 Date.now()가 제어되므로, 그대로 사용.
+ */
+function idsToWidgetData(ids: string[]): WidgetData[] {
+  const now = Date.now();
+  return ids.map((id, index) => ({
+    widgetId: id,
+    type: id === 'TARGET' ? 'CODE_FORMAT' : 'TECH_STACK',
+    layout: { x: 0, y: 0 },
+    content: {},
+    createdAt: now,
+    focusedAt: now + index, // 0, 1, 2, 3... (fake timer에서 now=0)
+  }));
+}
 
 /**
  * 위젯 초기화
  */
 function initWidgets(doc: Y.Doc, widgetIds: string[]): void {
-  const widgetOrder = doc.getArray<string>('widgetOrder');
+  const widgetsData = idsToWidgetData(widgetIds);
+  const widgetsMap = doc.getMap('widgets');
 
   doc.transact(() => {
-    widgetIds.forEach((id) => {
-      widgetOrder.push([id]);
+    widgetsData.forEach((widget) => {
+      widgetsMap.set(widget.widgetId, toYType(widget) as Y.Map<unknown>);
     });
   });
 }
 
 /**
- * 위젯을 최상단으로 올리는 동작 (실제 프로덕션 코드 사용)
- *
- * 향후 focusedAt 방식으로 전환 시 이 함수만 수정
+ * 위젯을 최상단으로 올리는 동작
  */
 function bringToFront(doc: Y.Doc, widgetId: string): void {
   doc.transact(() => {
-    const widgetOrder = doc.getArray<string>('widgetOrder');
-    bringToFrontLogic(widgetOrder, widgetId);
+    const widgetsMap = doc.getMap('widgets');
+    const widgetMap = widgetsMap.get(widgetId);
+    if (widgetMap instanceof Y.Map) {
+      bringToFrontLogic(widgetMap);
+    }
   });
 }
 
 /**
- * 최상단 위젯 ID 반환
- *
- * 현재: 배열 마지막 요소
- * 향후 focusedAt 방식: focusedAt 최댓값을 가진 위젯
+ * 최상단 위젯 ID 반환 (focusedAt 최댓값)
  */
 function getTopWidget(doc: Y.Doc): string | undefined {
-  const widgetOrder = doc.getArray<string>('widgetOrder');
-  const arr = widgetOrder.toArray();
-  return arr[arr.length - 1];
+  const order = getWidgetOrder(doc);
+  return order[order.length - 1];
 }
 
 /**
- * 위젯 순서 배열 반환 (레이어 순)
+ * 위젯 순서 배열 반환 (레이어 순, focusedAt 오름차순)
  */
 function getWidgetOrder(doc: Y.Doc): string[] {
-  return doc.getArray<string>('widgetOrder').toArray();
+  const widgetsMap = doc.getMap('widgets');
+  const entries = [...widgetsMap.entries()]
+    .filter(
+      (entry): entry is [string, Y.Map<unknown>] => entry[1] instanceof Y.Map,
+    )
+    .map(([id, yMap]) => ({
+      id,
+      focusedAt: (yMap.get('focusedAt') as number) ?? 0,
+    }))
+    .sort((a, b) => a.focusedAt - b.focusedAt);
+  return entries.map((e) => e.id);
 }
 
 // ============================================================================
@@ -111,12 +137,16 @@ function expectSameElements(arr: string[], expected: string[]) {
 // ============================================================================
 
 describe('위젯 레이어 순서 동작 테스트', () => {
+  beforeEach(() => vi.useFakeTimers({ now: 0 }));
+  afterEach(() => vi.useRealTimers());
+
   describe('단일 클라이언트', () => {
     it('위젯을 최상단으로 올리면 해당 위젯이 맨 위에 있어야 한다', () => {
       const doc = new Y.Doc();
       const widgetIds = ['A', 'B', 'C', 'D'];
       initWidgets(doc, widgetIds);
 
+      vi.advanceTimersByTime(100);
       bringToFront(doc, 'B');
 
       // 행동 검증: B가 최상단인가?
@@ -134,6 +164,7 @@ describe('위젯 레이어 순서 동작 테스트', () => {
       const widgetIds = ['A', 'B', 'C'];
       initWidgets(doc, widgetIds);
 
+      vi.advanceTimersByTime(100);
       bringToFront(doc, 'C'); // 이미 맨 뒤
       bringToFront(doc, 'C'); // 다시 호출
 
@@ -151,6 +182,7 @@ describe('위젯 레이어 순서 동작 테스트', () => {
         initWidgets(docA, widgetIds);
         flushBoth('A_FIRST');
 
+        vi.advanceTimersByTime(100);
         // 동시에 같은 위젯을 최상단으로
         bringToFront(docA, 'TARGET');
         bringToFront(docB, 'TARGET');
@@ -192,6 +224,7 @@ describe('위젯 레이어 순서 동작 테스트', () => {
       initWidgets(docA, widgetIds);
       flushBoth('A_FIRST');
 
+      vi.advanceTimersByTime(100);
       // 동시에 다른 위젯을 최상단으로
       bringToFront(docA, 'W1');
       bringToFront(docB, 'W4');
@@ -222,6 +255,7 @@ describe('위젯 레이어 순서 동작 테스트', () => {
         initWidgets(docA, widgetIds);
         flushBoth('A_FIRST');
 
+        vi.advanceTimersByTime(100);
         bringToFront(docA, 'TARGET');
         bringToFront(docB, 'TARGET');
 
@@ -244,12 +278,15 @@ describe('위젯 레이어 순서 동작 테스트', () => {
       const widgetIds = ['A', 'B', 'C', 'D', 'E'];
       initWidgets(doc, widgetIds);
 
-      // 순차적으로 여러 위젯 올리기
+      // 순차적으로 여러 위젯 올리기 (각 호출마다 시간 진행 → Date.now()가 서로 다르게 적용됨)
+      vi.advanceTimersByTime(100);
       bringToFront(doc, 'C');
       expect(getTopWidget(doc)).toBe('C');
+      vi.advanceTimersByTime(1);
 
       bringToFront(doc, 'A');
       expect(getTopWidget(doc)).toBe('A');
+      vi.advanceTimersByTime(1);
 
       bringToFront(doc, 'E');
       expect(getTopWidget(doc)).toBe('E');
