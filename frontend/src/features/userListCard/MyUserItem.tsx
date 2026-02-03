@@ -1,15 +1,16 @@
 import { Avatar, AvatarFallback } from '@/common/components/shadcn/avatar';
-import { Button } from '@/common/components/shadcn/button';
 import { Separator } from '@/common/components/shadcn/separator';
 import { cn } from '@/common/lib/utils';
-import type { User } from '@/common/types/user';
 import { getContrastClass } from '@/utils/color';
+import { useUserInfoById } from '@/common/store/user';
 
 interface MyUserItemProps {
-  user: User;
+  userId: string;
 }
+function MyUserItem({ userId }: MyUserItemProps) {
+  const user = useUserInfoById(userId);
+  if (!user) return null;
 
-function MyUserItem({ user }: MyUserItemProps) {
   return (
     <>
       <div className="group hover:bg-accent/50 flex items-center justify-start gap-2.5 rounded-lg px-2 py-1.5 transition-colors duration-100 select-none">
