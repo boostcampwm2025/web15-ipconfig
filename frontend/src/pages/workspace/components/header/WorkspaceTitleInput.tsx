@@ -34,7 +34,9 @@ export function WorkspaceTitleInput() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.currentTarget.blur();
+      if (!e.nativeEvent.isComposing) {
+        e.currentTarget.blur();
+      }
     }
   };
 

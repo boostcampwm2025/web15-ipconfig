@@ -50,7 +50,9 @@ function MyUserItem({ user }: MyUserItemProps) {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSubmit(onSubmit)();
+      if (!e.nativeEvent.isComposing) {
+        handleSubmit(onSubmit)();
+      }
     } else if (e.key === 'Escape') {
       setIsEditing(false);
       reset({ nickname: user.nickname });
