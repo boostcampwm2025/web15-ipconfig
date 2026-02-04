@@ -180,3 +180,35 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-gray-500) transparent;
 }
+
+.dark .markdown-body {
+  background-color: transparent !important;
+  color: var(--foreground) !important;
+}
+
+.dark .markdown-body a {
+  color: var(--primary) !important;
+}
+
+.dark .markdown-body pre {
+  background-color: var(--color-gray-800) !important;
+}
+
+.dark .markdown-body code {
+  color: var(--foreground) !important;
+  background-color: var(--color-gray-800) !important;
+}
+
+.dark .markdown-body table tr {
+  background-color: transparent !important;
+  border-color: var(--border) !important;
+}
+
+.dark .markdown-body table tr:nth-child(2n) {
+  background-color: var(--muted) !important;
+}
+
+.dark .markdown-body table th,
+.dark .markdown-body table td {
+  border-color: var(--border) !important;
+}
