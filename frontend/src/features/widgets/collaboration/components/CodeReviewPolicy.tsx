@@ -54,7 +54,7 @@ export default function CodeReviewPolicy({
         </Label>
         <Checkbox
           id="merge-block"
-          className="h-5 w-5"
+          className="h-5 w-5 cursor-pointer"
           checked={data.blockMerge}
           onCheckedChange={(checked: boolean | 'indeterminate') =>
             onUpdate('blockMerge', checked === true)
