@@ -143,6 +143,8 @@ export const INFRASTRUCTURE_TECH_STACKS: InfrastructureTechStack[] = [
 
 export const COMMON_TECH_STACKS: CommonTechStack[] = [
   // Languages (Moved from Front/Back)
+  { id: 'html5', category: 'language', name: 'HTML5' },
+  { id: 'css', category: 'language', name: 'CSS' },
   { id: 'javascript', category: 'language', name: 'JavaScript' },
   { id: 'typescript', category: 'language', name: 'TypeScript' },
   { id: 'java', category: 'language', name: 'Java' },
@@ -151,6 +153,9 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
   { id: 'rust', category: 'language', name: 'Rust' },
   { id: 'kotlin', category: 'language', name: 'Kotlin' },
   { id: 'swift', category: 'language', name: 'Swift' },
+  { id: 'csharp', category: 'language', name: 'C#' },
+  { id: 'c++', category: 'language', name: 'C++' },
+  { id: 'c', category: 'language', name: 'C' },
 
   // Package Manager (New)
   { id: 'npm', category: 'packageManager', name: 'npm' },
@@ -168,7 +173,7 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
   // Monorepo & Repo Management (New)
   { id: 'turborepo', category: 'monorepoManagement', name: 'Turborepo' },
   { id: 'nx', category: 'monorepoManagement', name: 'Nx' },
-  { id: 'git', category: 'monorepoManagement', name: 'Git' }, // 소스 관리를 여기 혹은 codeQuality로 분류
+  { id: 'git', category: 'monorepoManagement', name: 'Git' },
   { id: 'github', category: 'monorepoManagement', name: 'GitHub' },
 
   // Code Quality
@@ -180,23 +185,26 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
   { id: 'slack', category: 'messenger', name: 'Slack' },
   { id: 'discord', category: 'messenger', name: 'Discord' },
   { id: 'msteams', category: 'messenger', name: 'Microsoft Teams' },
+  { id: 'kakaotalk', category: 'messenger', name: 'KakaoTalk' },
 
   // IDE
-  { id: 'vscode', category: 'IDE', name: 'Visual Studio Code' },
-  { id: 'visualstudio', category: 'IDE', name: 'Visual Studio' },
-  { id: 'cursor', category: 'IDE', name: 'Cursor' },
-  { id: 'vim', category: 'IDE', name: 'Vim' },
-  { id: 'pycharm', category: 'IDE', name: 'PyCharm' },
-  { id: 'intellijidea', category: 'IDE', name: 'IntelliJ IDEA' },
-  { id: 'pycharm', category: 'IDE', name: 'PyCharm' },
-  { id: 'sublime', category: 'IDE', name: 'Sublime Text' },
-  { id: 'riders', category: 'IDE', name: 'Rider' },
+  { id: 'vscode', category: 'ide', name: 'Visual Studio Code' },
+  { id: 'visualstudio', category: 'ide', name: 'Visual Studio' },
+  { id: 'cursor', category: 'ide', name: 'Cursor' },
+  { id: 'vim', category: 'ide', name: 'Vim' },
+  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
+  { id: 'intellijidea', category: 'ide', name: 'IntelliJ IDEA' },
+  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
+  { id: 'sublime', category: 'ide', name: 'Sublime Text' },
+  { id: 'riders', category: 'ide', name: 'Rider' },
 
   // AI
   { id: 'google gemini', category: 'ai', name: 'Google Gemini' },
+  { id: 'chatgpt', category: 'ai', name: 'ChatGPT' },
   { id: 'claude', category: 'ai', name: 'Claude' },
+  { id: 'github copilot', category: 'ai', name: 'GitHub Copilot' },
   { id: 'grok', category: 'ai', name: 'Grok' },
-  { id: 'grok', category: 'ai', name: 'Grok' },
+  { id: 'perplexity', category: 'ai', name: 'Perplexity' },
 ];
 
 export const TECH_STACK_GROUPS = [
@@ -234,6 +242,7 @@ export const TECH_STACK_GROUPS = [
     },
   },
   {
+    ai: 'AI',
     title: '데이터베이스 및 스토리지',
     items: DATABASE_TECH_STACKS,
     categoryMap: {
