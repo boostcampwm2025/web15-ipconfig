@@ -77,7 +77,9 @@ function TechStackModal({
           onClose={onModalClose}
         />
         <div className="px-6.5 text-sm text-gray-400">
-          아이템을 드래그 앤 드롭으로 기술 스택 위젯 안에 넣어주세요!
+          아이템을&nbsp;
+          <span className="font-bold text-white">드래그 앤 드롭</span>
+          으로 기술 스택 위젯 안에 넣어주세요!
         </div>
         <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-6.5 pt-2 pb-4">
           <SearchBar search={search} setSearch={setSearch} />
