@@ -17,22 +17,18 @@
   <title>frontend</title>
   <script>
     (function () {
-      const savedTheme = localStorage.getItem('theme');
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-      // Default to light if no preference is saved
-      const theme = savedTheme || 'light';
+      const STORAGE_KEY = 'ui-theme';
+      const savedTheme = sessionStorage.getItem(STORAGE_KEY);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      document.documentElement.classList.add(theme);
-      // Ensure dark class is removed if theme is light
-      if (theme === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
-        document.documentElement.classList.remove('light');
-      }
+      const theme = savedTheme || (systemDark ? 'dark' : 'light');
+
+      const root = document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(theme);
     })();
   </script>
+
 </head>
 
 <body>
