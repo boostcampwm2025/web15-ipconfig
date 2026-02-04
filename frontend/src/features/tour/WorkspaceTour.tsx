@@ -40,6 +40,17 @@ const WorkspaceTour = () => {
       disableCloseOnEsc
       hideCloseButton
       callback={handleJoyrideCallback}
+      disableScrolling={true}
+      disableScrollParentFix={true}
+      floaterProps={{
+        styles: {
+          floater: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+          },
+        },
+      }}
       styles={{
         options: {
           arrowColor: '#EEEEEE',
