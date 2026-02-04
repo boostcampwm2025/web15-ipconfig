@@ -39,6 +39,8 @@ function SelectedTechStackBox({
         <SelectedTechItem
           key={tech.id}
           name={tech.name}
+          slug={tech.slug}
+          color={tech.color}
           onRemove={() => handleRemoveTech(tech.id)}
         />
       ))}

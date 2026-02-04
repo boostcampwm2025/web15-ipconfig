@@ -4,11 +4,18 @@ import { Button } from '@/common/components/shadcn/button';
 
 interface SelectedTechItemProps {
   name: string;
+  slug: string;
+  color: string;
   onRemove: () => void;
 }
 
 // 선택된 기술 스택 아이템 컴포넌트
-function SelectedTechItem({ name, onRemove }: SelectedTechItemProps) {
+function SelectedTechItem({
+  name,
+  slug,
+  color,
+  onRemove,
+}: SelectedTechItemProps) {
   return (
     <div className="group relative flex flex-col items-center justify-center gap-2 rounded-lg border">
       <Button
@@ -17,8 +24,7 @@ function SelectedTechItem({ name, onRemove }: SelectedTechItemProps) {
       >
         <LuX size={12} />
       </Button>
-
-      <TechStackItem techName={name} />
+      <TechStackItem name={name} slug={slug} color={color} />
     </div>
   );
 }
