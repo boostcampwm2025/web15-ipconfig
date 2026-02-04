@@ -21,11 +21,11 @@ function ToolButton({
         variant="ghost"
         onClick={onClick}
         disabled={disabled}
-        className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all [&_svg]:size-5 ${
+        className={`h-9 w-9 transition-all [&_svg]:size-5 ${
           active
             ? 'bg-accent text-accent-foreground'
             : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-        } ${disabled ? 'cursor-not-allowed opacity-50' : ''} `}
+        } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {icon}
       </Button>

@@ -1,3 +1,5 @@
+import { Button } from '@/common/components/shadcn/button';
+
 export default function CounterInput({
   value,
   setValue,
@@ -21,12 +23,13 @@ export default function CounterInput({
   };
   return (
     <div className="border-border flex w-fit items-center gap-3 rounded-lg border px-2 py-1">
-      <button
+      <Button
+        variant={'default'}
         className="hover:bg-primary bg-muted text-muted-foreground hover:text-primary-foreground rounded px-2 py-1"
         onClick={() => setValue(Math.max(1, value - 1))}
       >
         -
-      </button>
+      </Button>
 
       {editValue ? (
         <input
@@ -55,12 +58,13 @@ export default function CounterInput({
         </span>
       )}
 
-      <button
+      <Button
+        variant={'default'}
         className="hover:bg-primary bg-muted text-muted-foreground hover:text-primary-foreground rounded px-2 py-1"
         onClick={() => setValue(max ? Math.min(max, value + 1) : value + 1)}
       >
         +
-      </button>
+      </Button>
     </div>
   );
 }

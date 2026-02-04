@@ -169,6 +169,13 @@
   }
 }
 
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-gray-500) transparent;

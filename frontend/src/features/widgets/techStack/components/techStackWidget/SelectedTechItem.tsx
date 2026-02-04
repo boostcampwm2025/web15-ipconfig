@@ -1,5 +1,6 @@
 import { LuX } from 'react-icons/lu';
 import TechStackItem from '@/features/widgets/techStack/components/TechStackItem';
+import { Button } from '@/common/components/shadcn/button';
 
 interface SelectedTechItemProps {
   name: string;
@@ -10,12 +11,12 @@ interface SelectedTechItemProps {
 function SelectedTechItem({ name, onRemove }: SelectedTechItemProps) {
   return (
     <div className="group border-border bg-secondary/20 relative flex flex-col items-center justify-center gap-2 rounded-lg border">
-      <button
+      <Button
         onClick={onRemove}
         className="bg-destructive text-destructive-foreground absolute -top-2 -right-2 hidden cursor-pointer rounded-full p-1 group-hover:block"
       >
         <LuX size={12} />
-      </button>
+      </Button>
 
       <TechStackItem techName={name} />
     </div>

@@ -53,20 +53,28 @@ export function NodeOptions({ content, onChange }: NodeOptionsProps) {
           className="flex gap-4"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="npm" id="npm" />
-            <Label htmlFor="npm">npm</Label>
+            <RadioGroupItem value="npm" id="npm" className="cursor-pointer" />
+            <Label htmlFor="npm" className="cursor-pointer">
+              npm
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yarn" id="yarn" />
-            <Label htmlFor="yarn">yarn</Label>
+            <RadioGroupItem value="yarn" id="yarn" className="cursor-pointer" />
+            <Label htmlFor="yarn" className="cursor-pointer">
+              yarn
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="pnpm" id="pnpm" />
-            <Label htmlFor="pnpm">pnpm</Label>
+            <RadioGroupItem value="pnpm" id="pnpm" className="cursor-pointer" />
+            <Label htmlFor="pnpm" className="cursor-pointer">
+              pnpm
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="bun" id="bun" />
-            <Label htmlFor="bun">bun</Label>
+            <RadioGroupItem value="bun" id="bun" className="cursor-pointer" />
+            <Label htmlFor="bun" className="cursor-pointer">
+              bun
+            </Label>
           </div>
         </RadioGroup>
       </div>

@@ -30,7 +30,6 @@ function ExportModal({ isOpen, onClose, markdown }: ExportModalProps) {
           </div>
           <Button
             variant="ghost"
-            size="icon"
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground"
           >

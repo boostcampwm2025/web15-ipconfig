@@ -28,7 +28,7 @@ function WidgetHeader({ title, icon, actions }: WidgetHeaderProps) {
           variant="ghost"
           size="icon"
           onMouseDown={(e) => e.stopPropagation()}
-          className="text-muted-foreground h-auto w-auto p-0 hover:bg-transparent hover:text-red-400"
+          className="h-auto w-auto p-0 text-gray-500 hover:bg-transparent hover:text-red-400"
           onClick={() => {
             deleteWidgetAction(widgetId);
           }}
