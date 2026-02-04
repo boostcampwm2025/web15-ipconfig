@@ -86,8 +86,8 @@ export const FRONTEND_TECH_STACKS: FrontendTechStack[] = [
     category: 'stateManagement',
     name: 'Zustand',
     color: '443E38',
-    slug: 'react',
-  }, // 공식 아이콘 부재로 React 사용
+    slug: 'zustand',
+  },
   {
     id: 'tanstackquery',
     category: 'stateManagement',
@@ -107,7 +107,7 @@ export const FRONTEND_TECH_STACKS: FrontendTechStack[] = [
     category: 'stateManagement',
     name: 'Jotai',
     color: '0C0C0C',
-    slug: 'react',
+    slug: 'jotai',
   },
 
   // Styling
