@@ -2,6 +2,7 @@ import type { WidgetLayout } from '@/common/types/widgetData';
 import { LuTrash2 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { deleteWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
+import { Button } from '@/common/components/shadcn/button';
 
 export interface WidgetHeaderProps {
   title: string;
@@ -23,17 +24,17 @@ function WidgetHeader({ title, icon, actions }: WidgetHeaderProps) {
 
       <div className="flex items-center gap-2">
         {actions}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onMouseDown={(e) => e.stopPropagation()}
-          className="text-gray-500 transition-colors hover:text-red-400"
+          className="h-auto w-auto p-0 text-gray-500 hover:bg-transparent hover:text-red-400"
+          onClick={() => {
+            deleteWidgetAction(widgetId);
+          }}
         >
-          <LuTrash2
-            size={16}
-            onClick={() => {
-              deleteWidgetAction(widgetId);
-            }}
-          />
-        </button>
+          <LuTrash2 size={16} />
+        </Button>
       </div>
     </div>
   );

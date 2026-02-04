@@ -6,6 +6,7 @@ import {
   versionTypes,
 } from '../constants/options';
 import type { CollaborationData } from '../types/CollaborationData';
+import { Button } from '@/common/components/shadcn/button';
 
 interface PRRulesProps {
   data: CollaborationData['prRules'];
@@ -38,11 +39,12 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
         <div className="grid grid-cols-4 gap-2">
           {versionTypes.map((v) => (
             <div className="relative" key={v.key}>
-              <button
+              <Button
+                variant={'ghost'}
                 onMouseEnter={() => setHoverVersion(v.key)}
                 onMouseLeave={() => setHoverVersion(null)}
                 onClick={() => onUpdate('activeVersion', v.key)}
-                className={`flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-md border text-sm font-medium transition ${
+                className={`flex h-20 w-20 flex-col gap-1 border text-sm font-medium transition ${
                   data.activeVersion?.selectedId === v.key
                     ? 'border-primary text-primary bg-green-900/40'
                     : 'border-gray-700 text-gray-300'
@@ -50,7 +52,7 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
               >
                 {v.icon}
                 {v.title}
-              </button>
+              </Button>
 
               {/* Tooltip 부분 */}
               {hoverVersion === v.key && (
@@ -66,17 +68,18 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
         <p className="mb-2 text-sm text-gray-300">PR 라벨 선택</p>
         <div className="flex flex-wrap gap-2">
           {labelCandidates.map((label) => (
-            <button
+            <Button
+              variant={'ghost'}
               key={label}
               onClick={() => toggleLabel(label)}
-              className={`text-s rounded-md border px-3 py-1 ${
+              className={`text-s border px-3 py-1 ${
                 (data?.labelRules?.selectedIds || []).includes(label)
                   ? 'border-primary text-primary bg-green-900/40'
                   : 'border-gray-700 text-gray-300'
               }`}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -87,11 +90,12 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
         <div className="grid grid-cols-3 gap-2">
           {strategies.map((s) => (
             <div key={s.key} className="relative">
-              <button
+              <Button
+                variant={'ghost'}
                 onMouseEnter={() => setHoverStrategy(s.key)}
                 onMouseLeave={() => setHoverStrategy(null)}
                 onClick={() => onUpdate('activeStrategy', s.key)}
-                className={`flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-md border text-xs font-medium transition ${
+                className={`flex h-24 w-24 flex-col gap-1 border text-xs font-medium transition ${
                   data.activeStrategy?.selectedId === s.key
                     ? 'border-primary text-primary bg-green-900/30'
                     : 'border-gray-700 text-gray-300'
@@ -99,7 +103,7 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
               >
                 {s.icon}
                 {s.title}
-              </button>
+              </Button>
 
               {/* Tooltip 부분*/}
               {hoverStrategy === s.key && (
