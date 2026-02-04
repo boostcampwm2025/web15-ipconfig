@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import { ThemeToggle } from '@/common/components/ThemeToggle';
 
 interface NavbarProps {
   scrolled: boolean;
@@ -28,7 +27,6 @@ export function Navbar({ scrolled }: NavbarProps) {
             team<span className="text-primary">.config</span>
           </span>
         </Link>
-        <ThemeToggle />
       </div>
     </nav>
   );
