@@ -77,12 +77,13 @@ export default function EditableSortList() {
       </div>
 
       {!isAdding ? (
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsAdding(true)}
-          className="text-primary mt-4 cursor-pointer text-sm"
+          className="text-primary mt-4 text-sm"
         >
           + 추가
-        </button>
+        </Button>
       ) : (
         <div className="mt-4 flex items-center gap-2">
           <input

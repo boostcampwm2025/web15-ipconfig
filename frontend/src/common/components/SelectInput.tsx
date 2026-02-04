@@ -17,6 +17,7 @@ import {
 import { Input } from '@/common/components/shadcn/input';
 import { useTeckStackSearch } from '@/common/hooks/useTeckStackSearch';
 import { useSelectOptions } from '@/common/hooks/useSelectOptions';
+import { Button } from './shadcn/button';
 
 interface SelectInputProps {
   selectedValue: string;
@@ -144,7 +145,8 @@ function SelectInput({
               <div className="text-muted-foreground px-2 py-1 text-[10px] font-semibold">
                 새로운 주제 추가
               </div>
-              <button
+              <Button
+                variant="ghost"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -152,13 +154,13 @@ function SelectInput({
                   handleCreate();
                 }}
                 className={cn(
-                  'relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none select-none',
+                  'relative flex w-full items-center justify-start gap-2 py-1.5 pr-2 pl-2 text-sm outline-none select-none',
                   'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                 )}
               >
                 <Plus className="h-4 w-4 shrink-0" />
                 <span className="truncate">"{searchText}" 추가하기</span>
-              </button>
+              </Button>
             </div>
           )}
 
