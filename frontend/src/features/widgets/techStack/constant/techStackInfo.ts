@@ -35,7 +35,7 @@ export const FRONTEND_TECH_STACKS: FrontendTechStack[] = [
     category: 'framework',
     name: 'Nuxt',
     color: '00DC82',
-    slug: 'nuxtdotjs',
+    slug: 'nuxt',
   },
   {
     id: 'svelte',
@@ -769,11 +769,11 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
     slug: 'prettier',
   },
   {
-    id: 'sonarqube',
+    id: 'sonar',
     category: 'codeQuality',
-    name: 'SonarQube',
+    name: 'Sonar',
     color: '4E9BCD',
-    slug: 'sonarqube',
+    slug: 'sonar',
   },
 
   // Messenger
