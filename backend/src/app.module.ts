@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
+import { createWinstonConfig } from './common/logger/logger.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { MarkdownModule } from './markdown/markdown.module';
 import { CollaborationModule } from './collaboration/collaboration.module';
-import { createWinstonConfig } from './common/logger/logger.config';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -17,4 +18,8 @@ import { createWinstonConfig } from './common/logger/logger.config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
