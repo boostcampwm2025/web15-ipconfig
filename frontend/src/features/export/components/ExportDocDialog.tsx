@@ -11,6 +11,7 @@ import { LuFileText, LuCheck, LuCopy, LuCircleX } from 'react-icons/lu';
 import { SpinnerCustom } from '@/common/components/SpinnerCustom';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import 'github-markdown-css/github-markdown.css';
 
 export function ExportDocDialog({
@@ -50,7 +51,9 @@ export function ExportDocDialog({
           </div>
         ) : (
           <div className="markdown-body text-foreground w-full">
-            <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+              {markdown}
+            </Markdown>
           </div>
         )}
       </div>
