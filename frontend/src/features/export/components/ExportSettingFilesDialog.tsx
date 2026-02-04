@@ -7,16 +7,16 @@ import {
   DialogFooter,
 } from '@/common/components/shadcn/dialog';
 import { Button } from '@/common/components/shadcn/button';
-import { LuSettings, LuArrowLeft, LuCheck, LuCopy } from 'react-icons/lu';
+import { LuSettings, LuArrowLeft } from 'react-icons/lu';
 import { useState } from 'react';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import { EXPORT_CONFIGS } from '../constant/ExportConfigs';
 import { getWidgetContents } from '../utils/getWidgetContents';
 import { mappingIcon } from '../utils/mappingIcon';
+import { CopyButton } from './CopyButton';
 
 export function ExportSettingFilesDialog() {
-  const { isCopied, handleCopyToClipboard } = useClipboard();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { widgetList } = useWorkspaceWidgetStore(
@@ -90,20 +90,7 @@ export function ExportSettingFilesDialog() {
       </div>
 
       <DialogFooter>
-        {selectedConfig && (
-          <Button
-            variant="secondary"
-            onClick={() => handleCopyToClipboard(content)}
-            className="gap-2"
-          >
-            {isCopied ? (
-              <LuCheck size={16} className="text-green-500" />
-            ) : (
-              <LuCopy size={16} />
-            )}
-            {isCopied ? '복사 완료!' : '복사 하기'}
-          </Button>
-        )}
+        {selectedConfig && <CopyButton content={content} />}
       </DialogFooter>
     </DialogContent>
   );
