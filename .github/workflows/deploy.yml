@@ -125,10 +125,10 @@ jobs:
 
             # 새 컨테이너 시작 (변경된 이미지만 교체, 다운타임 최소화)
             # -d: 백그라운드 실행
-            docker-compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml up -d
 
             # 컨테이너 상태 확인
-            docker-compose -f docker-compose.prod.yml ps
+            docker compose -f docker-compose.prod.yml ps
 
             # 사용하지 않는 예전 이미지 삭제 (Dangling 이미지)
             docker image prune -f
@@ -148,5 +148,5 @@ jobs:
             echo "Health Check Failed!"
             echo "Last HTTP Code: $HTTP_CODE"
             # 실패 시 로그 출력
-            docker-compose -f docker-compose.prod.yml logs --tail=50 backend
+            docker compose -f docker-compose.prod.yml logs --tail=50 backend
             exit 1
