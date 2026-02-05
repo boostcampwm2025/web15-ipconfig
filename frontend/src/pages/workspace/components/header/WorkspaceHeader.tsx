@@ -36,9 +36,10 @@ function WorkspaceHeader() {
           <WorkspaceTitleInput />
         </div>
       </RoundedContainer>
-
       <RoundedContainer className="gap-2">
-        <UserListCard />
+        <div id="user-list-card">
+          <UserListCard />
+        </div>
         <div id="export-group-dropdown-button">
           <ExportGroupDropdownButton />
         </div>
