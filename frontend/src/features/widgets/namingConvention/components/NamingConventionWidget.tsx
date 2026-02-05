@@ -18,7 +18,7 @@ export default function NamingConventionWidget() {
     desc: string;
   } | null>(null);
 
-  const { handleUpdate, currentConvention } =
+  const { handleUpdate, currentConvention, unreadTabs, clearUnread } =
     useNamingConventionWidget(activeCategory);
 
   const handleHover = (section: Category, key: string, label: string) => {
@@ -41,6 +41,8 @@ export default function NamingConventionWidget() {
         <div className="mb-4 flex gap-2">
           {CATEGORIES.map((category) => {
             const isActive = activeCategory === category.id;
+            const isUnread = unreadTabs.has(category.id);
+
             return (
               <Button
                 key={category.id}
@@ -49,8 +51,9 @@ export default function NamingConventionWidget() {
                 onClick={() => {
                   setActiveCategory(category.id);
                   setActiveTip(null);
+                  clearUnread(category.id);
                 }}
-                className={`flex items-center gap-2 border transition-all ${
+                className={`relative flex items-center gap-2 border transition-all ${
                   isActive
                     ? 'border-indigo-600 bg-indigo-600 text-white shadow-md hover:border-indigo-700 hover:bg-indigo-700'
                     : 'border-gray-700 bg-gray-800/50 text-gray-300 hover:border-gray-600 hover:bg-gray-700/50'
@@ -58,6 +61,12 @@ export default function NamingConventionWidget() {
               >
                 {category.icon}
                 {category.label}
+                {isUnread && (
+                  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                    <span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+                    <span className="bg-primary relative inline-flex h-2.5 w-2.5 rounded-full"></span>
+                  </span>
+                )}
               </Button>
             );
           })}

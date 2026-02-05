@@ -2,6 +2,7 @@ import { ZOOM_CONFIG } from '@/common/components/canvas/constants/zoom';
 import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
 import { useCanvas } from '../context/CanvasProvider';
 import { zoomByDeltaAtPivot } from '../lib/positionTransform';
+import { Button } from '../../shadcn/button';
 
 function ZoomControls() {
   const { camera, setCamera, getFrameInfo } = useCanvas();
@@ -18,23 +19,25 @@ function ZoomControls() {
   return (
     <div className="absolute bottom-6 left-6 z-50 flex items-center gap-2">
       <div className="flex items-center rounded-lg border border-gray-700 bg-gray-800 shadow-lg">
-        <button
+        <Button
+          variant={'ghost'}
           disabled={isMinZoom}
-          className="flex h-8 w-8 items-center justify-center rounded-l-lg border-r border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+          className="h-8 w-8 border-gray-700 text-gray-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-gray-400"
           onClick={() => handleZoomButton(-ZOOM_CONFIG.ZOOM_BUTTON_STEP)}
         >
           <LuZoomOut size={14} />
-        </button>
+        </Button>
         <span className="px-2 font-mono text-xs text-gray-300">
           {Math.floor(camera.scale * 100)}%
         </span>
-        <button
+        <Button
+          variant={'ghost'}
           disabled={isMaxZoom}
-          className="flex h-8 w-8 items-center justify-center rounded-r-lg text-gray-400 hover:bg-gray-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+          className="h-8 w-8 border-gray-700 text-gray-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-gray-400"
           onClick={() => handleZoomButton(ZOOM_CONFIG.ZOOM_BUTTON_STEP)}
         >
           <LuZoomIn size={14} />
-        </button>
+        </Button>
       </div>
     </div>
   );

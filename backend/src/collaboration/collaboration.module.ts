@@ -23,7 +23,7 @@ import Redis from 'ioredis';
       useFactory: (logger: Logger) => {
         const redis = new Redis({
           host: process.env.REDIS_HOST || 'localhost',
-          port: parseInt(process.env.REDIS_PORT || '6379', 10),
+          port: Number.parseInt(process.env.REDIS_PORT || '6379', 10),
         });
 
         redis.on('connect', () => {

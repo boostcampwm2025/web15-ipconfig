@@ -4,6 +4,7 @@ import { BranchRules } from './BranchRules';
 import { CommitStyle } from './CommitStyle';
 import WidgetFrame from '@/common/components/widgetFrame/WidgetFrame';
 import { LuGitBranch } from 'react-icons/lu';
+import { Button } from '@/common/components/shadcn/button';
 
 function GitConventionWidget() {
   const { strategy, branchRules, commitConvention, isModalOpen, actions } =
@@ -39,18 +40,19 @@ function GitConventionWidget() {
                 모든 규칙이 초기화됩니다.
               </p>
               <div className="flex justify-center gap-2">
-                <button
+                <Button
+                  variant={'outline'}
                   onClick={actions.cancelChangeStrategy}
-                  className="hover:bg-muted rounded border px-3 py-1 text-xs"
+                  className="hover:bg-muted rounded border text-xs"
                 >
                   취소
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={actions.confirmChangeStrategy}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-3 py-1 text-xs"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded text-xs"
                 >
                   변경
-                </button>
+                </Button>
               </div>
             </div>
           </div>

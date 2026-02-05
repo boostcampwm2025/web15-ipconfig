@@ -1,3 +1,4 @@
+import { Button } from '@/common/components/shadcn/button';
 import { useState, useRef, useEffect } from 'react';
 import { LuMinus, LuPlus } from 'react-icons/lu';
 
@@ -29,8 +30,8 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value, 10);
-    if (!isNaN(val)) onChange(Math.max(1, Math.min(48, val)));
+    const val = Number.parseInt(e.target.value, 10);
+    if (!Number.isNaN(val)) onChange(Math.max(1, Math.min(48, val)));
   };
 
   return (
@@ -39,13 +40,14 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
         응답 시간
       </h3>
       <div className="flex items-center justify-between rounded-lg border p-3">
-        <button
+        <Button
+          variant={'ghost'}
           onClick={handleDecrement}
-          className="hover:bg-accent hover:text-accent-foreground text-muted-foreground/80 flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-50"
+          className="hover:bg-accent hover:text-accent-foreground text-muted-foreground/80 h-8 w-8 transition-colors disabled:opacity-50"
           disabled={responseTime <= 1}
         >
           <LuMinus size={16} />
-        </button>
+        </Button>
 
         <div
           className="relative min-w-12 cursor-pointer text-center"
@@ -74,13 +76,14 @@ export function SlaStepper({ responseTime, onChange }: SlaStepperProps) {
           )}
         </div>
 
-        <button
+        <Button
+          variant={'ghost'}
           onClick={handleIncrement}
           className="hover:bg-accent hover:text-accent-foreground text-muted-foreground/80 flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-50"
           disabled={responseTime >= 48}
         >
           <LuPlus size={16} />
-        </button>
+        </Button>
       </div>
     </div>
   );

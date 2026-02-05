@@ -54,7 +54,7 @@ export function ExportGroupDropdownButton() {
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <DialogTrigger
-                className="flex w-full items-center gap-2"
+                className="flex w-full cursor-pointer items-center gap-2"
                 onClick={() => {
                   fetchMarkdown(workspaceId);
                   setDialogMenu('doc');
@@ -66,7 +66,7 @@ export function ExportGroupDropdownButton() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <DialogTrigger
-                className="flex w-full items-center gap-2"
+                className="flex w-full cursor-pointer items-center gap-2"
                 onClick={() => {
                   setDialogMenu('settingFiles');
                 }}
