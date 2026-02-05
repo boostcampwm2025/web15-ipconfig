@@ -7,7 +7,7 @@ COPY frontend/package*.json ./frontend/
 COPY backend/package*.json ./backend/
 
 # Root에서 workspace 의존성 설치
-RUN npm ci --ignore-scripts
+RUN npm ci --ignore-scripts --legacy-peer-deps
 
 #############################
 # 1. 프론트엔드 빌드 단계
@@ -65,7 +65,7 @@ COPY package*.json ./
 COPY backend/package*.json ./backend/
 
 # Production 의존성만 설치 (workspace 구조 유지)
-RUN npm ci --omit=dev --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts --legacy-peer-deps
 
 EXPOSE 3000
 CMD ["node", "dist/main.js"]
