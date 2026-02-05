@@ -42,6 +42,9 @@ function ToolBar() {
             icon={<LuLayers size={20} />}
             label="기술 스택"
             onClick={() => {
+              if (!checkWidgetLimit('TECH_STACK', '테크 스택', 30, focusWidget))
+                return;
+
               const widgetId = crypto.randomUUID();
               createWidgetAction({
                 widgetId,
