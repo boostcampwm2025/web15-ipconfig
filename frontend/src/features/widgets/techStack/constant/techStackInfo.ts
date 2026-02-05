@@ -938,6 +938,7 @@ export const TECH_STACK_GROUPS = [
     },
   },
   {
+    ai: 'AI',
     title: '데이터베이스 및 스토리지',
     items: DATABASE_TECH_STACKS,
     categoryMap: {
