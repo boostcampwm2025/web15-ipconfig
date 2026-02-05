@@ -19,7 +19,7 @@ import { WidgetPreview } from '@/common/components/widgetFrame/WidgetPreview';
 import { useFormatWidget } from '../hooks/useFormatWidget';
 
 function FormatWidget() {
-  const { config, updateConfig, resetConfig } = useFormatWidget();
+  const { widgetId, config, updateConfig, resetConfig } = useFormatWidget();
 
   const [formattedCode, setFormattedCode] = useState(SAMPLE_CODE);
   const [activeTip, setActiveTip] = useState<ActiveTip | null>(null);
@@ -70,7 +70,7 @@ function FormatWidget() {
       title="코드 포맷"
       icon={<LuPalette className="text-pink-500" />}
       actions={[
-        <div className="flex">
+        <div className="flex" key={`${widgetId}-reset`}>
           <Button
             onClick={handleReset}
             variant="outline"

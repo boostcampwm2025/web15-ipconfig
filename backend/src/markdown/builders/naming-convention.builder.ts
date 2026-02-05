@@ -59,19 +59,14 @@ export class NamingConventionBuilder implements ISectionBuilder {
       ];
 
       categories.forEach((category) => {
-        const validItems = category.items.filter(
-          (item) => item.value && item.value !== 'none',
-        );
-
-        if (validItems.length > 0) {
-          lines.push(`### ${category.title}`);
-          lines.push('| 구분 | 컨벤션 |');
-          lines.push('| :--- | :--- |');
-          validItems.forEach((item) => {
-            lines.push(createTableRow(item.label, item.value || '-'));
-          });
-          lines.push('');
-        }
+        // 모든 아이템을 항상 표시
+        lines.push(`### ${category.title}`);
+        lines.push('| 구분 | 컨벤션 |');
+        lines.push('| :--- | :--- |');
+        category.items.forEach((item) => {
+          lines.push(createTableRow(item.label, item.value || '-'));
+        });
+        lines.push('');
       });
     });
 

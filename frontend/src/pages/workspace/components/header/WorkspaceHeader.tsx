@@ -1,4 +1,4 @@
-import { LuCheck, LuCopy, LuGithub } from 'react-icons/lu';
+import { LuGithub } from 'react-icons/lu';
 import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
@@ -39,7 +39,9 @@ function WorkspaceHeader() {
 
       <RoundedContainer className="gap-2">
         <UserListCard />
-        <ExportGroupDropdownButton />
+        <div id="export-group-dropdown-button">
+          <ExportGroupDropdownButton />
+        </div>
         <Button
           size="sm"
           variant="secondary"
@@ -48,7 +50,9 @@ function WorkspaceHeader() {
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
-        <InviteButton />
+        <div id="invite-button">
+          <InviteButton />
+        </div>
         <ThemeToggle />
       </RoundedContainer>
     </header>

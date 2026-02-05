@@ -100,6 +100,7 @@ jobs:
             REDIS_PASSWORD=${{ secrets.PROD_REDIS_PASSWORD }}
             USE_REDIS_EXTENSION=${{ secrets.USE_REDIS_EXTENSION }}
             REDIS_TLS=false
+            LOG_DIR=${{ secrets.LOG_DIR }}
             EOF
 
             # NCP Container Registry 로그인

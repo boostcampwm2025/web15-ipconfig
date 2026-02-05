@@ -1,22 +1,23 @@
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/common/components/shadcn/avatar';
-import { Button } from '@/common/components/shadcn/button';
 import { Separator } from '@/common/components/shadcn/separator';
 import { cn } from '@/common/lib/utils';
-import type { User } from '@/common/types/user';
 import { getContrastClass } from '@/utils/color';
-import { useState, useEffect } from 'react';
 import { Pencil } from 'lucide-react';
 import { Input } from '@/common/components/shadcn/input';
 import { updateUserNickname } from '@/common/api/yjs/awareness';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, type UserSchema } from '@/common/schemas/userSchema';
+import { useUserInfoById } from '@/common/store/user';
+import { Button } from '@/common/components/shadcn/button';
 
 interface MyUserItemProps {
-  user: User;
+  userId: string;
 }
 
-function MyUserItem({ user }: MyUserItemProps) {
+function MyUserItem({ userId }: MyUserItemProps) {
+  const user = useUserInfoById(userId);
   const [isEditing, setIsEditing] = useState(false);
 
   const {
@@ -29,7 +30,7 @@ function MyUserItem({ user }: MyUserItemProps) {
     resolver: zodResolver(userSchema),
     mode: 'onChange',
     defaultValues: {
-      nickname: user.nickname,
+      nickname: user?.nickname ?? '',
     },
   });
 
@@ -37,12 +38,12 @@ function MyUserItem({ user }: MyUserItemProps) {
     if (isEditing) {
       setFocus('nickname');
     } else {
-      reset({ nickname: user.nickname });
+      reset({ nickname: user?.nickname ?? '' });
     }
-  }, [isEditing, user.nickname, setFocus, reset]);
+  }, [isEditing, user?.nickname, setFocus, reset]);
 
   const onSubmit = (data: UserSchema) => {
-    if (data.nickname !== user.nickname) {
+    if (data.nickname !== user?.nickname) {
       updateUserNickname(data.nickname);
     }
     setIsEditing(false);
@@ -55,9 +56,11 @@ function MyUserItem({ user }: MyUserItemProps) {
       }
     } else if (e.key === 'Escape') {
       setIsEditing(false);
-      reset({ nickname: user.nickname });
+      reset({ nickname: user?.nickname ?? '' });
     }
   };
+
+  if (!user) return null;
 
   return (
     <>

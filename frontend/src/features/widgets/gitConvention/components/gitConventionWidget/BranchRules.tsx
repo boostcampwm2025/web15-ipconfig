@@ -48,37 +48,31 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Main Branch */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-muted-foreground ml-1 text-xs font-medium">
-          Main Branch
-        </label>
+      <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+        Main Branch
         <Input
           value={rules.mainBranch}
           onChange={(e) => onChange({ mainBranch: e.target.value })}
           className="h-9"
           placeholder="e.g. main"
         />
-      </div>
+      </label>
 
       {strategy === 'GIT_FLOW' && (
-        <div className="flex flex-col gap-1.5">
-          <label className="text-muted-foreground ml-1 text-xs font-medium">
-            Develop Branch
-          </label>
+        <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+          Develop Branch
           <Input
             value={rules.developBranch || ''}
             onChange={(e) => onChange({ developBranch: e.target.value })}
             className="h-9"
             placeholder="e.g. develop"
           />
-        </div>
+        </label>
       )}
 
       {/* Prefixes */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-muted-foreground ml-1 text-xs font-medium">
-          Prefixes
-        </label>
+      <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+        Prefixes
         <div className="flex gap-2">
           <Input
             {...register('prefix')}
@@ -124,7 +118,7 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
             </span>
           )}
         </div>
-      </div>
+      </label>
     </div>
   );
 }

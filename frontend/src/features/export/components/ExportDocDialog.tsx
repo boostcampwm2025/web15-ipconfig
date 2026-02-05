@@ -11,6 +11,7 @@ import { SpinnerCustom } from '@/common/components/SpinnerCustom';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import 'github-markdown-css/github-markdown-light.css';
 import { CopyButton } from './CopyButton';
 
@@ -49,7 +50,10 @@ export function ExportDocDialog({
           </div>
         ) : (
           <div className="markdown-body text-foreground w-full">
-            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+            <Markdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+            >
               {markdown}
             </Markdown>
           </div>

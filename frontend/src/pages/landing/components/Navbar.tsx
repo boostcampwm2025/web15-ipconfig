@@ -23,7 +23,7 @@ export function Navbar({ scrolled }: NavbarProps) {
             alt="logo"
             className="h-8 w-8 object-cover"
           />
-          <span className="text-foreground">
+          <span className="text-white">
             team<span className="text-primary">.config</span>
           </span>
         </Link>

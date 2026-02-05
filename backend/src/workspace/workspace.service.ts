@@ -9,6 +9,15 @@ import generateNickname from 'ko-nickname/src/index.js';
 import { customAlphabet } from 'nanoid';
 import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
 import { StorageAdapter } from '../collaboration/storage/storage.interface';
+import {
+  WORKSPACE_ID_ALPHABET,
+  WORKSPACE_ID_LENGTH,
+  WORKSPACE_TTL_MS,
+} from './constants/workspace.constants';
+import {
+  DOCUMENT_NAME_PREFIX,
+  REDIS_KEY_PREFIX,
+} from '../collaboration/constants/collaboration.constants';
 
 // 유저 정보는 저장해야 함
 interface UserSession {
@@ -48,14 +57,14 @@ export class WorkspaceService {
     let newWorkspaceId = workspaceId;
     if (!newWorkspaceId) {
       newWorkspaceId = customAlphabet(
-        '0123456789abcdefghijklmnopqrstuvwxyz',
-        10,
+        WORKSPACE_ID_ALPHABET,
+        WORKSPACE_ID_LENGTH,
       )();
       const exists = await this.isExistsWorkspace(newWorkspaceId);
       while (exists) {
         newWorkspaceId = customAlphabet(
-          '0123456789abcdefghijklmnopqrstuvwxyz',
-          10,
+          WORKSPACE_ID_ALPHABET,
+          WORKSPACE_ID_LENGTH,
         )();
       }
     } else {
@@ -78,7 +87,7 @@ export class WorkspaceService {
   private saveWorkspaceIdInMemory(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
       // 3일 후 만료
-      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      expirationTime: new Date(Date.now() + WORKSPACE_TTL_MS),
     });
   }
 
@@ -90,7 +99,7 @@ export class WorkspaceService {
 
     // Redis(Storage)에 있는지 확인 (Lazy Loading)
     const existsInStorage = await this.storageAdapter.get(
-      `yjs:doc:workspace:${workspaceId}`,
+      `${REDIS_KEY_PREFIX.YJS_DOC}${DOCUMENT_NAME_PREFIX.WORKSPACE}${workspaceId}`,
     );
 
     if (existsInStorage) {
@@ -105,7 +114,7 @@ export class WorkspaceService {
   public updateWorkspace(workspaceId: string): void {
     this.workspaces.set(workspaceId, {
       // 만약 유저가 접속했으면 만료 시간 업데이트 (3일)
-      expirationTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      expirationTime: new Date(Date.now() + WORKSPACE_TTL_MS),
     });
   }
 
