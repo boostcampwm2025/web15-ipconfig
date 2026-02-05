@@ -48,13 +48,13 @@ export function WorkspaceTitleInput() {
         onBlur={handleSubmit(onSubmit)}
         onKeyDown={handleKeyDown}
         className={cn(
-          'focus:border-primary-600/50 focus:ring-primary-600/50 w-full rounded-md border border-transparent bg-transparent px-1 text-base font-bold text-white outline-none focus:ring',
+          'focus:border-primary-600/50 focus:ring-primary-600/50 text-foreground w-full rounded-md border border-transparent bg-transparent px-1 text-base font-bold outline-none focus:ring',
           errors.title &&
             'border-red-500 ring-red-500 focus:border-red-500/50 focus:ring-red-500',
         )}
       />
       {errors.title && (
-        <span className="absolute top-full left-0 z-50 mt-1 min-w-max rounded border border-red-500 bg-gray-900 px-2 py-1 text-xs text-red-500 shadow-md">
+        <span className="bg-background absolute top-full left-0 z-50 mt-1 min-w-max rounded border border-red-500 px-2 py-1 text-xs text-red-500 shadow-md">
           {errors.title.message}
         </span>
       )}

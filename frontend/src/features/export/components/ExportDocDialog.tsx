@@ -27,7 +27,7 @@ export function ExportDocDialog({
     <DialogContent className="z-999 sm:max-w-2xl">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
-          <LuFileText size={18} className="text-primary-600" />
+          <LuFileText size={18} className="text-primary" />
           마크다운으로 내보내기
         </DialogTitle>
         <DialogDescription>
@@ -36,19 +36,19 @@ export function ExportDocDialog({
           GitHub 위키나 README에 바로 붙여넣으세요.
         </DialogDescription>
       </DialogHeader>
-      <div className="flex h-[45vh] items-center justify-center overflow-y-auto rounded-lg bg-[#0C1117] px-4 py-3">
+      <div className="border-border bg-muted flex h-[45vh] items-center justify-center overflow-y-auto rounded-lg border px-4 py-3">
         {isLoading ? (
-          <div className="flex items-center gap-2">
+          <div className="text-muted-foreground flex items-center gap-2">
             <SpinnerCustom />
             <span>불러오는 중...</span>
           </div>
         ) : error ? (
-          <div className="flex items-center gap-2">
-            <LuCircleX size={16} className="text-red-500" />
+          <div className="text-destructive flex items-center gap-2">
+            <LuCircleX size={16} />
             <span>{error}</span>
           </div>
         ) : (
-          <div className="markdown-body h-full w-full">
+          <div className="markdown-body text-foreground [&_*]:!text-foreground h-full w-full bg-transparent [&_*]:!bg-transparent">
             <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
           </div>
         )}
@@ -57,6 +57,7 @@ export function ExportDocDialog({
         <Button
           variant="secondary"
           onClick={() => handleCopyToClipboard(markdown)}
+          className="gap-2"
         >
           {isCopied ? (
             <LuCheck size={16} className="text-green-500" />

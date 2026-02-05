@@ -1,4 +1,4 @@
-import { LuCheck, LuCopy, LuGithub } from 'react-icons/lu';
+import { LuGithub } from 'react-icons/lu';
 import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
@@ -7,12 +7,13 @@ import { ExportGroupDropdownButton } from '@/features/export/components/ExportGr
 import { UserListCard } from '@/features/userListCard';
 import InviteButton from './InviteButton';
 import { WorkspaceTitleInput } from './WorkspaceTitleInput';
+import { ThemeToggle } from '@/common/components/ThemeToggle';
 
 function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
     <div
       className={cn(
-        'pointer-events-auto flex h-full items-center rounded-xl border border-gray-700 bg-gray-800 px-2 py-1 shadow-2xl backdrop-blur-xl',
+        'border-border bg-popover/80 pointer-events-auto flex h-full items-center rounded-xl border px-2 py-1 shadow-2xl backdrop-blur-xl',
         className,
       )}
     >
@@ -37,12 +38,17 @@ function WorkspaceHeader() {
 
       <RoundedContainer className="gap-2">
         <UserListCard />
-        <ExportGroupDropdownButton />
+        <div id="export-group-dropdown-button">
+          <ExportGroupDropdownButton />
+        </div>
         <Button size="sm" variant="secondary">
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
-        <InviteButton />
+        <div id="invite-button">
+          <InviteButton />
+        </div>
+        <ThemeToggle />
       </RoundedContainer>
     </header>
   );

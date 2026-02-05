@@ -1,4 +1,7 @@
-import { updateLocalCursor } from '@/common/api/yjs/awareness';
+import {
+  clearUserChatMessage,
+  updateLocalCursor,
+} from '@/common/api/yjs/awareness';
 import {
   browserToCanvasPosition,
   getNewCameraState,
@@ -15,6 +18,7 @@ function usePanning() {
 
   const handlePointerDown = (e: React.PointerEvent) => {
     setIsPanning(true);
+    clearUserChatMessage();
     lastMousePos.current = { x: e.clientX, y: e.clientY };
   };
 

@@ -9,6 +9,8 @@ import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
 import { LoadingSpinner } from '@/common/components/LoadingSpinner';
 import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
+import WorkspaceTour from '@/features/tour/WorkspaceTour';
+import { useMyCursorType } from '@/common/store/user';
 
 function WorkSpacePage() {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ function WorkSpacePage() {
     isWorkspaceReady && workspaceId ? workspaceId : '',
     userNickname,
   );
+
+  const myCursorType = useMyCursorType();
 
   useEffect(() => {
     if (!workspaceId) {
@@ -37,21 +41,17 @@ function WorkSpacePage() {
 
   return (
     <CanvasProvider>
-      <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
+      <WorkspaceTour />
+      <div
+        className="text-foreground relative h-screen overflow-hidden bg-transparent"
+        data-cursor-mode={myCursorType}
+      >
         {/* 캔버스: 화면 전체 */}
         <WorkspaceHeader />
         <main className="absolute inset-0">
           <Canvas />
         </main>
-
-        {/* HUD 레이어 */}
-        <div className="pointer-events-none absolute inset-0 z-40 pt-[var(--header-h)]">
-          <div className="pointer-events-auto">
-            <div className="absolute top-0 left-0">
-              <ToolBar />
-            </div>
-          </div>
-        </div>
+        <ToolBar />
       </div>
     </CanvasProvider>
   );

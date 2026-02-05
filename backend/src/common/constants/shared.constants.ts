@@ -1,0 +1,2 @@
+export const DEFAULT_SERVER_PORT = 3000;
+export const DEFAULT_REDIS_PORT = 6379;

@@ -47,11 +47,11 @@ function ErrorPage() {
             이전 화면으로
           </Button>
         </div>
-        {status && (
+        {status ? (
           <p className="mt-4 text-xs text-slate-500">
             오류 코드: <span className="font-mono">{status}</span>
           </p>
-        )}
+        ) : null}
       </div>
     </div>
   );
