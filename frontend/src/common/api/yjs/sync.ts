@@ -39,15 +39,35 @@ export const bindYjsToZustand = (): (() => void) => {
     const widgetsYMap = getWidgetsMap();
 
     // TODO: 리렌더링 개선
-    const widgets = [...widgetsYMap.entries()]
-      .map(([id, yWidget]) => {
-        return yWidgetToWidgetData(id, yWidget);
-      })
-      .sort((a, b) => a.focusedAt - b.focusedAt);
+    // 1. 위젯 데이터 변환
+    const widgets = [...widgetsYMap.entries()].map(([id, yWidget]) => {
+      return yWidgetToWidgetData(id, yWidget);
+    });
+
+    // 2. focusedAt 기준으로 정렬하여 zIndex 계산
+    // (가장 최근에 포커스된 위젯이 가장 높은 zIndex를 가짐)
+    const sortedByFocus = [...widgets].sort(
+      (a, b) => a.focusedAt - b.focusedAt,
+    );
+    const zIndexMap = new Map(sortedByFocus.map((w, i) => [w.widgetId, i + 1]));
+
+    // 3. 최종 위젯 리스트 생성
+    // - zIndex를 layout에 주입
+    // - DOM 순서는 createdAt(또는 고정된 기준)으로 정렬하여,
+    //   포커스 변경 시 DOM 요소가 재정렬되어 클릭 이벤트가 취소되는 현상 방지
+    const finalWidgets = widgets
+      .map((w) => ({
+        ...w,
+        layout: {
+          ...w.layout,
+          zIndex: zIndexMap.get(w.widgetId) ?? 1,
+        },
+      }))
+      .sort((a, b) => a.createdAt - b.createdAt);
 
     if (!widgetsYMap) return;
 
-    setWidgetList(widgets as WidgetData[]);
+    setWidgetList(finalWidgets as WidgetData[]);
   };
 
   const syncWorkspaceToStore = (): void => {
