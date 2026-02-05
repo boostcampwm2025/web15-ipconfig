@@ -28,7 +28,6 @@ export function useGitConvention() {
   );
 
   const data = (content as GitConventionData) || INITIAL_GIT_CONVENTION_DATA;
-
   const strategy = data.strategy ?? INITIAL_GIT_CONVENTION_DATA.strategy;
   const branchRules =
     data.branchRules ?? INITIAL_GIT_CONVENTION_DATA.branchRules;
@@ -122,7 +121,7 @@ export function useGitConvention() {
             conv.useGitmoji,
           );
 
-          if (conv.commitTypes) {
+          if (conv.commitTypes?.selectedIds) {
             syncOptions(
               'commitTypes',
               conv.commitTypes.options as Record<string, { value: string }>,
@@ -149,7 +148,7 @@ export function useGitConvention() {
   };
 
   const updateBranchRules = (rules: Partial<BranchRuleState>) => {
-    if (rules.mainBranch !== undefined) {
+    if (rules.mainBranch) {
       updatePrimitiveFieldAction(
         widgetId,
         type,
@@ -157,7 +156,7 @@ export function useGitConvention() {
         rules.mainBranch,
       );
     }
-    if (rules.developBranch !== undefined) {
+    if (rules.developBranch) {
       updatePrimitiveFieldAction(
         widgetId,
         type,
@@ -165,22 +164,20 @@ export function useGitConvention() {
         rules.developBranch,
       );
     }
-    if (rules.prefixes) {
-      if (rules.prefixes.selectedIds) {
-        updateMultiSelectorPickAction(
-          widgetId,
-          type,
-          'prefixes',
-          rules.prefixes.selectedIds,
-        );
-      }
+    if (rules.prefixes?.selectedIds) {
+      updateMultiSelectorPickAction(
+        widgetId,
+        type,
+        'prefixes',
+        rules.prefixes.selectedIds,
+      );
     }
   };
 
   const updateCommitConvention = (
     convention: Partial<CommitConventionState>,
   ) => {
-    if (convention.useGitmoji !== undefined) {
+    if (convention.useGitmoji) {
       updatePrimitiveFieldAction(
         widgetId,
         type,
@@ -188,15 +185,13 @@ export function useGitConvention() {
         convention.useGitmoji,
       );
     }
-    if (convention.commitTypes) {
-      if (convention.commitTypes.selectedIds) {
-        updateMultiSelectorPickAction(
-          widgetId,
-          type,
-          'commitTypes',
-          convention.commitTypes.selectedIds,
-        );
-      }
+    if (convention.commitTypes?.selectedIds) {
+      updateMultiSelectorPickAction(
+        widgetId,
+        type,
+        'commitTypes',
+        convention.commitTypes.selectedIds,
+      );
     }
   };
 

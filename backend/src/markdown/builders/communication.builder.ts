@@ -25,18 +25,19 @@ export class CommunicationBuilder implements ISectionBuilder {
       lines.push('| 상황 | 채널 |');
       lines.push('| :--- | :--- |');
 
-      const urgent = getSelectedValue(content.communication?.urgent);
-      const sync = getSelectedValue(content.communication?.sync);
-      const async = getSelectedValue(content.communication?.async);
-      const official = getSelectedValue(content.communication?.official);
+      const meeting = getSelectedValue(content.communication?.meeting);
+      const chat = getSelectedValue(content.communication?.chat);
+      const doc = getSelectedValue(content.communication?.doc);
+      const announce = getSelectedValue(content.communication?.announce);
 
-      if (urgent)
-        lines.push(createTableRow('**🚨 긴급 (Urgent)**', `\`${urgent}\``));
-      if (sync) lines.push(createTableRow('**🗣️ 동기 (Sync)**', `\`${sync}\``));
-      if (async)
-        lines.push(createTableRow('**📨 비동기 (Async)**', `\`${async}\``));
-      if (official)
-        lines.push(createTableRow('**📝 공식 (Official)**', `\`${official}\``));
+      if (meeting)
+        lines.push(createTableRow('**🚨 회의 (Meeting)**', `\`${meeting}\``));
+      if (doc) lines.push(createTableRow('**📨 기록 (Doc)**', `\`${doc}\``));
+      if (announce)
+        lines.push(createTableRow('**📝 공지 (Announce)**', `\`${announce}\``));
+      if (chat)
+        lines.push(createTableRow('**🗣️ 그 외 소통 (Chat)**', `\`${chat}\``));
+
       lines.push('');
 
       // SLA & Time
@@ -48,12 +49,21 @@ export class CommunicationBuilder implements ISectionBuilder {
       const noMeetingDay = content.meeting?.noMeetingDay || '-';
       const feedbackStyle = content.meeting?.feedbackStyle || '-';
 
+      const FEEDBACK_STYLE_LABELS: Record<string, string> = {
+        Soft: '부드럽게',
+        Honest: '솔직하게',
+        Retrospective: '회고 중심',
+      };
+
+      const feedbackLabel =
+        FEEDBACK_STYLE_LABELS[feedbackStyle] || feedbackStyle;
+
       lines.push(
         `- **코어 타임 (Core Time)**: \`${coreStart}\` ~ \`${coreEnd}\``,
       );
       lines.push(`- **최대 응답 시간 (SLA)**: ${responseTime}h`);
       lines.push(`- **미팅 없는 날**: ${noMeetingDay}`);
-      lines.push(`- **피드백 스타일**: ${feedbackStyle}`);
+      lines.push(`- **피드백 스타일**: ${feedbackLabel}`);
       lines.push('');
     });
 

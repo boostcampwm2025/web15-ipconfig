@@ -67,7 +67,7 @@ function TechStackModal({
     <ReactPortal portalTargetId={modalRootId}>
       <dialog
         style={{ left: position.x, top: position.y }}
-        className="fixed flex h-150 w-100 flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
+        className="border-border bg-background fixed flex h-150 w-100 flex-col overflow-hidden rounded-xl border shadow-2xl"
       >
         {/* 헤더를 드래그 핸들로 사용 */}
         <ModalHeader

@@ -15,6 +15,8 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - USE_REDIS_EXTENSION=${USE_REDIS_EXTENSION}
+    volumes:
+      - /var/log/web15-ipconfig:/app/logs
     restart: unless-stopped
 
   frontend:

@@ -8,31 +8,31 @@ import { COMMUNICATION_OPTIONS } from './communication';
 
 export const COMMUNICATION_ITEMS = [
   {
-    key: 'urgent',
-    label: '긴급',
+    key: 'meeting',
+    label: '회의',
     icon: LuSiren,
-    options: COMMUNICATION_OPTIONS.urgent,
+    options: COMMUNICATION_OPTIONS.meeting,
     color: 'text-red-500',
   },
   {
-    key: 'sync',
-    label: '동기',
-    icon: LuMessageCircle,
-    options: COMMUNICATION_OPTIONS.sync,
-    color: 'text-green-500',
-  },
-  {
-    key: 'async',
-    label: '비동기',
+    key: 'doc',
+    label: '기록',
     icon: LuFileText,
-    options: COMMUNICATION_OPTIONS.async,
+    options: COMMUNICATION_OPTIONS.doc,
     color: 'text-blue-500',
   },
   {
-    key: 'official',
-    label: '공식',
+    key: 'announce',
+    label: '공지',
     icon: LuMegaphone,
-    options: COMMUNICATION_OPTIONS.official,
+    options: COMMUNICATION_OPTIONS.announce,
     color: 'text-yellow-500',
+  },
+  {
+    key: 'chat',
+    label: '그 외 소통',
+    icon: LuMessageCircle,
+    options: COMMUNICATION_OPTIONS.chat,
+    color: 'text-green-500',
   },
 ] as const;
