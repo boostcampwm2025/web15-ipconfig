@@ -20,13 +20,13 @@ export default function CodeReviewPolicy({
   const [editHours, setEditHours] = useState(false);
 
   return (
-    <div className="max-w-[400px] rounded-2xl border border-gray-700 p-6">
-      <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-100">
+    <div className="border-border max-w-[400px] rounded-2xl border p-6">
+      <h2 className="text-foreground flex items-center gap-2 text-xl font-semibold">
         코드 리뷰 규칙
       </h2>
 
       <div className="mt-4 flex items-center">
-        <p className="mb-2 flex-1 text-sm text-gray-300">최대 리뷰 시간</p>
+        <p className="text-foreground mb-2 flex-1 text-sm">최대 리뷰 시간</p>
         <CounterInput
           value={data.maxReviewHours}
           setValue={(value) => onUpdate('maxReviewHours', value as number)}
@@ -38,7 +38,7 @@ export default function CodeReviewPolicy({
       </div>
 
       <div className="mt-6 flex items-center">
-        <p className="mb-2 flex-1 text-sm text-gray-300">필요한 Approve 수</p>
+        <p className="text-foreground mb-2 flex-1 text-sm">필요한 Approve 수</p>
         <CounterInput
           value={data.approves}
           setValue={(value) => onUpdate('approves', value as number)}

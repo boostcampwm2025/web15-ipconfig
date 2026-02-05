@@ -30,7 +30,7 @@ function UserListInfo() {
       <PopoverTrigger asChild>
         <AvatarGroup className="hover:bg-secondary cursor-pointer -space-x-1 rounded-xl p-2 transition-colors">
           {userList.slice(0, VISIBLE_USER_COUNT).map((user) => (
-            <Avatar key={user.id} size="sm" className="!ring-gray-800">
+            <Avatar key={user.id} size="sm" className="!ring-background">
               <AvatarFallback
                 className={cn(
                   getContrastClass(user.color),
@@ -43,13 +43,13 @@ function UserListInfo() {
             </Avatar>
           ))}
           {hiddenUserCount > 0 && (
-            <AvatarGroupCount className="bg-secondary text-xs !ring-gray-800">
+            <AvatarGroupCount className="bg-secondary !ring-background text-xs">
               +{hiddenUserCount}
             </AvatarGroupCount>
           )}
         </AvatarGroup>
       </PopoverTrigger>
-      <PopoverContent className="w-fit bg-gray-800 p-2">
+      <PopoverContent className="bg-popover border-border w-fit border p-2">
         <div className="flex flex-col gap-2 text-sm">
           {userList.map((user) => {
             const isMe = user.id === myInfo?.id;

@@ -29,7 +29,7 @@ export function GuidelineBox({
       <ItemContent className="animate-in fade-in">
         <ItemTitle className="mb-2">[{category}] 팁</ItemTitle>
         {recommendation && (
-          <ItemDescription className="mb-0.5 line-clamp-none rounded-md bg-gray-900/80 p-4 text-xs text-pretty break-keep text-gray-300">
+          <ItemDescription className="bg-muted/50 text-muted-foreground mb-0.5 line-clamp-none rounded-md p-4 text-xs text-pretty break-keep">
             추천: {recommendation}
           </ItemDescription>
         )}

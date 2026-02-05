@@ -28,7 +28,7 @@ function ToolBar() {
   return (
     <div
       id="tool-bar"
-      className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border border-gray-700 bg-gray-800 p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
+      className="border-border bg-popover/80 fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
     >
       <div className="flex items-center justify-center gap-2">
         <ToolButton
@@ -36,7 +36,7 @@ function ToolBar() {
           label="Select"
           active
         />
-        <div className="h-6 w-px gap-2 bg-gray-500" />
+        <div className="bg-border h-6 w-px gap-2" />
         <div id="tech-stack-button">
           <ToolButton
             icon={<LuLayers size={20} />}
@@ -57,6 +57,16 @@ function ToolBar() {
             icon={<LuGitBranch size={20} />}
             label="깃 컨벤션"
             onClick={() => {
+              if (
+                !checkWidgetLimit(
+                  'GIT_CONVENTION',
+                  'Git Convention',
+                  1,
+                  focusWidget,
+                )
+              )
+                return;
+
               const widgetId = 'GIT_CONVENTION';
               createWidgetAction({
                 widgetId,
@@ -70,16 +80,9 @@ function ToolBar() {
         <div id="collaboration-button">
           <ToolButton
             icon={<LuUsers size={20} />}
-            label="작업 및 협업"
+            label="협업"
             onClick={() => {
-              if (
-                !checkWidgetLimit(
-                  'COLLABORATION',
-                  '작업 및 협업',
-                  1,
-                  focusWidget,
-                )
-              )
+              if (!checkWidgetLimit('COLLABORATION', '협업', 1, focusWidget))
                 return;
               const widgetId = 'COLLABORATION';
               createWidgetAction({

@@ -44,7 +44,7 @@ function SelectedTechStackBox({
       ))}
       <Button
         variant={'ghost'}
-        className="hover:border-primary flex h-25 w-25 cursor-pointer flex-col rounded-lg border border-dashed border-gray-600 bg-gray-700 text-sm font-semibold transition-colors hover:bg-gray-700/70"
+        className="hover:border-primary hover:bg-muted/80 border-border bg-muted text-muted-foreground flex h-25 w-25 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed text-sm font-semibold transition-colors"
         onClick={() => setIsTechStackModalOpen(true)}
       >
         <LuPlus size={20} />

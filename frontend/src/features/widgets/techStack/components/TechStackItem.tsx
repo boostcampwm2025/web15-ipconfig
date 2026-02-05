@@ -12,7 +12,7 @@ function TechIcon({ name }: TechIconProps) {
 
   if (error) {
     return (
-      <Badge className="h-5 w-5 rounded-full bg-gray-200 font-bold text-gray-600">
+      <Badge className="bg-muted text-muted-foreground h-5 w-5 rounded-full font-bold">
         {name.substring(0, 1)}
       </Badge>
     );
@@ -32,10 +32,10 @@ export function TechStackItem({ techName }: { techName: string }) {
   return (
     <Badge
       variant="outline"
-      className="hover:border-primary flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg bg-gray-700 px-2 py-1 transition-colors select-none hover:bg-gray-700"
+      className="hover:border-primary bg-card hover:bg-accent flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg px-2 py-1 transition-colors select-none"
     >
       <TechIcon name={techName} />
-      <div className="text-center text-xs font-medium text-wrap text-gray-300">
+      <div className="text-card-foreground text-center text-xs font-medium text-wrap">
         {techName}
       </div>
     </Badge>

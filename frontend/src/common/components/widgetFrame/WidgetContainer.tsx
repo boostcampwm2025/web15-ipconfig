@@ -154,7 +154,7 @@ function WidgetContainer({ children }: PropsWithChildren) {
 
   return (
     <div
-      className="pointer-events-auto absolute w-fit rounded-xl border-[1.5px] border-gray-700 bg-gray-800 transition-shadow duration-200"
+      className="border-border bg-card pointer-events-auto absolute w-fit rounded-xl border-[1.5px] transition-shadow duration-200"
       style={{
         left: renderedPos.x,
         top: renderedPos.y,
