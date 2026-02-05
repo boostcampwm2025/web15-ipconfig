@@ -15,13 +15,13 @@ import { INITIAL_TECH_STACK_DATA } from '../../constant/initial';
 
 export function useTechStack() {
   const { widgetId, type } = useWidgetIdAndType();
-  const widgetData = useWorkspaceWidgetStore(
-    useShallow((state) =>
-      state.widgetList.find((widget) => widget.widgetId === widgetId),
+  const content = useWorkspaceWidgetStore(
+    useShallow(
+      (state) =>
+        state.widgetList.find((widget) => widget.widgetId === widgetId)
+          ?.content,
     ),
   );
-
-  const content = widgetData?.content;
 
   const techStackData = content as TechStackWidgetData;
 
