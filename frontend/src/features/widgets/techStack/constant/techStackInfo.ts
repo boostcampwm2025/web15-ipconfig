@@ -842,6 +842,13 @@ export const INFRASTRUCTURE_TECH_STACKS: InfrastructureTechStack[] = [
     color: 'F38020',
     slug: 'cloudflare',
   },
+  {
+    id: 'NCP',
+    category: 'deployment',
+    name: 'NCP',
+    color: '03C75A',
+    slug: 'naver',
+  },
 
   // CI/CD
   {
