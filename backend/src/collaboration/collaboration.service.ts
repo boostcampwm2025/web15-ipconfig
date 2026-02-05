@@ -13,6 +13,14 @@ import { IncomingMessage } from 'node:http';
 import { Duplex } from 'node:stream';
 import { WebSocketServer } from 'ws';
 import { StorageAdapter } from './storage/storage.interface';
+import {
+  HOCUSPOCUS_DEBOUNCE_MS,
+  HOCUSPOCUS_MAX_DEBOUNCE_MS,
+  DOCUMENT_NAME_PREFIX,
+  WEBSOCKET_PATHS,
+  REDIS_KEY_PREFIX,
+} from './constants/collaboration.constants';
+import { DEFAULT_REDIS_PORT } from '../common/constants/shared.constants';
 
 @Injectable()
 export class CollaborationService implements OnModuleInit, OnModuleDestroy {
@@ -30,7 +38,10 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
 
     // Redis 설정 (Extension용)
     const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = Number.parseInt(process.env.REDIS_PORT || '6379', 10);
+    const redisPort = parseInt(
+      process.env.REDIS_PORT || DEFAULT_REDIS_PORT.toString(),
+      10,
+    );
     const redisPassword = process.env.REDIS_PASSWORD;
     const useRedisExtension = process.env.USE_REDIS_EXTENSION === 'true';
 
@@ -44,13 +55,18 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
           this.logger.debug(`Fetching document ${documentName} from storage`, {
             context: CollaborationService.name,
           });
-          return this.storageAdapter.get(`yjs:doc:${documentName}`);
+          return this.storageAdapter.get(
+            `${REDIS_KEY_PREFIX.YJS_DOC}${documentName}`,
+          );
         },
         store: async ({ documentName, state }) => {
           this.logger.debug(`Storing document ${documentName} to storage`, {
             context: CollaborationService.name,
           });
-          await this.storageAdapter.set(`yjs:doc:${documentName}`, state);
+          await this.storageAdapter.set(
+            `${REDIS_KEY_PREFIX.YJS_DOC}${documentName}`,
+            state,
+          );
         },
       }),
     );
@@ -74,8 +90,8 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
       extensions,
 
       // debounce 설정: 문서 저장 빈도 조절 (기본 2초)
-      debounce: 2000,
-      maxDebounce: 10000,
+      debounce: HOCUSPOCUS_DEBOUNCE_MS,
+      maxDebounce: HOCUSPOCUS_MAX_DEBOUNCE_MS,
 
       onConnect: async (data) => {
         this.logger.info(`User connected to Hocuspocus: ${data.documentName}`, {
@@ -120,9 +136,9 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
     if (!url) return false;
     try {
       const { pathname } = new URL(url, 'http://localhost');
-      return pathname.startsWith('/collaboration');
+      return pathname.startsWith(WEBSOCKET_PATHS.COLLABORATION);
     } catch {
-      return url.startsWith('/collaboration');
+      return url.startsWith(WEBSOCKET_PATHS.COLLABORATION);
     }
   }
 
@@ -140,7 +156,7 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
    * @returns Hocuspocus Document 또는 null (문서가 로드되지 않은 경우)
    */
   getDocument(workspaceId: string) {
-    const documentName = `workspace:${workspaceId}`;
+    const documentName = `${DOCUMENT_NAME_PREFIX.WORKSPACE}${workspaceId}`;
     return this.hocuspocus.documents.get(documentName) ?? null;
   }
 }

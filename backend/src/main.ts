@@ -3,9 +3,15 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { CollaborationService } from './collaboration/collaboration.service';
+import { DEFAULT_SERVER_PORT } from './common/constants/shared.constants';
 import { Server, IncomingMessage } from 'http';
 import { Duplex } from 'stream';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import {
+  WINSTON_MODULE_NEST_PROVIDER,
+  WINSTON_MODULE_PROVIDER,
+} from 'nest-winston';
+import { Logger } from 'winston';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -37,6 +43,10 @@ async function bootstrap() {
     }),
   );
 
+  // Global Exception Filter 등록
+  const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
+  app.useGlobalFilters(new GlobalExceptionFilter(logger));
+
   // Swagger 설정
   const configSwagger = new DocumentBuilder()
     .setTitle('Web15 IPConfig API')
@@ -48,7 +58,7 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? DEFAULT_SERVER_PORT);
 
   // CollaborationService를 통해 Hocuspocus WebSocket 연결 처리
   const collaborationService = app.get(CollaborationService);

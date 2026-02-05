@@ -26,7 +26,10 @@ function ToolBar() {
   const { camera } = useCanvas();
 
   return (
-    <div className="border-border bg-popover/80 fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105">
+    <div
+      id="tool-bar"
+      className="border-border bg-popover/80 fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
+    >
       <div className="flex items-center justify-center gap-2">
         <ToolButton
           icon={<LuMousePointer2 size={20} />}
@@ -34,129 +37,145 @@ function ToolBar() {
           active
         />
         <div className="bg-border h-6 w-px gap-2" />
-
-        <ToolButton
-          icon={<LuLayers size={20} />}
-          label="기술 스택"
-          onClick={() => {
-            const widgetId = crypto.randomUUID();
-            createWidgetAction({
-              widgetId,
-              type: 'TECH_STACK',
-              layout: getRandomWidgetLocation(camera),
-              content: INITIAL_TECH_STACK_DATA,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<LuGitBranch size={20} />}
-          label="깃 컨벤션"
-          onClick={() => {
-            if (
-              !checkWidgetLimit(
-                'GIT_CONVENTION',
-                'Git Convention',
-                1,
-                focusWidget,
+        <div id="tech-stack-button">
+          <ToolButton
+            icon={<LuLayers size={20} />}
+            label="기술 스택"
+            onClick={() => {
+              const widgetId = crypto.randomUUID();
+              createWidgetAction({
+                widgetId,
+                type: 'TECH_STACK',
+                layout: getRandomWidgetLocation(camera),
+                content: INITIAL_TECH_STACK_DATA,
+              });
+            }}
+          />
+        </div>
+        <div id="git-convention-button">
+          <ToolButton
+            icon={<LuGitBranch size={20} />}
+            label="깃 컨벤션"
+            onClick={() => {
+              if (
+                !checkWidgetLimit(
+                  'GIT_CONVENTION',
+                  'Git Convention',
+                  1,
+                  focusWidget,
+                )
               )
-            )
-              return;
+                return;
 
-            const widgetId = 'GIT_CONVENTION';
-            createWidgetAction({
-              widgetId,
-              type: 'GIT_CONVENTION',
-              layout: getRandomWidgetLocation(camera),
-              content: INITIAL_GIT_CONVENTION_DATA,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<LuUsers size={20} />}
-          label="작업 및 협업"
-          onClick={() => {
-            if (
-              !checkWidgetLimit('COLLABORATION', '작업 및 협업', 1, focusWidget)
-            )
-              return;
-            const widgetId = 'COLLABORATION';
-            createWidgetAction({
-              widgetId,
-              type: 'COLLABORATION',
-              layout: getRandomWidgetLocation(camera),
-              content: COLLABORATION_INITIAL_CONTENT,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<LuMessageSquare size={20} />}
-          label="커뮤니케이션"
-          onClick={() => {
-            if (
-              !checkWidgetLimit('COMMUNICATION', '커뮤니케이션', 1, focusWidget)
-            )
-              return;
-            const widgetId = 'COMMUNICATION';
-            createWidgetAction({
-              widgetId,
-              type: 'COMMUNICATION',
-              layout: getRandomWidgetLocation(camera),
-              content: INITIAL_COMMUNICATION_DATA,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<RiFontSizeAi size={20} />}
-          label="네이밍 컨벤션"
-          onClick={() => {
-            if (
-              !checkWidgetLimit(
-                'NAMING_CONVENTION',
-                '네이밍 컨벤션',
-                1,
-                focusWidget,
+              const widgetId = 'GIT_CONVENTION';
+              createWidgetAction({
+                widgetId,
+                type: 'GIT_CONVENTION',
+                layout: getRandomWidgetLocation(camera),
+                content: INITIAL_GIT_CONVENTION_DATA,
+              });
+            }}
+          />
+        </div>
+        <div id="collaboration-button">
+          <ToolButton
+            icon={<LuUsers size={20} />}
+            label="협업"
+            onClick={() => {
+              if (!checkWidgetLimit('COLLABORATION', '협업', 1, focusWidget))
+                return;
+              const widgetId = 'COLLABORATION';
+              createWidgetAction({
+                widgetId,
+                type: 'COLLABORATION',
+                layout: getRandomWidgetLocation(camera),
+                content: COLLABORATION_INITIAL_CONTENT,
+              });
+            }}
+          />
+        </div>
+        <div id="communication-button">
+          <ToolButton
+            icon={<LuMessageSquare size={20} />}
+            label="커뮤니케이션"
+            onClick={() => {
+              if (
+                !checkWidgetLimit(
+                  'COMMUNICATION',
+                  '커뮤니케이션',
+                  1,
+                  focusWidget,
+                )
               )
-            )
-              return;
-            const widgetId = 'NAMING_CONVENTION';
-            createWidgetAction({
-              widgetId,
-              type: 'NAMING_CONVENTION',
-              layout: getRandomWidgetLocation(camera),
-              content: NAMING_CONVENTION_INITIAL_CONTENT,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<LuPalette size={20} />}
-          label="포매팅"
-          onClick={() => {
-            if (!checkWidgetLimit('CODE_FORMAT', '포매팅', 1, focusWidget))
-              return;
-            const widgetId = 'CODE_FORMAT';
-            createWidgetAction({
-              widgetId,
-              type: 'CODE_FORMAT',
-              layout: getRandomWidgetLocation(camera),
-              content: INITIAL_FORMAT_DATA,
-            });
-          }}
-        />
-        <ToolButton
-          icon={<LuContainer size={20} />}
-          label="Dockerfile"
-          onClick={() => {
-            if (!checkWidgetLimit('DOCKERFILE', 'Dockerfile', 1, focusWidget))
-              return;
-            const widgetId = 'DOCKERFILE';
-            createWidgetAction({
-              widgetId,
-              type: 'DOCKERFILE',
-              layout: getRandomWidgetLocation(camera),
-              content: {},
-            });
-          }}
-        />
+                return;
+              const widgetId = 'COMMUNICATION';
+              createWidgetAction({
+                widgetId,
+                type: 'COMMUNICATION',
+                layout: getRandomWidgetLocation(camera),
+                content: INITIAL_COMMUNICATION_DATA,
+              });
+            }}
+          />
+        </div>
+        <div id="naming-convention-button">
+          <ToolButton
+            icon={<RiFontSizeAi size={20} />}
+            label="네이밍 컨벤션"
+            onClick={() => {
+              if (
+                !checkWidgetLimit(
+                  'NAMING_CONVENTION',
+                  '네이밍 컨벤션',
+                  1,
+                  focusWidget,
+                )
+              )
+                return;
+              const widgetId = 'NAMING_CONVENTION';
+              createWidgetAction({
+                widgetId,
+                type: 'NAMING_CONVENTION',
+                layout: getRandomWidgetLocation(camera),
+                content: NAMING_CONVENTION_INITIAL_CONTENT,
+              });
+            }}
+          />
+        </div>
+        <div id="code-format-button">
+          <ToolButton
+            icon={<LuPalette size={20} />}
+            label="포매팅"
+            onClick={() => {
+              if (!checkWidgetLimit('CODE_FORMAT', '포매팅', 1, focusWidget))
+                return;
+              const widgetId = 'CODE_FORMAT';
+              createWidgetAction({
+                widgetId,
+                type: 'CODE_FORMAT',
+                layout: getRandomWidgetLocation(camera),
+                content: INITIAL_FORMAT_DATA,
+              });
+            }}
+          />
+        </div>
+        <div id="dockerfile-button">
+          <ToolButton
+            icon={<LuContainer size={20} />}
+            label="Dockerfile"
+            onClick={() => {
+              if (!checkWidgetLimit('DOCKERFILE', 'Dockerfile', 1, focusWidget))
+                return;
+              const widgetId = 'DOCKERFILE';
+              createWidgetAction({
+                widgetId,
+                type: 'DOCKERFILE',
+                layout: getRandomWidgetLocation(camera),
+                content: {},
+              });
+            }}
+          />
+        </div>
       </div>
     </div>
   );

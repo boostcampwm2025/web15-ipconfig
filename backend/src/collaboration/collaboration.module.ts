@@ -7,6 +7,7 @@ import { StorageAdapter } from './storage/storage.interface';
 import { RedisStorageAdapter } from './storage/redis-storage.adapter';
 
 import Redis from 'ioredis';
+import { DEFAULT_REDIS_PORT } from '../common/constants/shared.constants';
 
 @Global()
 @Module({
@@ -23,7 +24,10 @@ import Redis from 'ioredis';
       useFactory: (logger: Logger) => {
         const redis = new Redis({
           host: process.env.REDIS_HOST || 'localhost',
-          port: Number.parseInt(process.env.REDIS_PORT || '6379', 10),
+          port: parseInt(
+            process.env.REDIS_PORT || DEFAULT_REDIS_PORT.toString(),
+            10,
+          ),
         });
 
         redis.on('connect', () => {
