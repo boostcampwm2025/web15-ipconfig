@@ -148,7 +148,7 @@ export function useGitConvention() {
   };
 
   const updateBranchRules = (rules: Partial<BranchRuleState>) => {
-    if (rules.mainBranch) {
+    if (rules.mainBranch !== undefined) {
       updatePrimitiveFieldAction(
         widgetId,
         type,
@@ -156,7 +156,7 @@ export function useGitConvention() {
         rules.mainBranch,
       );
     }
-    if (rules.developBranch) {
+    if (rules.developBranch !== undefined) {
       updatePrimitiveFieldAction(
         widgetId,
         type,
