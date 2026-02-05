@@ -16,7 +16,6 @@ export const useUserStore = create<UserStore>((set) => ({
   setUserList: (userList: User[]) => set({ userList }),
 }));
 
-// 내 유저(파생)
 export const useMe = () =>
   useUserStore(useShallow((s) => s.userList.find((u) => u.id === s.myId)));
 
@@ -28,6 +27,26 @@ export const useMyCursorType = () =>
 
 // 전체 유저 리스트(파생)
 export const useUserList = () => useUserStore((s) => s.userList);
+
+// 2. ID 리스트만 따로 관리하는 훅 (이 리스트는 커서가 움직여도 변하지 않음)
+export const useUserIds = () =>
+  useUserStore(useShallow((s) => s.userList.map((u) => u.id)));
+
+// 3. 개별 유저의 정보만 가져오는 훅 (커서 제외)
+export const useUserInfoById = (id: string) =>
+  useUserStore(
+    useShallow((s) => {
+      const user = s.userList.find((u) => u.id === id);
+      return user
+        ? { id: user.id, nickname: user.nickname, color: user.color }
+        : null;
+    }),
+  );
+
+export const useMyId = () => useUserStore((s) => s.myId);
+
+export const useUserCursorById = (userId: string) =>
+  useUserStore((s) => s.userList.find((user) => user.id === userId)?.cursor);
 
 // 나 제외 유저 리스트(파생)
 export const useOtherUserList = () =>

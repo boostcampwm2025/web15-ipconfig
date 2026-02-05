@@ -1,4 +1,4 @@
-import { LuCheck, LuCopy, LuGithub } from 'react-icons/lu';
+import { LuGithub } from 'react-icons/lu';
 import { type ComponentProps } from 'react';
 import { cn } from '@/common/lib/utils';
 import { Button } from '@/common/components/shadcn/button';
