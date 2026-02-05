@@ -81,11 +81,15 @@ export function useTechStack() {
 
       // 내 위젯의 드롭존에 드롭되었는지 확인
       if (over && over.id === `tech-stack-dropzone-${widgetId}`) {
-        const { id, name, category } = active.data.current.content as TechStack;
+        const { id, name, category, slug, color } = active.data.current
+          .content as TechStack;
 
         // 중복 체크
         if (!techItems.some((tech) => tech.id === id)) {
-          const newSelectedTechStacks = [...techItems, { id, name, category }];
+          const newSelectedTechStacks = [
+            ...techItems,
+            { id, name, category, slug, color },
+          ];
           handleTechItemsUpdate(newSelectedTechStacks);
         }
       }

@@ -7,206 +7,902 @@ import type {
   TechStack,
 } from '../types/techStack';
 
+// https://survey.stackoverflow.co/2025/
+
+export const COMMON_TECH_STACKS: CommonTechStack[] = [
+  // Languages
+  {
+    id: 'javascript',
+    category: 'language',
+    name: 'JavaScript',
+    color: 'F7DF1E',
+    slug: 'javascript',
+  },
+  {
+    id: 'typescript',
+    category: 'language',
+    name: 'TypeScript',
+    color: '3178C6',
+    slug: 'typescript',
+  },
+  {
+    id: 'java',
+    category: 'language',
+    name: 'Java',
+    color: '007396',
+    slug: 'openjdk',
+  },
+  {
+    id: 'python',
+    category: 'language',
+    name: 'Python',
+    color: '3776AB',
+    slug: 'python',
+  },
+  { id: 'go', category: 'language', name: 'Go', color: '00ADD8', slug: 'go' },
+  {
+    id: 'rust',
+    category: 'language',
+    name: 'Rust',
+    color: '000000',
+    slug: 'rust',
+  },
+  {
+    id: 'kotlin',
+    category: 'language',
+    name: 'Kotlin',
+    color: '7F52FF',
+    slug: 'kotlin',
+  },
+  {
+    id: 'swift',
+    category: 'language',
+    name: 'Swift',
+    color: 'F05138',
+    slug: 'swift',
+  },
+
+  // Package Manager
+  {
+    id: 'npm',
+    category: 'packageManager',
+    name: 'npm',
+    color: 'CB3837',
+    slug: 'npm',
+  },
+  {
+    id: 'yarn',
+    category: 'packageManager',
+    name: 'Yarn',
+    color: '2C8EBB',
+    slug: 'yarn',
+  },
+  {
+    id: 'pnpm',
+    category: 'packageManager',
+    name: 'pnpm',
+    color: 'F69220',
+    slug: 'pnpm',
+  },
+  {
+    id: 'bun',
+    category: 'packageManager',
+    name: 'Bun',
+    color: 'FBF0DF',
+    slug: 'bun',
+  },
+
+  // Testing
+  {
+    id: 'jest',
+    category: 'testing',
+    name: 'Jest',
+    color: 'C21325',
+    slug: 'jest',
+  },
+  {
+    id: 'vitest',
+    category: 'testing',
+    name: 'Vitest',
+    color: '6E9F18',
+    slug: 'vitest',
+  },
+  {
+    id: 'cypress',
+    category: 'testing',
+    name: 'Cypress',
+    color: '17202C',
+    slug: 'cypress',
+  },
+  {
+    id: 'playwright',
+    category: 'testing',
+    name: 'Playwright',
+    color: '2EAD33',
+    slug: 'playwright',
+  },
+  {
+    id: 'storybook',
+    category: 'testing',
+    name: 'Storybook',
+    color: 'FF4785',
+    slug: 'storybook',
+  },
+
+  // Monorepo & Repo Management
+  {
+    id: 'turborepo',
+    category: 'monorepoManagement',
+    name: 'Turborepo',
+    color: 'EF4815',
+    slug: 'turborepo',
+  },
+  {
+    id: 'nx',
+    category: 'monorepoManagement',
+    name: 'Nx',
+    color: '143055',
+    slug: 'nx',
+  },
+  {
+    id: 'git',
+    category: 'monorepoManagement',
+    name: 'Git',
+    color: 'F05032',
+    slug: 'git',
+  },
+  {
+    id: 'github',
+    category: 'monorepoManagement',
+    name: 'GitHub',
+    color: '181717',
+    slug: 'github',
+  },
+
+  // Code Quality
+  {
+    id: 'eslint',
+    category: 'codeQuality',
+    name: 'ESLint',
+    color: '4B32C3',
+    slug: 'eslint',
+  },
+  {
+    id: 'prettier',
+    category: 'codeQuality',
+    name: 'Prettier',
+    color: 'F7B93E',
+    slug: 'prettier',
+  },
+  {
+    id: 'sonar',
+    category: 'codeQuality',
+    name: 'Sonar',
+    color: '4E9BCD',
+    slug: 'sonar',
+  },
+
+  // Messenger
+  {
+    id: 'slack',
+    category: 'messenger',
+    name: 'Slack',
+    color: '4A154B',
+    slug: 'slack',
+  },
+  {
+    id: 'discord',
+    category: 'messenger',
+    name: 'Discord',
+    color: '5865F2',
+    slug: 'discord',
+  },
+  {
+    id: 'msteams',
+    category: 'messenger',
+    name: 'Microsoft Teams',
+    color: '6264A7',
+    slug: 'microsoftteams',
+  },
+
+  // IDE
+  {
+    id: 'vscode',
+    category: 'ide',
+    name: 'Visual Studio Code',
+    color: '007ACC',
+    slug: 'vscode',
+  },
+  {
+    id: 'visualstudio',
+    category: 'ide',
+    name: 'Visual Studio',
+    color: '000000',
+    slug: 'visualstudio',
+  },
+  {
+    id: 'cursor',
+    category: 'ide',
+    name: 'Cursor',
+    color: '000000',
+    slug: 'cursor',
+  },
+  {
+    id: 'intellijidea',
+    category: 'ide',
+    name: 'IntelliJ IDEA',
+    color: 'E53353',
+    slug: 'intellijidea',
+  },
+  {
+    id: 'sublimetext',
+    category: 'ide',
+    name: 'Sublime Text',
+    color: 'FF9800',
+    slug: 'sublimetext',
+  },
+  {
+    id: 'vim',
+    category: 'ide',
+    name: 'Vim',
+    color: '019733',
+    slug: 'vim',
+  },
+  {
+    id: 'pycharm',
+    category: 'ide',
+    name: 'PyCharm',
+    color: '00C4F4',
+    slug: 'pycharm',
+  },
+  {
+    id: 'rider',
+    category: 'ide',
+    name: 'Rider',
+    color: 'FF281C',
+    slug: 'rider',
+  },
+
+  // AI
+  {
+    id: 'chatgpt',
+    category: 'ai',
+    name: 'ChatGPT',
+    color: '000000',
+    slug: 'chatgpt',
+  },
+  {
+    id: 'claude',
+    category: 'ai',
+    name: 'Claude',
+    color: '000000',
+    slug: 'claude',
+  },
+  {
+    id: 'google gemini',
+    category: 'ai',
+    name: 'Google Gemini',
+    color: '8E75B2',
+    slug: 'googlegemini',
+  },
+  {
+    id: 'grok',
+    category: 'ai',
+    name: 'Grok',
+    color: '000000',
+    slug: 'grok',
+  },
+  {
+    id: 'github copilot',
+    category: 'ai',
+    name: 'Copilot',
+    color: '001380',
+    slug: 'githubcopilot',
+  },
+  {
+    id: 'perplexity',
+    category: 'ai',
+    name: 'Perplexity',
+    color: 'FFFFFF',
+    slug: 'perplexity',
+  },
+];
+
 export const FRONTEND_TECH_STACKS: FrontendTechStack[] = [
   // Framework & Library
-  // https://www.statista.com/statistics/1124699/worldwide-developer-survey-most-used-frameworks-web/
-  // https://twentytwentyone.tistory.com/1459
-  { id: 'react', category: 'framework', name: 'React' },
-  { id: 'vue', category: 'framework', name: 'Vue.js' },
-  { id: 'nextjs', category: 'framework', name: 'Next.js' },
-  { id: 'svelte', category: 'framework', name: 'Svelte' },
-  { id: 'sveltekit', category: 'framework', name: 'SvelteKit' },
-  { id: 'solid', category: 'framework', name: 'Solid' },
-  { id: 'astro', category: 'framework', name: 'Astro' },
-  { id: 'angular', category: 'framework', name: 'Angular' },
-  { id: 'qwik', category: 'framework', name: 'Qwik' },
-  { id: 'remix', category: 'framework', name: 'Remix' },
-  // Mobile로 빼야하나? 삭제?
-  { id: 'reactnative', category: 'framework', name: 'React Native' },
-  { id: 'flutter', category: 'framework', name: 'Flutter' },
+  {
+    id: 'react',
+    category: 'framework',
+    name: 'React',
+    color: '61DAFB',
+    slug: 'react',
+  },
+  {
+    id: 'nextjs',
+    category: 'framework',
+    name: 'Next.js',
+    color: '000000',
+    slug: 'nextdotjs',
+  },
+  {
+    id: 'vue',
+    category: 'framework',
+    name: 'Vue.js',
+    color: '4FC08D',
+    slug: 'vuedotjs',
+  },
+  {
+    id: 'nuxt',
+    category: 'framework',
+    name: 'Nuxt',
+    color: '00DC82',
+    slug: 'nuxt',
+  },
+  {
+    id: 'svelte',
+    category: 'framework',
+    name: 'Svelte',
+    color: 'FF3E00',
+    slug: 'svelte',
+  },
+  {
+    id: 'sveltekit',
+    category: 'framework',
+    name: 'SvelteKit',
+    color: 'FF3E00',
+    slug: 'svelte',
+  },
+  {
+    id: 'angular',
+    category: 'framework',
+    name: 'Angular',
+    color: 'DD0031',
+    slug: 'angular',
+  },
+  {
+    id: 'reactnative',
+    category: 'framework',
+    name: 'React Native',
+    color: '61DAFB',
+    slug: 'react',
+  },
+  {
+    id: 'flutter',
+    category: 'framework',
+    name: 'Flutter',
+    color: '02569B',
+    slug: 'flutter',
+  },
 
   // State Management
-  // https://trio.dev/7-top-react-state-management-libraries/
-  { id: 'redux', category: 'stateManagement', name: 'Redux' },
-  { id: 'recoil', category: 'stateManagement', name: 'Recoil' },
-  { id: 'zustand', category: 'stateManagement', name: 'Zustand' },
-  { id: 'jotai', category: 'stateManagement', name: 'Jotai' },
-  { id: 'mobx', category: 'stateManagement', name: 'Mobx' },
-  { id: 'xstate', category: 'stateManagement', name: 'XState' },
-  { id: 'valtio', category: 'stateManagement', name: 'Valtio' },
-  { id: 'tanstackquery', category: 'stateManagement', name: 'TanStack Query' },
+  {
+    id: 'redux',
+    category: 'stateManagement',
+    name: 'Redux',
+    color: '764ABC',
+    slug: 'redux',
+  },
+  {
+    id: 'zustand',
+    category: 'stateManagement',
+    name: 'Zustand',
+    color: '443E38',
+    slug: 'zustand',
+  },
+  {
+    id: 'tanstackquery',
+    category: 'stateManagement',
+    name: 'TanStack Query',
+    color: 'FF4154',
+    slug: 'reactquery',
+  },
+  {
+    id: 'recoil',
+    category: 'stateManagement',
+    name: 'Recoil',
+    color: '3578E5',
+    slug: 'recoil',
+  },
+  {
+    id: 'jotai',
+    category: 'stateManagement',
+    name: 'Jotai',
+    color: '0C0C0C',
+    slug: 'jotai',
+  },
 
   // Styling
-  { id: 'tailwindcss', category: 'styling', name: 'Tailwind CSS' },
-  { id: 'styledcomponents', category: 'styling', name: 'styled-components' },
-  { id: 'emotion', category: 'styling', name: 'Emotion' },
-  { id: 'sass/scss', category: 'styling', name: 'Sass/SCSS' },
-  { id: 'vanillaextract', category: 'styling', name: 'Vanilla Extract' },
+  {
+    id: 'tailwindcss',
+    category: 'styling',
+    name: 'Tailwind CSS',
+    color: '06B6D4',
+    slug: 'tailwindcss',
+  },
+  {
+    id: 'styledcomponents',
+    category: 'styling',
+    name: 'styled-components',
+    color: 'DB7093',
+    slug: 'styledcomponents',
+  },
+  {
+    id: 'emotion',
+    category: 'styling',
+    name: 'Emotion',
+    color: 'D26AC2',
+    slug: 'css3',
+  }, // Emotion 아이콘 부재
+  {
+    id: 'sassscss',
+    category: 'styling',
+    name: 'Sass/SCSS',
+    color: 'CC6699',
+    slug: 'sass',
+  },
+  {
+    id: 'vanillaextract',
+    category: 'styling',
+    name: 'Vanilla Extract',
+    color: '3178C6',
+    slug: 'typescript',
+  },
 
   // UI Library
-  { id: 'mui', category: 'uiLibrary', name: 'MUI' },
-  { id: 'chakraui', category: 'uiLibrary', name: 'Chakra UI' },
-  { id: 'antdesign', category: 'uiLibrary', name: 'Ant Design' },
-  { id: 'shadcn/ui', category: 'uiLibrary', name: 'Shadcn/ui' },
-  { id: 'headlessui', category: 'uiLibrary', name: 'Headless UI' },
+  {
+    id: 'mui',
+    category: 'uiLibrary',
+    name: 'MUI',
+    color: '007FFF',
+    slug: 'mui',
+  },
+  {
+    id: 'chakraui',
+    category: 'uiLibrary',
+    name: 'Chakra UI',
+    color: '319795',
+    slug: 'chakraui',
+  },
+  {
+    id: 'antdesign',
+    category: 'uiLibrary',
+    name: 'Ant Design',
+    color: '0170FE',
+    slug: 'antdesign',
+  },
+  {
+    id: 'shadcn/ui',
+    category: 'uiLibrary',
+    name: 'Shadcn/ui',
+    color: '000000',
+    slug: 'shadcnui',
+  },
+  {
+    id: 'headlessui',
+    category: 'uiLibrary',
+    name: 'Headless UI',
+    color: '66E3FF',
+    slug: 'headlessui',
+  },
 ];
 
 export const BACKEND_TECH_STACKS: BackendTechStack[] = [
   // Framework
-  { id: 'nestjs', category: 'framework', name: 'NestJS' },
-  { id: 'expressjs', category: 'framework', name: 'Express.js' },
-  { id: 'fastify', category: 'framework', name: 'Fastify' },
-  { id: 'springboot', category: 'framework', name: 'Spring Boot' },
-  { id: 'django', category: 'framework', name: 'Django' },
-  { id: 'fastapi', category: 'framework', name: 'FastAPI' },
-  { id: 'flask', category: 'framework', name: 'Flask' },
-  { id: 'laravel', category: 'framework', name: 'Laravel' },
-  { id: 'rubyonrails', category: 'framework', name: 'Ruby on Rails' },
-  { id: 'gin', category: 'framework', name: 'Gin' },
-  { id: 'aspnetcore', category: 'framework', name: 'ASP.NET Core' },
-  { id: 'hono', category: 'framework', name: 'Hono' }, // 최신 트렌드 추가
+  {
+    id: 'nestjs',
+    category: 'framework',
+    name: 'NestJS',
+    color: 'E0234E',
+    slug: 'nestjs',
+  },
+  {
+    id: 'expressjs',
+    category: 'framework',
+    name: 'Express.js',
+    color: '000000',
+    slug: 'express',
+  },
+  {
+    id: 'fastify',
+    category: 'framework',
+    name: 'Fastify',
+    color: '000000',
+    slug: 'fastify',
+  },
+  {
+    id: 'springboot',
+    category: 'framework',
+    name: 'Spring Boot',
+    color: '6DB33F',
+    slug: 'springboot',
+  },
+  {
+    id: 'django',
+    category: 'framework',
+    name: 'Django',
+    color: '092E20',
+    slug: 'django',
+  },
+  {
+    id: 'fastapi',
+    category: 'framework',
+    name: 'FastAPI',
+    color: '009688',
+    slug: 'fastapi',
+  },
+  {
+    id: 'flask',
+    category: 'framework',
+    name: 'Flask',
+    color: '000000',
+    slug: 'flask',
+  },
+  {
+    id: 'laravel',
+    category: 'framework',
+    name: 'Laravel',
+    color: 'FF2D20',
+    slug: 'laravel',
+  },
+  {
+    id: 'rubyonrails',
+    category: 'framework',
+    name: 'Ruby on Rails',
+    color: 'CC0000',
+    slug: 'rubyonrails',
+  },
+  {
+    id: 'gin',
+    category: 'framework',
+    name: 'Gin',
+    color: '00ADD8',
+    slug: 'go',
+  },
+  {
+    id: 'aspnetcore',
+    category: 'framework',
+    name: 'ASP.NET Core',
+    color: '512BD4',
+    slug: 'dotnet',
+  },
+  {
+    id: 'hono',
+    category: 'framework',
+    name: 'Hono',
+    color: 'E36002',
+    slug: 'hono',
+  },
 
-  // API Architecture (New)
-  { id: 'graphql', category: 'apiArchitecture', name: 'GraphQL' },
-  { id: 'apollo', category: 'apiArchitecture', name: 'Apollo Server' },
-  { id: 'trpc', category: 'apiArchitecture', name: 'tRPC' },
-  { id: 'grpc', category: 'apiArchitecture', name: 'gRPC' },
-  { id: 'socketio', category: 'apiArchitecture', name: 'Socket.io' },
+  // API Architecture
+  {
+    id: 'graphql',
+    category: 'apiArchitecture',
+    name: 'GraphQL',
+    color: 'E10098',
+    slug: 'graphql',
+  },
+  {
+    id: 'apollo',
+    category: 'apiArchitecture',
+    name: 'Apollo Server',
+    color: '311C87',
+    slug: 'apollographql',
+  },
+  {
+    id: 'trpc',
+    category: 'apiArchitecture',
+    name: 'tRPC',
+    color: '2596BE',
+    slug: 'trpc',
+  },
+  {
+    id: 'grpc',
+    category: 'apiArchitecture',
+    name: 'gRPC',
+    color: '244C5A',
+    slug: 'google',
+  },
+  {
+    id: 'socketio',
+    category: 'apiArchitecture',
+    name: 'Socket.io',
+    color: '010101',
+    slug: 'socketdotio',
+  },
 
-  // Documentation (New)
-  { id: 'swagger', category: 'documentation', name: 'Swagger' },
-  { id: 'postman', category: 'documentation', name: 'Postman' }, // 문서화 도구로 분류
+  // Documentation
+  {
+    id: 'swagger',
+    category: 'documentation',
+    name: 'Swagger',
+    color: '85EA2D',
+    slug: 'swagger',
+  },
+  {
+    id: 'postman',
+    category: 'documentation',
+    name: 'Postman',
+    color: 'FF6C37',
+    slug: 'postman',
+  },
 ];
 
 export const DATABASE_TECH_STACKS: DatabaseTechStack[] = [
   // Main Database
-  // https://survey.stackoverflow.co/2025/technology#most-popular-technologies-language-write-ins
-  { id: 'mysql', category: 'mainDatabase', name: 'MySQL' },
-  { id: 'postgresql', category: 'mainDatabase', name: 'PostgreSQL' },
-  { id: 'sqlite', category: 'mainDatabase', name: 'SQLite' },
-  { id: 'mariadb', category: 'mainDatabase', name: 'MariaDB' },
-  { id: 'mongodb', category: 'mainDatabase', name: 'MongoDB' },
-  { id: 'dynamodb', category: 'mainDatabase', name: 'DynamoDB' },
-  { id: 'supabase', category: 'mainDatabase', name: 'Supabase' },
-  { id: 'firebase', category: 'mainDatabase', name: 'Firebase' },
-  { id: 'elasticsearch', category: 'mainDatabase', name: 'Elasticsearch' },
-  { id: 'oracle', category: 'mainDatabase', name: 'Oracle' },
+  {
+    id: 'mysql',
+    category: 'mainDatabase',
+    name: 'MySQL',
+    color: '4479A1',
+    slug: 'mysql',
+  },
+  {
+    id: 'postgresql',
+    category: 'mainDatabase',
+    name: 'PostgreSQL',
+    color: '4169E1',
+    slug: 'postgresql',
+  },
+  {
+    id: 'mariadb',
+    category: 'mainDatabase',
+    name: 'MariaDB',
+    color: '003545',
+    slug: 'mariadb',
+  },
+  {
+    id: 'mongodb',
+    category: 'mainDatabase',
+    name: 'MongoDB',
+    color: '47A248',
+    slug: 'mongodb',
+  },
+  {
+    id: 'redis',
+    category: 'cachingAndMessageQueue',
+    name: 'Redis',
+    color: 'DC382D',
+    slug: 'redis',
+  },
+  {
+    id: 'dynamodb',
+    category: 'mainDatabase',
+    name: 'DynamoDB',
+    color: '4053D6',
+    slug: 'amazondynamodb',
+  },
+  {
+    id: 'supabase',
+    category: 'mainDatabase',
+    name: 'Supabase',
+    color: '3ECF8E',
+    slug: 'supabase',
+  },
+  {
+    id: 'firebase',
+    category: 'mainDatabase',
+    name: 'Firebase',
+    color: 'DD2C00',
+    slug: 'firebase',
+  },
 
-  // ORM & Query Builder (Moved from Backend)
-  { id: 'prisma', category: 'ormAndQueryBuilder', name: 'Prisma' },
-  { id: 'typeorm', category: 'ormAndQueryBuilder', name: 'TypeORM' },
-  { id: 'drizzleorm', category: 'ormAndQueryBuilder', name: 'Drizzle ORM' },
-  { id: 'mongoose', category: 'ormAndQueryBuilder', name: 'Mongoose' },
+  // ORM & Query Builder
+  {
+    id: 'prisma',
+    category: 'ormAndQueryBuilder',
+    name: 'Prisma',
+    color: '2D3748',
+    slug: 'prisma',
+  },
+  {
+    id: 'typeorm',
+    category: 'ormAndQueryBuilder',
+    name: 'TypeORM',
+    color: 'FE0C05',
+    slug: 'typeorm',
+  },
+  {
+    id: 'drizzleorm',
+    category: 'ormAndQueryBuilder',
+    name: 'Drizzle ORM',
+    color: 'C5F74F',
+    slug: 'drizzle',
+  },
+  {
+    id: 'mongoose',
+    category: 'ormAndQueryBuilder',
+    name: 'Mongoose',
+    color: '880000',
+    slug: 'mongodb',
+  },
   {
     id: 'jpa/hibernate',
     category: 'ormAndQueryBuilder',
     name: 'JPA / Hibernate',
+    color: '59666C',
+    slug: 'hibernate',
   },
-  { id: 'mybatis', category: 'ormAndQueryBuilder', name: 'MyBatis' },
-  { id: 'sequelize', category: 'ormAndQueryBuilder', name: 'Sequelize' },
-  { id: 'redis', category: 'cachingAndMessageQueue', name: 'Redis' },
+  {
+    id: 'mybatis',
+    category: 'ormAndQueryBuilder',
+    name: 'MyBatis',
+    color: 'C63B2D',
+    slug: 'java',
+  },
+  {
+    id: 'sequelize',
+    category: 'ormAndQueryBuilder',
+    name: 'Sequelize',
+    color: '52B0E7',
+    slug: 'sequelize',
+  },
 
   // Caching & Message Queue
-  { id: 'kafka', category: 'cachingAndMessageQueue', name: 'Kafka' },
-  { id: 'rabbitmq', category: 'cachingAndMessageQueue', name: 'RabbitMQ' },
-  { id: 'memcached', category: 'cachingAndMessageQueue', name: 'Memcached' },
+  {
+    id: 'kafka',
+    category: 'cachingAndMessageQueue',
+    name: 'Kafka',
+    color: '231F20',
+    slug: 'apachekafka',
+  },
+  {
+    id: 'rabbitmq',
+    category: 'cachingAndMessageQueue',
+    name: 'RabbitMQ',
+    color: 'FF6600',
+    slug: 'rabbitmq',
+  },
+  {
+    id: 'memcached',
+    category: 'cachingAndMessageQueue',
+    name: 'Memcached',
+    color: 'A5CF45',
+    slug: 'memcached',
+  },
 
-  // File Storage (New)
-  { id: 's3', category: 'fileStorage', name: 'AWS S3' },
-  { id: 'minio', category: 'fileStorage', name: 'MinIO' },
+  // File Storage
+  {
+    id: 's3',
+    category: 'fileStorage',
+    name: 'AWS S3',
+    color: '569A31',
+    slug: 'amazons3',
+  },
+  {
+    id: 'minio',
+    category: 'fileStorage',
+    name: 'MinIO',
+    color: 'C72E49',
+    slug: 'minio',
+  },
 ];
 
 export const INFRASTRUCTURE_TECH_STACKS: InfrastructureTechStack[] = [
   // Deployment
-  { id: 'aws', category: 'deployment', name: 'AWS' },
-  { id: 'gcp', category: 'deployment', name: 'GCP' },
-  { id: 'azure', category: 'deployment', name: 'Azure' },
-  { id: 'vercel', category: 'deployment', name: 'Vercel' },
-  { id: 'netlify', category: 'deployment', name: 'Netlify' },
-  { id: 'docker', category: 'deployment', name: 'Docker' },
-  { id: 'kubernetes', category: 'deployment', name: 'Kubernetes' },
-  { id: 'nginx', category: 'deployment', name: 'Nginx' },
-  { id: 'cloudflare', category: 'deployment', name: 'Cloudflare' },
+  {
+    id: 'aws',
+    category: 'deployment',
+    name: 'AWS',
+    color: '232F3E',
+    slug: 'amazonwebservices',
+  },
+  {
+    id: 'gcp',
+    category: 'deployment',
+    name: 'GCP',
+    color: '4285F4',
+    slug: 'googlecloud',
+  },
+  {
+    id: 'azure',
+    category: 'deployment',
+    name: 'Azure',
+    color: '0078D4',
+    slug: 'microsoftazure',
+  },
+  {
+    id: 'vercel',
+    category: 'deployment',
+    name: 'Vercel',
+    color: '000000',
+    slug: 'vercel',
+  },
+  {
+    id: 'netlify',
+    category: 'deployment',
+    name: 'Netlify',
+    color: '00C7B7',
+    slug: 'netlify',
+  },
+  {
+    id: 'docker',
+    category: 'deployment',
+    name: 'Docker',
+    color: '2496ED',
+    slug: 'docker',
+  },
+  {
+    id: 'kubernetes',
+    category: 'deployment',
+    name: 'Kubernetes',
+    color: '326CE5',
+    slug: 'kubernetes',
+  },
+  {
+    id: 'nginx',
+    category: 'deployment',
+    name: 'Nginx',
+    color: '009639',
+    slug: 'nginx',
+  },
+  {
+    id: 'cloudflare',
+    category: 'deployment',
+    name: 'Cloudflare',
+    color: 'F38020',
+    slug: 'cloudflare',
+  },
 
   // CI/CD
-  { id: 'githubactions', category: 'CI/CD', name: 'GitHub Actions' },
-  { id: 'jenkins', category: 'CI/CD', name: 'Jenkins' },
-  { id: 'gitlabci', category: 'CI/CD', name: 'GitLab CI' },
-  { id: 'circleci', category: 'CI/CD', name: 'CircleCI' }, // 추가
+  {
+    id: 'githubactions',
+    category: 'CI/CD',
+    name: 'GitHub Actions',
+    color: '2088FF',
+    slug: 'githubactions',
+  },
+  {
+    id: 'jenkins',
+    category: 'CI/CD',
+    name: 'Jenkins',
+    color: 'D24939',
+    slug: 'jenkins',
+  },
+  {
+    id: 'gitlabci',
+    category: 'CI/CD',
+    name: 'GitLab CI',
+    color: 'FC6D26',
+    slug: 'gitlab',
+  },
+  {
+    id: 'circleci',
+    category: 'CI/CD',
+    name: 'CircleCI',
+    color: '343434',
+    slug: 'circleci',
+  },
 
-  // Monitoring & Logging (New)
-  { id: 'sentry', category: 'monitoringAndLogging', name: 'Sentry' },
-  { id: 'datadog', category: 'monitoringAndLogging', name: 'Datadog' },
-  { id: 'grafana', category: 'monitoringAndLogging', name: 'Grafana' },
-  { id: 'prometheus', category: 'monitoringAndLogging', name: 'Prometheus' },
+  // Monitoring & Logging
+  {
+    id: 'sentry',
+    category: 'monitoringAndLogging',
+    name: 'Sentry',
+    color: '362D59',
+    slug: 'sentry',
+  },
+  {
+    id: 'datadog',
+    category: 'monitoringAndLogging',
+    name: 'Datadog',
+    color: '632CA6',
+    slug: 'datadog',
+  },
+  {
+    id: 'grafana',
+    category: 'monitoringAndLogging',
+    name: 'Grafana',
+    color: 'F46800',
+    slug: 'grafana',
+  },
+  {
+    id: 'prometheus',
+    category: 'monitoringAndLogging',
+    name: 'Prometheus',
+    color: 'E6522C',
+    slug: 'prometheus',
+  },
 ];
-
-export const COMMON_TECH_STACKS: CommonTechStack[] = [
-  // Languages (Moved from Front/Back)
-  { id: 'html5', category: 'language', name: 'HTML5' },
-  { id: 'css', category: 'language', name: 'CSS' },
-  { id: 'javascript', category: 'language', name: 'JavaScript' },
-  { id: 'typescript', category: 'language', name: 'TypeScript' },
-  { id: 'java', category: 'language', name: 'Java' },
-  { id: 'python', category: 'language', name: 'Python' },
-  { id: 'go', category: 'language', name: 'Go' },
-  { id: 'rust', category: 'language', name: 'Rust' },
-  { id: 'kotlin', category: 'language', name: 'Kotlin' },
-  { id: 'swift', category: 'language', name: 'Swift' },
-  { id: 'csharp', category: 'language', name: 'C#' },
-  { id: 'c++', category: 'language', name: 'C++' },
-  { id: 'c', category: 'language', name: 'C' },
-
-  // Package Manager (New)
-  { id: 'npm', category: 'packageManager', name: 'npm' },
-  { id: 'yarn', category: 'packageManager', name: 'Yarn' },
-  { id: 'pnpm', category: 'packageManager', name: 'pnpm' },
-  { id: 'bun', category: 'packageManager', name: 'Bun' },
-
-  // Testing (New)
-  { id: 'jest', category: 'testing', name: 'Jest' },
-  { id: 'vitest', category: 'testing', name: 'Vitest' },
-  { id: 'cypress', category: 'testing', name: 'Cypress' },
-  { id: 'playwright', category: 'testing', name: 'Playwright' },
-  { id: 'storybook', category: 'testing', name: 'Storybook' },
-
-  // Monorepo & Repo Management (New)
-  { id: 'turborepo', category: 'monorepoManagement', name: 'Turborepo' },
-  { id: 'nx', category: 'monorepoManagement', name: 'Nx' },
-  { id: 'git', category: 'monorepoManagement', name: 'Git' },
-  { id: 'github', category: 'monorepoManagement', name: 'GitHub' },
-
-  // Code Quality
-  { id: 'eslint', category: 'codeQuality', name: 'ESLint' },
-  { id: 'prettier', category: 'codeQuality', name: 'Prettier' },
-  { id: 'sonarqube', category: 'codeQuality', name: 'SonarQube' },
-
-  // Messenger
-  { id: 'slack', category: 'messenger', name: 'Slack' },
-  { id: 'discord', category: 'messenger', name: 'Discord' },
-  { id: 'msteams', category: 'messenger', name: 'Microsoft Teams' },
-  { id: 'kakaotalk', category: 'messenger', name: 'KakaoTalk' },
-
-  // IDE
-  { id: 'vscode', category: 'ide', name: 'Visual Studio Code' },
-  { id: 'visualstudio', category: 'ide', name: 'Visual Studio' },
-  { id: 'cursor', category: 'ide', name: 'Cursor' },
-  { id: 'vim', category: 'ide', name: 'Vim' },
-  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
-  { id: 'intellijidea', category: 'ide', name: 'IntelliJ IDEA' },
-  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
-  { id: 'sublime', category: 'ide', name: 'Sublime Text' },
-  { id: 'riders', category: 'ide', name: 'Rider' },
-
-  // AI
-  { id: 'google gemini', category: 'ai', name: 'Google Gemini' },
-  { id: 'chatgpt', category: 'ai', name: 'ChatGPT' },
-  { id: 'claude', category: 'ai', name: 'Claude' },
-  { id: 'github copilot', category: 'ai', name: 'GitHub Copilot' },
-  { id: 'grok', category: 'ai', name: 'Grok' },
-  { id: 'perplexity', category: 'ai', name: 'Perplexity' },
-];
-
 export const TECH_STACK_GROUPS = [
   {
     title: '공통 및 기반',
@@ -218,7 +914,7 @@ export const TECH_STACK_GROUPS = [
       monorepoManagement: '모노레포 관리',
       codeQuality: '코드 퀄리티',
       messenger: '메신저',
-      IDE: 'IDE',
+      ide: 'IDE',
       ai: 'AI',
     },
   },
@@ -270,23 +966,3 @@ export const ALL_TECH_STACKS: TechStack[] = [
   ...DATABASE_TECH_STACKS,
   ...INFRASTRUCTURE_TECH_STACKS,
 ];
-
-// 예외 처리가 필요한 이름들을 매핑(Simple Icons 슬러그 기준)
-export const iconMap: Record<string, string> = {
-  'React Native': 'react',
-  'C#': 'csharp',
-  'Express.js': 'express',
-  GCP: 'googlecloud',
-  NCP: 'naver',
-  'Photoshop / Illustrator': 'adobephotoshop',
-  'styled-components': 'styledcomponents',
-  SvelteKit: 'svelte',
-  'TanStack Query': 'tanstack',
-  'Shadcn/ui': 'shadcnui',
-  'Drizzle ORM': 'drizzle',
-  Cassandra: 'apachecassandra',
-  'JPA / Hibernate': 'hibernate',
-  MyBatis: 'mybatis',
-  Kafka: 'kafka',
-  'GitLab CI': 'gitlab',
-};

@@ -92,7 +92,11 @@ function TechStackModal({
       </dialog>
       <DragOverlay>
         {active?.data.current?.content && (
-          <TechStackItem techName={active.data.current.content.name} />
+          <TechStackItem
+            name={active.data.current.content.name}
+            slug={active.data.current.content.slug}
+            color={active.data.current.content.color}
+          />
         )}
       </DragOverlay>
     </ReactPortal>

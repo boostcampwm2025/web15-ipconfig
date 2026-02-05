@@ -11,6 +11,8 @@ export interface TechStack {
   id: string;
   category: TechStackCategory;
   name: string;
+  color: string;
+  slug: string;
 }
 
 export interface FrontendTechStack extends TechStack {

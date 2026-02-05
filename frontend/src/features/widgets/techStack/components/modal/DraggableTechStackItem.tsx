@@ -3,12 +3,18 @@ import TechStackItem from '@/features/widgets/techStack/components/TechStackItem
 import { useDraggable } from '@dnd-kit/core';
 import type { TechStack } from '@/features/widgets/techStack/types/techStack';
 
-function DraggableTechStackItem({ id, name, category }: TechStack) {
+function DraggableTechStackItem({
+  id,
+  name,
+  category,
+  color,
+  slug,
+}: TechStack) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `tech-stack-${id}`,
     data: {
       support: ['techStackWidget'] as const,
-      content: { id, name, category },
+      content: { id, name, category, color, slug },
     },
   });
 
@@ -20,7 +26,7 @@ function DraggableTechStackItem({ id, name, category }: TechStack) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <TechStackItem techName={name} />
+      <TechStackItem name={name} slug={slug} color={color} />
     </div>
   );
 }

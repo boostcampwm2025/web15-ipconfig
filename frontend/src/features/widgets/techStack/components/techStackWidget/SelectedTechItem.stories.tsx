@@ -10,6 +10,8 @@ const meta = {
   },
   args: {
     name: 'React',
+    slug: 'react',
+    color: 'red',
     onRemove: fn(),
   },
   tags: ['autodocs'],
@@ -31,6 +33,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     name: 'React',
+    slug: 'react',
+    color: 'red',
     onRemove: fn(),
   },
 };
@@ -38,17 +42,44 @@ export const Default: Story = {
 export const TypeScript: Story = {
   args: {
     name: 'TypeScript',
+    slug: 'typescript',
+    color: 'blue',
     onRemove: fn(),
   },
 };
 
 export const MultipleItems: Story = {
-  render: (args: { name: string; onRemove: () => void }) => (
+  render: (args: {
+    name: string;
+    slug: string;
+    color: string;
+    onRemove: () => void;
+  }) => (
     <div className="flex flex-wrap gap-2">
-      <SelectedTechItem name={args.name} onRemove={args.onRemove} />
-      <SelectedTechItem name="TypeScript" onRemove={args.onRemove} />
-      <SelectedTechItem name="Node.js" onRemove={args.onRemove} />
-      <SelectedTechItem name="Docker" onRemove={args.onRemove} />
+      <SelectedTechItem
+        name={args.name}
+        slug={args.slug}
+        color={args.color}
+        onRemove={args.onRemove}
+      />
+      <SelectedTechItem
+        name="TypeScript"
+        slug="typescript"
+        color="blue"
+        onRemove={args.onRemove}
+      />
+      <SelectedTechItem
+        name="Node.js"
+        slug="nodejs"
+        color="green"
+        onRemove={args.onRemove}
+      />
+      <SelectedTechItem
+        name="Docker"
+        slug="docker"
+        color="purple"
+        onRemove={args.onRemove}
+      />
     </div>
   ),
 };

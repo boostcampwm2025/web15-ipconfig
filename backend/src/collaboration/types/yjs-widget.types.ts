@@ -47,6 +47,8 @@ export interface YjsTechStackContent {
     id: string;
     name: string;
     category: string;
+    slug: string;
+    color: string;
   }>;
 }
 
