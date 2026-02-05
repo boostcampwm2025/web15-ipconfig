@@ -1,4 +1,5 @@
 import { Module, Global } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { CollaborationService } from './collaboration.service';
@@ -20,14 +21,15 @@ import { DEFAULT_REDIS_PORT } from '../common/constants/shared.constants';
     },
     {
       provide: Redis,
-      inject: [WINSTON_MODULE_PROVIDER],
-      useFactory: (logger: Logger) => {
+      inject: [WINSTON_MODULE_PROVIDER, ConfigService],
+      useFactory: (logger: Logger, configService: ConfigService) => {
+        const redisHost = configService.get<string>('redis.host');
+        const redisPort = configService.get<number>('redis.port');
+        const defaultPort = DEFAULT_REDIS_PORT;
+
         const redis = new Redis({
-          host: process.env.REDIS_HOST || 'localhost',
-          port: parseInt(
-            process.env.REDIS_PORT || DEFAULT_REDIS_PORT.toString(),
-            10,
-          ),
+          host: redisHost || 'localhost',
+          port: redisPort || defaultPort,
         });
 
         redis.on('connect', () => {
