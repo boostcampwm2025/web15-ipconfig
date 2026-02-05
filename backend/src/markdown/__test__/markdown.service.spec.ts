@@ -530,19 +530,19 @@ describe('MarkdownService', () => {
         createdAt: Date.now(),
         content: {
           communication: {
-            urgent: {
+            meeting: {
               selectedId: 'u1',
               options: { u1: { value: '전화', createdAt: 0 } },
             },
-            sync: {
+            chat: {
               selectedId: 's1',
               options: { s1: { value: 'Zoom', createdAt: 0 } },
             },
-            async: {
+            doc: {
               selectedId: 'a1',
               options: { a1: { value: 'Slack', createdAt: 0 } },
             },
-            official: {
+            announce: {
               selectedId: 'o1',
               options: { o1: { value: '이메일', createdAt: 0 } },
             },
@@ -590,10 +590,10 @@ describe('MarkdownService', () => {
         createdAt: Date.now(),
         content: {
           communication: {
-            urgent: { selectedId: '', options: {} },
-            sync: { selectedId: '', options: {} },
-            async: { selectedId: '', options: {} },
-            official: { selectedId: '', options: {} },
+            meeting: { selectedId: '', options: {} },
+            chat: { selectedId: '', options: {} },
+            doc: { selectedId: '', options: {} },
+            announce: { selectedId: '', options: {} },
           },
           sla: { responseTime: 48 },
           timeManagement: {

@@ -10,8 +10,8 @@ import { Logger } from 'winston';
 import { Hocuspocus, Extension } from '@hocuspocus/server';
 import { Redis as RedisExtension } from '@hocuspocus/extension-redis';
 import { Database } from '@hocuspocus/extension-database';
-import { IncomingMessage } from 'http';
-import { Duplex } from 'stream';
+import { IncomingMessage } from 'node:http';
+import { Duplex } from 'node:stream';
 import { WebSocketServer } from 'ws';
 import { StorageAdapter } from './storage/storage.interface';
 import {

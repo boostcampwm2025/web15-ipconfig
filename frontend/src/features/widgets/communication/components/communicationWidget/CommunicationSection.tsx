@@ -1,25 +1,38 @@
+import { useMemo } from 'react';
 import type { CommunicationData } from '@/features/widgets/communication/types/communication';
 
 import { cn } from '@/common/lib/utils';
 import { COMMUNICATION_ITEMS } from '@/features/widgets/communication/constants/communicationItems';
+import SelectInput from '@/common/components/SelectInput';
 
 interface CommunicationSectionProps {
   data: CommunicationData['communication'];
   onChange: (key: string, value: string) => void;
 }
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/common/components/shadcn/select';
-
 export function CommunicationSection({
   data,
   onChange,
 }: CommunicationSectionProps) {
+  const allCustomOptions = useMemo(() => {
+    const optionsMap: Record<string, string[]> = {};
+    COMMUNICATION_ITEMS.forEach((item) => {
+      const itemOptions = Object.values(data[item.key].options).map(
+        (o) => o.value,
+      );
+      const selectedId = data[item.key].selectedId;
+      optionsMap[item.key] = [
+        ...itemOptions.map((opt) => `[${item.label}] ${opt}`),
+        ...(selectedId && !itemOptions.includes(selectedId)
+          ? [`[${item.label}] ${selectedId}`]
+          : []),
+      ];
+    });
+    return optionsMap;
+  }, [data]);
+
+  const defaultGroups = useMemo(() => [], []);
+
   return (
     <div className="space-y-3">
       <h3 className="text-secondary-foreground flex items-center gap-2 text-sm font-semibold">
@@ -44,25 +57,26 @@ export function CommunicationSection({
                 {item.label}
               </span>
             </div>
-            <Select
-              value={data[item.key].selectedId}
-              onValueChange={(value) => onChange(item.key, value)}
-            >
-              <SelectTrigger className="h-8 w-full text-xs font-medium">
-                <SelectValue placeholder="선택해주세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(data[item.key].options).map((opt) => (
-                  <SelectItem
-                    key={opt.value}
-                    value={opt.value}
-                    className="text-xs"
-                  >
-                    {opt.value}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SelectInput
+              selectedValue={
+                data[item.key].selectedId
+                  ? `[${item.label}] ${data[item.key].selectedId}`
+                  : ''
+              }
+              setSelectedValue={(value) => {
+                const match = value.match(/^\[(.*?)\] (.*)$/);
+                if (match) {
+                  onChange(item.key, match[2]);
+                } else {
+                  onChange(item.key, value);
+                }
+              }}
+              customOptions={allCustomOptions[item.key]}
+              defaultGroups={defaultGroups}
+              customCategoryName={item.label}
+              placeholder={'플랫폼을 선택해주세요...'}
+              searchPlaceholder={'플랫폼을 입력하세요...'}
+            />
           </div>
         ))}
       </div>

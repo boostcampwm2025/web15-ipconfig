@@ -43,8 +43,9 @@ export const initializeUserAwareness = (
     });
     // 커서 위치 등록 (Awareness)
     provider?.awareness?.setLocalStateField('cursor', {
-      x: -100,
-      y: -100,
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      type: 'default',
       ts: Date.now(),
     });
     // 유저의 조작 상태 초기화 (Awareness)

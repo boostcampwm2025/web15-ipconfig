@@ -3,17 +3,18 @@ import { getTechIconUrl } from '@/features/widgets/techStack/utils/getTechIconUr
 import { Badge } from '@/common/components/shadcn/badge';
 
 interface TechIconProps {
-  name: string;
+  slug: string;
+  color: string;
 }
 
-function TechIcon({ name }: TechIconProps) {
+function TechIcon({ slug, color }: TechIconProps) {
   const [error, setError] = useState(false);
-  const iconUrl = getTechIconUrl(name);
+  const iconUrl = getTechIconUrl(slug, color);
 
   if (error) {
     return (
       <Badge className="h-5 w-5 rounded-full bg-gray-200 font-bold text-gray-600">
-        {name.substring(0, 1)}
+        {slug.substring(0, 1)}
       </Badge>
     );
   }
@@ -21,22 +22,28 @@ function TechIcon({ name }: TechIconProps) {
   return (
     <img
       src={iconUrl}
-      alt={name}
+      alt={slug}
       className="h-5 w-5 object-contain"
       onError={() => setError(true)}
     />
   );
 }
 
-export function TechStackItem({ techName }: { techName: string }) {
+interface TechStackItemProps {
+  name: string;
+  slug: string;
+  color: string;
+}
+
+export function TechStackItem({ name, slug, color }: TechStackItemProps) {
   return (
     <Badge
       variant="outline"
-      className="hover:border-primary flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg bg-gray-700 px-2 py-1 transition-colors select-none hover:bg-gray-700"
+      className="hover:border-primary bg-card hover:bg-accent flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg px-2 py-1 transition-colors select-none"
     >
-      <TechIcon name={techName} />
+      <TechIcon slug={slug} color={color} />
       <div className="text-center text-xs font-medium text-wrap text-gray-300">
-        {techName}
+        {name}
       </div>
     </Badge>
   );

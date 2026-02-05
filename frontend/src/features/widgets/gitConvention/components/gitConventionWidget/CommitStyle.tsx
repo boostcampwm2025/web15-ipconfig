@@ -2,6 +2,8 @@ import type { CommitConventionState } from '@/features/widgets/gitConvention/typ
 import { DEFAULT_COMMIT_TYPES } from '@/features/widgets/gitConvention/constants/commitTypes';
 import { cn } from '@/common/lib/utils';
 import { LuCheck } from 'react-icons/lu';
+import { Button } from '@/common/components/shadcn/button';
+import LabelButton from '@/common/components/LabelButton';
 
 interface CommitStyleProps {
   convention: CommitConventionState;
@@ -25,7 +27,10 @@ export function CommitStyle({ convention, onChange }: CommitStyleProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <label className="text-muted-foreground ml-1 text-xs font-medium">
+      <label
+        htmlFor="commit-types"
+        className="text-muted-foreground ml-1 text-xs font-medium"
+      >
         Commit Types
       </label>
 
@@ -33,29 +38,12 @@ export function CommitStyle({ convention, onChange }: CommitStyleProps) {
         {DEFAULT_COMMIT_TYPES.map((type) => {
           const isChecked = convention.commitTypes?.selectedIds.includes(type);
           return (
-            <button
+            <LabelButton
               key={type}
+              label={type}
+              isSelected={isChecked}
               onClick={() => toggleType(type)}
-              className={cn(
-                'flex items-center gap-2 rounded-md border p-2 text-left text-sm transition-all',
-                'hover:bg-accent hover:text-accent-foreground',
-                isChecked
-                  ? 'border-primary bg-primary/5 text-primary ring-primary/20 ring-1'
-                  : 'border-muted bg-card text-muted-foreground',
-              )}
-            >
-              <div
-                className={cn(
-                  'flex h-4 w-4 items-center justify-center rounded border transition-colors',
-                  isChecked
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-muted-foreground/30',
-                )}
-              >
-                {isChecked && <LuCheck size={10} />}
-              </div>
-              <span>{type}</span>
-            </button>
+            />
           );
         })}
       </div>

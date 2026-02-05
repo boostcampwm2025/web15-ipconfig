@@ -18,7 +18,7 @@ function InviteButton() {
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="sm">
+          <Button variant="default" size="sm">
             공유하기
           </Button>
         </DropdownMenuTrigger>
@@ -30,7 +30,7 @@ function InviteButton() {
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <DialogTrigger
-                className="flex w-full items-center gap-2"
+                className="flex w-full cursor-pointer items-center gap-2"
                 onClick={() => {
                   try {
                     handleCopyToClipboard(window.location.href);
@@ -48,7 +48,7 @@ function InviteButton() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <DialogTrigger
-                className="flex w-full items-center gap-2"
+                className="flex w-full cursor-pointer items-center gap-2"
                 onClick={() => {
                   try {
                     const { workspaceId } = useWorkspaceInfoStore.getState();

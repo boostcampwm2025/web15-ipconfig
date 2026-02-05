@@ -28,12 +28,12 @@ export default function SortableTag({
       style={style}
       {...attributes}
       {...listeners}
-      className="flex cursor-grab items-center gap-2 rounded-md border border-gray-700 bg-[#222] px-3 py-1 select-none"
+      className="border-border bg-muted flex cursor-grab items-center gap-2 rounded-md border px-3 py-1 select-none"
     >
       {editMode ? (
         <input
           autoFocus
-          className="border-b border-gray-600 bg-transparent text-gray-200 focus:outline-none"
+          className="border-border text-foreground border-b bg-transparent focus:outline-none"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onBlur={() => {
@@ -50,14 +50,14 @@ export default function SortableTag({
       ) : (
         <span
           onDoubleClick={() => setEditMode(true)}
-          className="text-sm text-gray-200"
+          className="text-foreground text-sm"
         >
           {name}
         </span>
       )}
 
       <button
-        className="text-gray-400 hover:text-red-400"
+        className="text-muted-foreground hover:text-destructive"
         onClick={(e) => {
           e.stopPropagation();
           onDelete(id);

@@ -17,12 +17,17 @@ import {
 import { Input } from '@/common/components/shadcn/input';
 import { useTeckStackSearch } from '@/common/hooks/useTeckStackSearch';
 import { useSelectOptions } from '@/common/hooks/useSelectOptions';
+import { Button } from './shadcn/button';
 
 interface SelectInputProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   customOptions?: string[];
   onCreateOption?: (value: string) => void;
+  defaultGroups?: { category: string; options: string[] }[];
+  customCategoryName?: string;
+  placeholder?: string;
+  searchPlaceholder?: string;
 }
 
 function SelectInput({
@@ -30,12 +35,17 @@ function SelectInput({
   setSelectedValue,
   customOptions = [],
   onCreateOption,
+  defaultGroups,
+  customCategoryName = '커스텀 주제',
+  placeholder = '주제를 선택해주세요...',
+  searchPlaceholder = '원하는 주제를 입력하세요...',
 }: SelectInputProps) {
   const [searchText, setSearchText] = useState('');
   const { setValue, errors, handleSubmit } = useTeckStackSearch();
   const { filteredOptions, isExisting } = useSelectOptions(
     searchText,
     customOptions,
+    defaultGroups,
   );
   // 입력으로 인한 focus 잃어버리는 거 해결
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +68,7 @@ function SelectInput({
     const validSearchText = data.search;
     if (!validSearchText) return;
 
-    const fullValue = `[커스텀 주제] ${validSearchText}`;
+    const fullValue = `[${customCategoryName}] ${validSearchText}`;
 
     if (onCreateOption) onCreateOption(fullValue);
     else setSelectedValue(fullValue);
@@ -81,7 +91,7 @@ function SelectInput({
     <Select value={selectedValue} onValueChange={setSelectedValue}>
       <SelectTrigger className="w-full justify-between px-3 font-normal">
         <span className="min-w-0 flex-1 truncate text-left">
-          <SelectValue placeholder="주제를 선택해주세요..." />
+          <SelectValue placeholder={placeholder} />
         </span>
       </SelectTrigger>
 
@@ -97,7 +107,7 @@ function SelectInput({
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
             <Input
               ref={inputRef}
-              placeholder="원하는 주제를 입력하세요..."
+              placeholder={searchPlaceholder}
               value={searchText}
               onChange={handleSearchChange}
               onKeyDown={handleInputKeyDown}
@@ -144,7 +154,8 @@ function SelectInput({
               <div className="text-muted-foreground px-2 py-1 text-[10px] font-semibold">
                 새로운 주제 추가
               </div>
-              <button
+              <Button
+                variant="ghost"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -152,13 +163,13 @@ function SelectInput({
                   handleCreate();
                 }}
                 className={cn(
-                  'relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none select-none',
+                  'relative flex w-full items-center justify-start gap-2 py-1.5 pr-2 pl-2 text-sm outline-none select-none',
                   'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
                 )}
               >
                 <Plus className="h-4 w-4 shrink-0" />
                 <span className="truncate">"{searchText}" 추가하기</span>
-              </button>
+              </Button>
             </div>
           )}
 

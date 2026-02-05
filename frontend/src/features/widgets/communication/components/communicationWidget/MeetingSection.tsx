@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/common/components/shadcn/select';
+import { Button } from '@/common/components/shadcn/button';
 
 export function MeetingSection({ data, onChange }: MeetingSectionProps) {
   return (
@@ -62,13 +63,14 @@ export function MeetingSection({ data, onChange }: MeetingSectionProps) {
           {FEEDBACK_STYLES.map((style) => {
             const isSelected = data.feedbackStyle === style;
             return (
-              <button
+              <Button
+                variant={'ghost'}
                 key={style}
                 onClick={() => {
                   onChange('feedbackStyle', style);
                 }}
                 className={cn(
-                  'relative flex h-14 flex-col items-center justify-center gap-1 rounded-lg border transition-all duration-200',
+                  'relative flex h-14 flex-col gap-1 border transition-all duration-200',
                   isSelected
                     ? 'border-primary bg-primary/5 text-primary ring-primary/20 shadow-sm ring-1'
                     : 'border-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground hover:border-accent-foreground/50',
@@ -82,7 +84,7 @@ export function MeetingSection({ data, onChange }: MeetingSectionProps) {
                 <span className="text-xs font-bold">
                   {FEEDBACK_STYLE_LABELS[style]}
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>

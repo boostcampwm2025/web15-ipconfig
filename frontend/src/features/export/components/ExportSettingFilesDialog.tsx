@@ -7,16 +7,16 @@ import {
   DialogFooter,
 } from '@/common/components/shadcn/dialog';
 import { Button } from '@/common/components/shadcn/button';
-import { LuSettings, LuArrowLeft, LuCheck, LuCopy } from 'react-icons/lu';
+import { LuSettings, LuArrowLeft } from 'react-icons/lu';
 import { useState } from 'react';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
 import { EXPORT_CONFIGS } from '../constant/ExportConfigs';
 import { getWidgetContents } from '../utils/getWidgetContents';
 import { mappingIcon } from '../utils/mappingIcon';
+import { CopyButton } from './CopyButton';
 
 export function ExportSettingFilesDialog() {
-  const { isCopied, handleCopyToClipboard } = useClipboard();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { widgetList } = useWorkspaceWidgetStore(
@@ -39,7 +39,7 @@ export function ExportSettingFilesDialog() {
               variant="ghost"
               size="icon"
               onClick={() => setSelectedId(null)}
-              className="h-8 w-8"
+              className="text-muted-foreground hover:text-foreground h-8 w-8"
               title="목록으로 돌아가기"
             >
               <LuArrowLeft size={18} />
@@ -47,7 +47,7 @@ export function ExportSettingFilesDialog() {
             </Button>
           )}
           <DialogTitle className="flex items-center gap-2">
-            <LuSettings size={18} className="text-primary-600" />
+            <LuSettings size={18} className="text-primary" />
             {selectedConfig ? selectedConfig.label : '설정 파일 내보내기'}
           </DialogTitle>
         </div>
@@ -58,9 +58,9 @@ export function ExportSettingFilesDialog() {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="flex h-[45vh] flex-col overflow-y-auto rounded-lg bg-[#0C1117] px-4 py-3">
+      <div className="border-border bg-muted flex h-[45vh] flex-col overflow-y-auto rounded-lg border px-4 py-3">
         {selectedConfig ? (
-          <div className="h-full w-full overflow-auto font-mono text-sm whitespace-pre text-gray-300">
+          <div className="text-foreground h-full w-full overflow-auto font-mono text-sm whitespace-pre">
             {content}
           </div>
         ) : (
@@ -69,17 +69,17 @@ export function ExportSettingFilesDialog() {
               <Button
                 key={config.id}
                 variant="ghost"
-                className="flex h-auto w-full items-center justify-start gap-4 p-4 hover:bg-white/10"
+                className="hover:bg-background/80 flex h-auto w-full items-center justify-start gap-4 p-4 hover:shadow-sm"
                 onClick={() => setSelectedId(config.id)}
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800">
+                <div className="bg-background border-border flex h-10 w-10 items-center justify-center rounded-lg border shadow-sm">
                   {mappingIcon(config.type)}
                 </div>
                 <div className="flex flex-col items-start gap-1">
-                  <span className="text-base font-semibold text-white">
+                  <span className="text-foreground text-base font-semibold">
                     {config.label}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-muted-foreground text-xs">
                     {config.description}
                   </span>
                 </div>
@@ -90,19 +90,7 @@ export function ExportSettingFilesDialog() {
       </div>
 
       <DialogFooter>
-        {selectedConfig && (
-          <Button
-            variant="secondary"
-            onClick={() => handleCopyToClipboard(content)}
-          >
-            {isCopied ? (
-              <LuCheck size={16} className="text-green-500" />
-            ) : (
-              <LuCopy size={16} />
-            )}
-            {isCopied ? '복사 완료!' : '복사 하기'}
-          </Button>
-        )}
+        {selectedConfig && <CopyButton content={content} />}
       </DialogFooter>
     </DialogContent>
   );

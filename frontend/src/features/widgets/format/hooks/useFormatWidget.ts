@@ -44,6 +44,7 @@ export function useFormatWidget() {
   );
 
   return {
+    widgetId,
     config,
     updateConfig,
     resetConfig,

@@ -23,9 +23,11 @@ export class TechStackBuilder implements ISectionBuilder {
 
       if (content.techItems && content.techItems.length > 0) {
         lines.push(`### ${subject}`);
+        let techStackBadges = '';
         content.techItems.forEach((item) => {
-          lines.push(`- **${item.name}**`);
+          techStackBadges += `![${item.name}](https://img.shields.io/badge/${item.slug}-${item.color}?style=flat&logo=${item.slug}&logoColor=white)`;
         });
+        lines.push(techStackBadges);
         lines.push('');
       }
     });
