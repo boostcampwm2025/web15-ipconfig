@@ -18,7 +18,13 @@ export const useUserStore = create<UserStore>((set) => ({
 
 // 내 유저(파생)
 export const useMe = () =>
-  useUserStore((s) => s.userList.find((u) => u.id === s.myId));
+  useUserStore(useShallow((s) => s.userList.find((u) => u.id === s.myId)));
+
+// 내 커서 타입
+export const useMyCursorType = () =>
+  useUserStore(
+    useShallow((s) => s.userList.find((u) => u.id === s.myId)?.cursor.type),
+  );
 
 // 전체 유저 리스트(파생)
 export const useUserList = () => useUserStore((s) => s.userList);

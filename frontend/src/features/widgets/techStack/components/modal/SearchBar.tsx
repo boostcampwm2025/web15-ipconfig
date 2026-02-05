@@ -13,13 +13,13 @@ export default function SearchBar({ search, setSearch }: SearchBarProps) {
       <Input
         type="text"
         placeholder="기술 스택을 검색하세요"
-        className="focus:border-main text-gray-300 focus:outline-none"
+        className="focus:border-main text-foreground focus:outline-none"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
       <Button
         variant="ghost"
-        className="hover:text-main absolute right-1 text-gray-500 hover:cursor-pointer dark:hover:bg-transparent"
+        className="hover:text-main text-muted-foreground absolute right-1 hover:cursor-pointer dark:hover:bg-transparent"
       >
         <LuSearch size={16} />
       </Button>

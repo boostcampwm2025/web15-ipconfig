@@ -48,43 +48,37 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Main Branch */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-muted-foreground ml-1 text-xs font-medium">
-          Main Branch
-        </label>
+      <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+        Main Branch
         <Input
           value={rules.mainBranch}
           onChange={(e) => onChange({ mainBranch: e.target.value })}
           className="h-9"
           placeholder="e.g. main"
         />
-      </div>
+      </label>
 
       {strategy === 'GIT_FLOW' && (
-        <div className="flex flex-col gap-1.5">
-          <label className="text-muted-foreground ml-1 text-xs font-medium">
-            Develop Branch
-          </label>
+        <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+          Develop Branch
           <Input
             value={rules.developBranch || ''}
             onChange={(e) => onChange({ developBranch: e.target.value })}
             className="h-9"
             placeholder="e.g. develop"
           />
-        </div>
+        </label>
       )}
 
       {/* Prefixes */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-muted-foreground ml-1 text-xs font-medium">
-          Prefixes
-        </label>
+      <label className="text-muted-foreground ml-1 flex flex-col gap-1.5 text-xs font-medium">
+        Prefixes
         <div className="flex gap-2">
           <Input
             {...register('prefix')}
             onKeyDown={handleKeyDown}
             placeholder="Add prefix..."
-            className={`h-9 ${errors.prefix ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50' : ''}`}
+            className={`h-9 ${errors.prefix ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/50' : ''}`}
           />
           <Button
             variant="outline"
@@ -108,13 +102,14 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
               className="border-border bg-background hover:bg-accent hover:text-accent-foreground flex cursor-default items-center gap-1.5 border px-2.5 py-1 pr-1.5 text-sm font-medium shadow-sm transition-colors"
             >
               {prefix}
-              <button
+              <Button
+                variant={'ghost'}
                 onClick={() => handleRemovePrefix(prefix)}
-                className="hover:text-destructive hover:bg-muted-foreground/20 rounded-full p-0.5 transition-colors focus:outline-none"
+                className="hover:text-destructive hover:bg-accent rounded-full p-0.5 transition-colors focus:outline-none"
                 aria-label={`Remove ${prefix}`}
               >
                 <LuX size={14} />
-              </button>
+              </Button>
             </Badge>
           ))}
           {rules.prefixes.selectedIds.length === 0 && (
@@ -123,7 +118,7 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
             </span>
           )}
         </div>
-      </div>
+      </label>
     </div>
   );
 }

@@ -1,18 +1,15 @@
-import { Layout } from 'lucide-react';
-import { Button } from '@/common/components/shadcn/button';
 import { Link } from 'react-router';
 
 interface NavbarProps {
   scrolled: boolean;
 }
 
-// 버튼 색이 마음에 안 듬...
 export function Navbar({ scrolled }: NavbarProps) {
   return (
     <nav
       className={`fixed z-50 w-full transition-all duration-300 ${
         scrolled
-          ? 'border-b border-slate-800 bg-slate-950/80 py-3 backdrop-blur-md'
+          ? 'border-border bg-background/80 border-b py-3 backdrop-blur-md'
           : 'bg-transparent py-5'
       }`}
     >
@@ -27,7 +24,7 @@ export function Navbar({ scrolled }: NavbarProps) {
             className="h-8 w-8 object-cover"
           />
           <span className="text-white">
-            team<span className="text-green-400">.config</span>
+            team<span className="text-primary">.config</span>
           </span>
         </Link>
       </div>

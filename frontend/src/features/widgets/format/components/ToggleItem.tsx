@@ -41,10 +41,10 @@ function ToggleItem({
       <Button
         onClick={onChange}
         className={cn(
-          'h-8.5 flex-1 rounded-md border !border-gray-700 text-sm font-medium transition-all',
+          'h-8.5 flex-1 rounded-md border text-sm font-medium transition-all',
           checked
             ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/15'
-            : 'bg-muted/30 text-muted-foreground hover:bg-muted/50 border-transparent',
+            : 'bg-muted/30 text-muted-foreground hover:bg-muted/50 border-input',
         )}
       >
         {getLabel()}

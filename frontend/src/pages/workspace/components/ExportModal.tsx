@@ -1,3 +1,5 @@
+import { Button } from '@/common/components/shadcn/button';
+import { cn } from '@/common/lib/utils';
 import { LuFileText, LuX, LuCopy, LuCheck } from 'react-icons/lu';
 
 interface ExportModalProps {
@@ -11,60 +13,60 @@ function ExportModal({ isOpen, onClose, markdown }: ExportModalProps) {
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="animate-scale-in flex max-h-[85vh] w-full max-w-3xl flex-col rounded-xl border border-gray-700 bg-gray-800 shadow-2xl">
-        <div className="flex items-center justify-between rounded-t-xl border-b border-gray-700 bg-gray-900 p-5">
+      <div className="animate-scale-in border-border bg-card flex max-h-[85vh] w-full max-w-3xl flex-col rounded-xl border shadow-2xl">
+        <div className="border-border bg-muted/50 flex items-center justify-between rounded-t-xl border-b p-5">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-gray-800 p-2">
-              <LuFileText className="text-white" size={24} />
+            <div className="bg-background rounded-lg p-2 shadow-sm">
+              <LuFileText className="text-foreground" size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-foreground text-lg font-bold">
                 Export to README.md
               </h3>
-              <p className="text-xs text-gray-400">
+              <p className="text-muted-foreground text-xs">
                 GitHub 위키나 README에 바로 붙여넣으세요.
               </p>
             </div>
           </div>
-          <button
+          <Button
+            variant="ghost"
             onClick={onClose}
-            className="text-gray-400 transition-colors hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
           >
             <LuX size={24} />
-          </button>
+          </Button>
         </div>
 
-        <div className="group relative flex-1 overflow-auto bg-[#0d1117] p-0">
+        <div className="group bg-muted/30 relative flex-1 overflow-auto p-0">
           <div className="absolute top-4 right-4 z-10 opacity-0 transition-opacity group-hover:opacity-100">
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => navigator.clipboard.writeText(markdown)}
-              className="flex items-center gap-2 rounded border border-gray-600 bg-gray-700 px-3 py-1.5 text-xs text-white shadow-lg hover:bg-gray-600"
+              className="h-7 text-xs shadow-lg"
             >
-              <LuCopy size={12} /> Copy Raw
-            </button>
+              <LuCopy size={12} className="mr-1" /> Copy Raw
+            </Button>
           </div>
-          <pre className="p-6 font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-300 selection:bg-blue-500 selection:text-white">
+          <pre className="text-foreground selection:bg-primary/30 p-6 font-mono text-sm leading-relaxed whitespace-pre-wrap">
             {markdown}
           </pre>
         </div>
 
-        <div className="flex justify-end gap-3 rounded-b-xl border-t border-gray-700 bg-gray-800 p-4">
-          <button
-            onClick={onClose}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          >
+        <div className="border-border bg-card flex justify-end gap-3 rounded-b-xl border-t p-4">
+          <Button variant="ghost" onClick={onClose}>
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => {
               navigator.clipboard.writeText(markdown);
               alert('Copied to clipboard!');
             }}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-500"
+            className="shadow-primary/20 shadow-lg"
           >
-            <LuCheck size={16} />
+            <LuCheck size={16} className="mr-2" />
             Copy to Clipboard
-          </button>
+          </Button>
         </div>
       </div>
     </div>

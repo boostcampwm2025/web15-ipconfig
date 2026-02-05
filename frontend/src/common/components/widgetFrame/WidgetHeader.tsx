@@ -2,6 +2,7 @@ import type { WidgetLayout } from '@/common/types/widgetData';
 import { LuTrash2 } from 'react-icons/lu';
 import { useWidgetIdAndType } from './context/WidgetContext';
 import { deleteWidgetAction } from '@/common/api/yjs/actions/widgetFrame';
+import { Button } from '@/common/components/shadcn/button';
 
 export interface WidgetHeaderProps {
   title: string;
@@ -14,26 +15,26 @@ function WidgetHeader({ title, icon, actions }: WidgetHeaderProps) {
   const { widgetId } = useWidgetIdAndType();
   return (
     <div
-      className="mb-4 flex cursor-grabbing items-center justify-between border-b border-gray-700 pb-2 select-none"
+      className="border-border mb-4 flex cursor-grabbing items-center justify-between border-b pb-2 select-none"
       data-widget-header="true"
     >
-      <h4 className="flex shrink-0 items-center gap-2 font-bold text-white">
+      <h4 className="text-foreground flex shrink-0 items-center gap-2 font-bold">
         {icon} {title}
       </h4>
 
       <div className="flex items-center gap-2">
         {actions}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onMouseDown={(e) => e.stopPropagation()}
-          className="text-gray-500 transition-colors hover:text-red-400"
+          className="h-auto w-auto p-0 text-gray-500 hover:bg-transparent hover:text-red-400"
+          onClick={() => {
+            deleteWidgetAction(widgetId);
+          }}
         >
-          <LuTrash2
-            size={16}
-            onClick={() => {
-              deleteWidgetAction(widgetId);
-            }}
-          />
-        </button>
+          <LuTrash2 size={16} />
+        </Button>
       </div>
     </div>
   );

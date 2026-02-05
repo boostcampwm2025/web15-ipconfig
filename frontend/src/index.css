@@ -35,24 +35,35 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  /* --background: oklch(1 0 0); */
+  --background: var(--color-slate-100);
+  /* Slate-200 */
   --foreground: oklch(0.13 0.028 261.692);
-  --card: oklch(1 0 0);
+  --card: var(--color-slate-50);
+  /* Slate-100 */
   --card-foreground: oklch(0.13 0.028 261.692);
-  --popover: oklch(1 0 0);
+  --popover: var(--color-slate-100);
+  /* Slate-100 */
   --popover-foreground: oklch(0.13 0.028 261.692);
   /* --primary: oklch(0.21 0.034 264.665); */
   --primary: var(--color-primary-600);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: var(--color-gray-200);
+  --primary-foreground: oklch(1 0 0);
+  /* White text on primary */
+  --secondary: #f1f5f9;
+  /* Slate-100 for secondary elements */
   --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
+  --muted: #f1f5f9;
+  /* Slate-100 */
+  --muted-foreground: #64748b;
+  /* Slate-500 */
+  --accent: #f1f5f9;
+  /* Slate-100 */
   --accent-foreground: oklch(0.21 0.034 264.665);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
+  --border: #e2e8f0;
+  /* Slate-200 */
+  --input: #e2e8f0;
+  /* Slate-200 */
   /* --ring: oklch(0.707 0.022 261.325); */
   --ring: oklch(0.7289 0.2119 147.82);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -155,6 +166,19 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* 채팅 모드일 때 모든 커서 숨기기 */
+  [data-cursor-mode='chat'],
+  [data-cursor-mode='chat'] * {
+    cursor: none !important;
+  }
+}
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 

@@ -24,7 +24,7 @@ export function FrameworkSelector({
             className={`flex items-center gap-2 border transition-all ${
               isActive
                 ? 'border-indigo-600 bg-indigo-600 text-white shadow-md hover:border-indigo-700 hover:bg-indigo-700'
-                : 'border-gray-700 bg-gray-800/50 text-gray-300 hover:border-gray-600 hover:bg-gray-700/50'
+                : 'border-border bg-muted/50 text-muted-foreground hover:border-border hover:bg-muted'
             }`}
           >
             <fw.icon className="size-4" />
