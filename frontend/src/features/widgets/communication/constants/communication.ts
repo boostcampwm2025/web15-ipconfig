@@ -1,8 +1,8 @@
 export const COMMUNICATION_OPTIONS = {
-  urgent: ['Phone', 'Slack Huddle', 'Zoom'],
-  sync: ['Slack', 'Discord', 'Teams'],
-  async: ['Notion', 'Jira', 'GitHub', 'Figma'],
-  official: ['Email', 'Slack Channel', 'Townhall'],
+  meeting: ['Phone', 'Slack Huddle', 'Zoom', 'Discord', 'Google Meet'],
+  chat: ['Slack', 'Discord', 'Teams'],
+  doc: ['Notion', 'Jira', 'GitHub', 'Figma'],
+  announce: ['Email', 'Slack Channel', 'Townhall'],
 };
 
 export const CORE_TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {

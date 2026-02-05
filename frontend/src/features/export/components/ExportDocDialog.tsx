@@ -11,6 +11,9 @@ import { LuFileText, LuCheck, LuCopy, LuCircleX } from 'react-icons/lu';
 import { SpinnerCustom } from '@/common/components/SpinnerCustom';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
+import 'github-markdown-css/github-markdown-light.css';
 
 export function ExportDocDialog({
   markdown,
@@ -36,20 +39,25 @@ export function ExportDocDialog({
           GitHub 위키나 README에 바로 붙여넣으세요.
         </DialogDescription>
       </DialogHeader>
-      <div className="border-border bg-muted flex h-[45vh] items-center justify-center overflow-y-auto rounded-lg border px-4 py-3">
+      <div className="border-border bg-muted h-[45vh] overflow-y-auto rounded-lg border px-4 py-3">
         {isLoading ? (
-          <div className="text-muted-foreground flex items-center gap-2">
+          <div className="text-muted-foreground flex h-full items-center justify-center gap-2">
             <SpinnerCustom />
             <span>불러오는 중...</span>
           </div>
         ) : error ? (
-          <div className="text-destructive flex items-center gap-2">
+          <div className="text-destructive flex h-full items-center justify-center gap-2">
             <LuCircleX size={16} />
             <span>{error}</span>
           </div>
         ) : (
-          <div className="markdown-body text-foreground [&_*]:!text-foreground h-full w-full bg-transparent [&_*]:!bg-transparent">
-            <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+          <div className="markdown-body text-foreground w-full">
+            <Markdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+            >
+              {markdown}
+            </Markdown>
           </div>
         )}
       </div>

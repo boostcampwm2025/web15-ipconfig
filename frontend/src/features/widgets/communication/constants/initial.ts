@@ -14,21 +14,21 @@ const createOptions = (items: readonly string[]) => {
 
 export const INITIAL_COMMUNICATION_DATA: CommunicationData = {
   communication: {
-    urgent: {
+    meeting: {
       selectedId: 'Phone',
-      options: createOptions(COMMUNICATION_OPTIONS.urgent),
+      options: createOptions(COMMUNICATION_OPTIONS.meeting),
     },
-    sync: {
+    chat: {
       selectedId: 'Slack',
-      options: createOptions(COMMUNICATION_OPTIONS.sync),
+      options: createOptions(COMMUNICATION_OPTIONS.chat),
     },
-    async: {
+    doc: {
       selectedId: 'Notion',
-      options: createOptions(COMMUNICATION_OPTIONS.async),
+      options: createOptions(COMMUNICATION_OPTIONS.doc),
     },
-    official: {
+    announce: {
       selectedId: 'Email',
-      options: createOptions(COMMUNICATION_OPTIONS.official),
+      options: createOptions(COMMUNICATION_OPTIONS.announce),
     },
   },
   sla: {
