@@ -1,6 +1,10 @@
 import {
   iconMap,
-  TECH_STACKS,
+  FRONTEND_TECH_STACKS,
+  BACKEND_TECH_STACKS,
+  DATABASE_TECH_STACKS,
+  INFRASTRUCTURE_TECH_STACKS,
+  COMMON_TECH_STACKS,
 } from '@/features/widgets/techStack/constant/techStackInfo';
 
 export const getTechIconUrl = (name: string): string => {
@@ -16,6 +20,13 @@ export const getTechIconUrl = (name: string): string => {
 };
 
 export const getTechStackName = (id: string): string => {
+  const techStack = [
+    ...FRONTEND_TECH_STACKS,
+    ...BACKEND_TECH_STACKS,
+    ...DATABASE_TECH_STACKS,
+    ...INFRASTRUCTURE_TECH_STACKS,
+    ...COMMON_TECH_STACKS,
+  ];
   // `tech-stack-${id}` 형태에서 원본 id만 정규식으로 추출
   const match = id.match(/^tech-stack-(.+)$/);
 
@@ -23,5 +34,5 @@ export const getTechStackName = (id: string): string => {
 
   const techId = match[1];
 
-  return TECH_STACKS.find((tech) => tech.id === techId)?.name ?? '';
+  return techStack.find((tech) => tech.id === techId)?.name ?? '';
 };

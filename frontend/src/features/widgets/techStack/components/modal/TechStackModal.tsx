@@ -7,6 +7,7 @@ import useDebounce from '@/features/widgets/techStack/hooks/useDebounce';
 import ReactPortal from '@/common/components/ReactPortal';
 import { DragOverlay, useDndContext } from '@dnd-kit/core';
 import TechStackItem from '../TechStackItem';
+import { TechStackAccordionList } from './TeckStackAccordionList';
 
 interface TechStackModalProps {
   isOpen: boolean;
@@ -24,7 +25,6 @@ function TechStackModal({
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 300);
   const { active } = useDndContext();
-
   // 모달 위치
   const [position, setPosition] = useState({ x: 600, y: 100 });
 
@@ -67,7 +67,7 @@ function TechStackModal({
     <ReactPortal portalTargetId={modalRootId}>
       <dialog
         style={{ left: position.x, top: position.y }}
-        className="border-border bg-background fixed flex h-150 w-100 flex-col overflow-hidden rounded-xl border shadow-2xl"
+        className="fixed flex h-150 w-160 flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
       >
         {/* 헤더를 드래그 핸들로 사용 */}
         <ModalHeader
@@ -76,11 +76,18 @@ function TechStackModal({
           icon={HEADER_ICON}
           onClose={onModalClose}
         />
-
-        {/* 내부 컨텐츠 */}
-        <div className="flex flex-1 flex-col overflow-hidden px-6.5 pt-2 pb-4">
+        <div className="px-6.5 text-sm text-gray-400">
+          기술 스택을&nbsp;
+          <span className="font-bold text-white">드래그 앤 드롭</span>
+          으로 기술 스택 위젯 안에 넣어주세요!
+        </div>
+        <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-6.5 pt-2 pb-4">
           <SearchBar search={search} setSearch={setSearch} />
-          <TechStackList keyword={debouncedSearch} />
+          {debouncedSearch.length > 0 ? (
+            <TechStackList keyword={debouncedSearch} />
+          ) : (
+            <TechStackAccordionList />
+          )}
         </div>
       </dialog>
       <DragOverlay>

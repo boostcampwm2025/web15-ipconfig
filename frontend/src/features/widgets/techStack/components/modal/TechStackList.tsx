@@ -1,7 +1,8 @@
 import { memo, useMemo } from 'react';
 import NoContents from './NoContents';
-import { TECH_STACKS } from '@/features/widgets/techStack/constant/techStackInfo';
+import { TECH_STACK_GROUPS } from '@/features/widgets/techStack/constant/techStackInfo';
 import DraggableTechStackItem from './DraggableTechStackItem';
+import { ALL_TECH_STACKS } from '@/features/widgets/techStack/constant/techStackInfo';
 
 interface TechStackListProps {
   keyword: string;
@@ -10,8 +11,8 @@ interface TechStackListProps {
 function TechStackList({ keyword }: TechStackListProps) {
   const filteredStacks = useMemo(() => {
     const lower = keyword.toLowerCase();
-    return TECH_STACKS.filter((tech) =>
-      tech.name.toLowerCase().includes(lower),
+    return ALL_TECH_STACKS.filter((item) =>
+      item.name.toLowerCase().includes(lower),
     );
   }, [keyword]);
 

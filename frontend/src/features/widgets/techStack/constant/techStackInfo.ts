@@ -1,149 +1,274 @@
-import type { TechStack } from '@/features/widgets/techStack/types/techStack';
+import type {
+  FrontendTechStack,
+  BackendTechStack,
+  DatabaseTechStack,
+  InfrastructureTechStack,
+  CommonTechStack,
+  TechStack,
+} from '../types/techStack';
 
-export const TECH_STACKS: TechStack[] = [
-  // Frontend (Web)
-  { id: 'javascript', category: 'Frontend', name: 'JavaScript' },
-  { id: 'typescript', category: 'Frontend', name: 'TypeScript' },
-  { id: 'html5/css3', category: 'Frontend', name: 'HTML5 / CSS3' },
-  { id: 'react', category: 'Frontend', name: 'React' },
-  { id: 'nextjs', category: 'Frontend', name: 'Next.js' },
-  { id: 'vue', category: 'Frontend', name: 'Vue.js' },
-  { id: 'nuxt', category: 'Frontend', name: 'Nuxt' },
-  { id: 'svelte', category: 'Frontend', name: 'Svelte' },
-  { id: 'sveltekit', category: 'Frontend', name: 'SvelteKit' },
-  { id: 'angular', category: 'Frontend', name: 'Angular' },
-  { id: 'qwik', category: 'Frontend', name: 'Qwik' },
-  { id: 'astro', category: 'Frontend', name: 'Astro' },
-  { id: 'remix', category: 'Frontend', name: 'Remix' },
-  { id: 'jquery', category: 'Frontend', name: 'JQuery' },
-  { id: 'electron', category: 'Frontend', name: 'Electron' },
-  { id: 'tauri', category: 'Frontend', name: 'Tauri' },
-  { id: 'redux', category: 'Frontend', name: 'Redux / Redux Toolkit' },
-  { id: 'recoil', category: 'Frontend', name: 'Recoil' },
-  { id: 'zustand', category: 'Frontend', name: 'Zustand' },
-  { id: 'jotai', category: 'Frontend', name: 'Jotai' },
-  { id: 'mobx', category: 'Frontend', name: 'MobX' },
-  { id: 'tanstackquery', category: 'Frontend', name: 'TanStack Query' },
-  { id: 'swr', category: 'Frontend', name: 'SWR' },
-  { id: 'tailwindcss', category: 'Frontend', name: 'Tailwind CSS' },
-  { id: 'styledcomponents', category: 'Frontend', name: 'styled-components' },
-  { id: 'emotion', category: 'Frontend', name: 'Emotion' },
-  { id: 'sassscss', category: 'Frontend', name: 'Sass/SCSS' },
-  { id: 'vanillaextract', category: 'Frontend', name: 'Vanilla Extract' },
-  { id: 'bootstrap', category: 'Frontend', name: 'Bootstrap' },
-  { id: 'mui', category: 'Frontend', name: 'MUI' },
-  { id: 'chakraui', category: 'Frontend', name: 'Chakra UI' },
-  { id: 'antdesign', category: 'Frontend', name: 'Ant Design' },
-  { id: 'shadcn/ui', category: 'Frontend', name: 'Shadcn/ui' },
+export const FRONTEND_TECH_STACKS: FrontendTechStack[] = [
+  // Framework & Library
+  // https://www.statista.com/statistics/1124699/worldwide-developer-survey-most-used-frameworks-web/
+  // https://twentytwentyone.tistory.com/1459
+  { id: 'react', category: 'framework', name: 'React' },
+  { id: 'vue', category: 'framework', name: 'Vue.js' },
+  { id: 'nextjs', category: 'framework', name: 'Next.js' },
+  { id: 'svelte', category: 'framework', name: 'Svelte' },
+  { id: 'sveltekit', category: 'framework', name: 'SvelteKit' },
+  { id: 'solid', category: 'framework', name: 'Solid' },
+  { id: 'astro', category: 'framework', name: 'Astro' },
+  { id: 'angular', category: 'framework', name: 'Angular' },
+  { id: 'qwik', category: 'framework', name: 'Qwik' },
+  { id: 'remix', category: 'framework', name: 'Remix' },
+  // Mobile로 빼야하나? 삭제?
+  { id: 'reactnative', category: 'framework', name: 'React Native' },
+  { id: 'flutter', category: 'framework', name: 'Flutter' },
 
-  // Mobile
-  { id: 'reactnative', category: 'Mobile', name: 'React Native' },
-  { id: 'flutter', category: 'Mobile', name: 'Flutter' },
-  { id: 'swift/swiftui', category: 'Mobile', name: 'Swift / SwiftUI' },
+  // State Management
+  // https://trio.dev/7-top-react-state-management-libraries/
+  { id: 'redux', category: 'stateManagement', name: 'Redux' },
+  { id: 'recoil', category: 'stateManagement', name: 'Recoil' },
+  { id: 'zustand', category: 'stateManagement', name: 'Zustand' },
+  { id: 'jotai', category: 'stateManagement', name: 'Jotai' },
+  { id: 'mobx', category: 'stateManagement', name: 'Mobx' },
+  { id: 'xstate', category: 'stateManagement', name: 'XState' },
+  { id: 'valtio', category: 'stateManagement', name: 'Valtio' },
+  { id: 'tanstackquery', category: 'stateManagement', name: 'TanStack Query' },
+
+  // Styling
+  { id: 'tailwindcss', category: 'styling', name: 'Tailwind CSS' },
+  { id: 'styledcomponents', category: 'styling', name: 'styled-components' },
+  { id: 'emotion', category: 'styling', name: 'Emotion' },
+  { id: 'sass/scss', category: 'styling', name: 'Sass/SCSS' },
+  { id: 'vanillaextract', category: 'styling', name: 'Vanilla Extract' },
+
+  // UI Library
+  { id: 'mui', category: 'uiLibrary', name: 'MUI' },
+  { id: 'chakraui', category: 'uiLibrary', name: 'Chakra UI' },
+  { id: 'antdesign', category: 'uiLibrary', name: 'Ant Design' },
+  { id: 'shadcn/ui', category: 'uiLibrary', name: 'Shadcn/ui' },
+  { id: 'headlessui', category: 'uiLibrary', name: 'Headless UI' },
+];
+
+export const BACKEND_TECH_STACKS: BackendTechStack[] = [
+  // Framework
+  { id: 'nestjs', category: 'framework', name: 'NestJS' },
+  { id: 'expressjs', category: 'framework', name: 'Express.js' },
+  { id: 'fastify', category: 'framework', name: 'Fastify' },
+  { id: 'springboot', category: 'framework', name: 'Spring Boot' },
+  { id: 'django', category: 'framework', name: 'Django' },
+  { id: 'fastapi', category: 'framework', name: 'FastAPI' },
+  { id: 'flask', category: 'framework', name: 'Flask' },
+  { id: 'laravel', category: 'framework', name: 'Laravel' },
+  { id: 'rubyonrails', category: 'framework', name: 'Ruby on Rails' },
+  { id: 'gin', category: 'framework', name: 'Gin' },
+  { id: 'aspnetcore', category: 'framework', name: 'ASP.NET Core' },
+  { id: 'hono', category: 'framework', name: 'Hono' }, // 최신 트렌드 추가
+
+  // API Architecture (New)
+  { id: 'graphql', category: 'apiArchitecture', name: 'GraphQL' },
+  { id: 'apollo', category: 'apiArchitecture', name: 'Apollo Server' },
+  { id: 'trpc', category: 'apiArchitecture', name: 'tRPC' },
+  { id: 'grpc', category: 'apiArchitecture', name: 'gRPC' },
+  { id: 'socketio', category: 'apiArchitecture', name: 'Socket.io' },
+
+  // Documentation (New)
+  { id: 'swagger', category: 'documentation', name: 'Swagger' },
+  { id: 'postman', category: 'documentation', name: 'Postman' }, // 문서화 도구로 분류
+];
+
+export const DATABASE_TECH_STACKS: DatabaseTechStack[] = [
+  // Main Database
+  // https://survey.stackoverflow.co/2025/technology#most-popular-technologies-language-write-ins
+  { id: 'mysql', category: 'mainDatabase', name: 'MySQL' },
+  { id: 'postgresql', category: 'mainDatabase', name: 'PostgreSQL' },
+  { id: 'sqlite', category: 'mainDatabase', name: 'SQLite' },
+  { id: 'mariadb', category: 'mainDatabase', name: 'MariaDB' },
+  { id: 'mongodb', category: 'mainDatabase', name: 'MongoDB' },
+  { id: 'dynamodb', category: 'mainDatabase', name: 'DynamoDB' },
+  { id: 'supabase', category: 'mainDatabase', name: 'Supabase' },
+  { id: 'firebase', category: 'mainDatabase', name: 'Firebase' },
+  { id: 'elasticsearch', category: 'mainDatabase', name: 'Elasticsearch' },
+  { id: 'oracle', category: 'mainDatabase', name: 'Oracle' },
+
+  // ORM & Query Builder (Moved from Backend)
+  { id: 'prisma', category: 'ormAndQueryBuilder', name: 'Prisma' },
+  { id: 'typeorm', category: 'ormAndQueryBuilder', name: 'TypeORM' },
+  { id: 'drizzleorm', category: 'ormAndQueryBuilder', name: 'Drizzle ORM' },
+  { id: 'mongoose', category: 'ormAndQueryBuilder', name: 'Mongoose' },
   {
-    id: 'kotlin/jetpackcompose',
-    category: 'Mobile',
-    name: 'Kotlin / Jetpack Compose',
+    id: 'jpa/hibernate',
+    category: 'ormAndQueryBuilder',
+    name: 'JPA / Hibernate',
   },
-  { id: 'expo', category: 'Mobile', name: 'Expo' },
+  { id: 'mybatis', category: 'ormAndQueryBuilder', name: 'MyBatis' },
+  { id: 'sequelize', category: 'ormAndQueryBuilder', name: 'Sequelize' },
+  { id: 'redis', category: 'cachingAndMessageQueue', name: 'Redis' },
 
-  // Backend
-  { id: 'nodejs', category: 'Backend', name: 'Node.js' },
-  { id: 'java', category: 'Backend', name: 'Java' },
-  { id: 'python', category: 'Backend', name: 'Python' },
-  { id: 'kotlin', category: 'Backend', name: 'Kotlin' },
-  { id: 'go', category: 'Backend', name: 'Go' },
-  { id: 'rust', category: 'Backend', name: 'Rust' },
-  { id: 'csharp', category: 'Backend', name: 'C#' },
-  { id: 'php', category: 'Backend', name: 'PHP' },
-  { id: 'ruby', category: 'Backend', name: 'Ruby' },
-  { id: 'scala', category: 'Backend', name: 'Scala' },
-  { id: 'elixir', category: 'Backend', name: 'Elixir' },
-  { id: 'nestjs', category: 'Backend', name: 'NestJS' },
-  { id: 'expressjs', category: 'Backend', name: 'Express.js' },
-  { id: 'fastify', category: 'Backend', name: 'Fastify' },
-  { id: 'springboot', category: 'Backend', name: 'Spring Boot' },
-  { id: 'fastapi', category: 'Backend', name: 'FastAPI' },
-  { id: 'django', category: 'Backend', name: 'Django' },
-  { id: 'flask', category: 'Backend', name: 'Flask' },
-  { id: 'gin', category: 'Backend', name: 'Gin' },
-  { id: 'rubyonrails', category: 'Backend', name: 'Ruby on Rails' },
-  { id: 'laravel', category: 'Backend', name: 'Laravel' },
-  { id: 'aspnetcore', category: 'Backend', name: 'ASP.NET Core' },
-  { id: 'prisma', category: 'Backend', name: 'Prisma' },
-  { id: 'typeorm', category: 'Backend', name: 'TypeORM' },
-  { id: 'sequelize', category: 'Backend', name: 'Sequelize' },
-  { id: 'drizzleorm', category: 'Backend', name: 'Drizzle ORM' },
-  { id: 'jpa/hibernate', category: 'Backend', name: 'JPA / Hibernate' },
-  { id: 'mongoose', category: 'Backend', name: 'Mongoose' },
-  { id: 'mybatis', category: 'Backend', name: 'MyBatis' },
+  // Caching & Message Queue
+  { id: 'kafka', category: 'cachingAndMessageQueue', name: 'Kafka' },
+  { id: 'rabbitmq', category: 'cachingAndMessageQueue', name: 'RabbitMQ' },
+  { id: 'memcached', category: 'cachingAndMessageQueue', name: 'Memcached' },
 
-  // Data
-  { id: 'mysql', category: 'Data', name: 'MySQL' },
-  { id: 'postgresql', category: 'Data', name: 'PostgreSQL' },
-  { id: 'mariadb', category: 'Data', name: 'MariaDB' },
-  { id: 'oracle', category: 'Data', name: 'Oracle' },
-  { id: 'mssql', category: 'Data', name: 'MSSQL' },
-  { id: 'sqlite', category: 'Data', name: 'SQLite' },
-  { id: 'mongodb', category: 'Data', name: 'MongoDB' },
-  { id: 'redis', category: 'Data', name: 'Redis' },
-  { id: 'dynamodb', category: 'Data', name: 'DynamoDB' },
-  { id: 'firestore', category: 'Data', name: 'Firestore' },
-  { id: 'cassandra', category: 'Data', name: 'Cassandra' },
-  { id: 'elasticsearch', category: 'Data', name: 'Elasticsearch' },
-  { id: 'firebase', category: 'Data', name: 'Firebase' },
-  { id: 'supabase', category: 'Data', name: 'Supabase' },
-  { id: 'pocketbase', category: 'Data', name: 'PocketBase' },
-  { id: 'appwrite', category: 'Data', name: 'Appwrite' },
-  { id: 'kafka', category: 'Data', name: 'Kafka' },
-  { id: 'rabbitmq', category: 'Data', name: 'RabbitMQ' },
+  // File Storage (New)
+  { id: 's3', category: 'fileStorage', name: 'AWS S3' },
+  { id: 'minio', category: 'fileStorage', name: 'MinIO' },
+];
 
-  // Infrastructure (Cloud, DevOps, CI/CD)
-  { id: 'ncp', category: 'Infrastructure', name: 'NCP' },
-  { id: 'aws', category: 'Infrastructure', name: 'AWS' },
-  { id: 'gcp', category: 'Infrastructure', name: 'GCP' },
-  { id: 'azure', category: 'Infrastructure', name: 'Azure' },
-  { id: 'vercel', category: 'Infrastructure', name: 'Vercel' },
-  { id: 'netlify', category: 'Infrastructure', name: 'Netlify' },
-  { id: 'heroku', category: 'Infrastructure', name: 'Heroku' },
-  { id: 'railway', category: 'Infrastructure', name: 'Railway' },
-  { id: 'flyio', category: 'Infrastructure', name: 'Fly.io' },
+export const INFRASTRUCTURE_TECH_STACKS: InfrastructureTechStack[] = [
+  // Deployment
+  { id: 'aws', category: 'deployment', name: 'AWS' },
+  { id: 'gcp', category: 'deployment', name: 'GCP' },
+  { id: 'azure', category: 'deployment', name: 'Azure' },
+  { id: 'vercel', category: 'deployment', name: 'Vercel' },
+  { id: 'netlify', category: 'deployment', name: 'Netlify' },
+  { id: 'docker', category: 'deployment', name: 'Docker' },
+  { id: 'kubernetes', category: 'deployment', name: 'Kubernetes' },
+  { id: 'nginx', category: 'deployment', name: 'Nginx' },
+  { id: 'cloudflare', category: 'deployment', name: 'Cloudflare' },
+
+  // CI/CD
+  { id: 'githubactions', category: 'CI/CD', name: 'GitHub Actions' },
+  { id: 'jenkins', category: 'CI/CD', name: 'Jenkins' },
+  { id: 'gitlabci', category: 'CI/CD', name: 'GitLab CI' },
+  { id: 'circleci', category: 'CI/CD', name: 'CircleCI' }, // 추가
+
+  // Monitoring & Logging (New)
+  { id: 'sentry', category: 'monitoringAndLogging', name: 'Sentry' },
+  { id: 'datadog', category: 'monitoringAndLogging', name: 'Datadog' },
+  { id: 'grafana', category: 'monitoringAndLogging', name: 'Grafana' },
+  { id: 'prometheus', category: 'monitoringAndLogging', name: 'Prometheus' },
+];
+
+export const COMMON_TECH_STACKS: CommonTechStack[] = [
+  // Languages (Moved from Front/Back)
+  { id: 'html5', category: 'language', name: 'HTML5' },
+  { id: 'css', category: 'language', name: 'CSS' },
+  { id: 'javascript', category: 'language', name: 'JavaScript' },
+  { id: 'typescript', category: 'language', name: 'TypeScript' },
+  { id: 'java', category: 'language', name: 'Java' },
+  { id: 'python', category: 'language', name: 'Python' },
+  { id: 'go', category: 'language', name: 'Go' },
+  { id: 'rust', category: 'language', name: 'Rust' },
+  { id: 'kotlin', category: 'language', name: 'Kotlin' },
+  { id: 'swift', category: 'language', name: 'Swift' },
+  { id: 'csharp', category: 'language', name: 'C#' },
+  { id: 'c++', category: 'language', name: 'C++' },
+  { id: 'c', category: 'language', name: 'C' },
+
+  // Package Manager (New)
+  { id: 'npm', category: 'packageManager', name: 'npm' },
+  { id: 'yarn', category: 'packageManager', name: 'Yarn' },
+  { id: 'pnpm', category: 'packageManager', name: 'pnpm' },
+  { id: 'bun', category: 'packageManager', name: 'Bun' },
+
+  // Testing (New)
+  { id: 'jest', category: 'testing', name: 'Jest' },
+  { id: 'vitest', category: 'testing', name: 'Vitest' },
+  { id: 'cypress', category: 'testing', name: 'Cypress' },
+  { id: 'playwright', category: 'testing', name: 'Playwright' },
+  { id: 'storybook', category: 'testing', name: 'Storybook' },
+
+  // Monorepo & Repo Management (New)
+  { id: 'turborepo', category: 'monorepoManagement', name: 'Turborepo' },
+  { id: 'nx', category: 'monorepoManagement', name: 'Nx' },
+  { id: 'git', category: 'monorepoManagement', name: 'Git' },
+  { id: 'github', category: 'monorepoManagement', name: 'GitHub' },
+
+  // Code Quality
+  { id: 'eslint', category: 'codeQuality', name: 'ESLint' },
+  { id: 'prettier', category: 'codeQuality', name: 'Prettier' },
+  { id: 'sonarqube', category: 'codeQuality', name: 'SonarQube' },
+
+  // Messenger
+  { id: 'slack', category: 'messenger', name: 'Slack' },
+  { id: 'discord', category: 'messenger', name: 'Discord' },
+  { id: 'msteams', category: 'messenger', name: 'Microsoft Teams' },
+  { id: 'kakaotalk', category: 'messenger', name: 'KakaoTalk' },
+
+  // IDE
+  { id: 'vscode', category: 'ide', name: 'Visual Studio Code' },
+  { id: 'visualstudio', category: 'ide', name: 'Visual Studio' },
+  { id: 'cursor', category: 'ide', name: 'Cursor' },
+  { id: 'vim', category: 'ide', name: 'Vim' },
+  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
+  { id: 'intellijidea', category: 'ide', name: 'IntelliJ IDEA' },
+  { id: 'pycharm', category: 'ide', name: 'PyCharm' },
+  { id: 'sublime', category: 'ide', name: 'Sublime Text' },
+  { id: 'riders', category: 'ide', name: 'Rider' },
+
+  // AI
+  { id: 'google gemini', category: 'ai', name: 'Google Gemini' },
+  { id: 'chatgpt', category: 'ai', name: 'ChatGPT' },
+  { id: 'claude', category: 'ai', name: 'Claude' },
+  { id: 'github copilot', category: 'ai', name: 'GitHub Copilot' },
+  { id: 'grok', category: 'ai', name: 'Grok' },
+  { id: 'perplexity', category: 'ai', name: 'Perplexity' },
+];
+
+export const TECH_STACK_GROUPS = [
   {
-    id: 'cloudflareworkers',
-    category: 'Infrastructure',
-    name: 'Cloudflare Workers',
+    title: '공통 및 기반',
+    items: COMMON_TECH_STACKS,
+    categoryMap: {
+      language: '언어',
+      packageManager: '패키지 매니저',
+      testing: '테스트',
+      monorepoManagement: '모노레포 관리',
+      codeQuality: '코드 퀄리티',
+      messenger: '메신저',
+      IDE: 'IDE',
+      ai: 'AI',
+    },
   },
-  { id: 'docker', category: 'Infrastructure', name: 'Docker' },
-  { id: 'kubernetes', category: 'Infrastructure', name: 'Kubernetes' },
-  { id: 'jenkins', category: 'Infrastructure', name: 'Jenkins' },
-  { id: 'githubactions', category: 'Infrastructure', name: 'GitHub Actions' },
-  { id: 'gitlabci', category: 'Infrastructure', name: 'GitLab CI' },
-  { id: 'terraform', category: 'Infrastructure', name: 'Terraform' },
-  { id: 'ansible', category: 'Infrastructure', name: 'Ansible' },
-  { id: 'nginx', category: 'Infrastructure', name: 'Nginx' },
-
-  // Collaboration
-  { id: 'figma', category: 'Collaboration', name: 'Figma' },
-  { id: 'adobexd', category: 'Collaboration', name: 'Adobe XD' },
-  { id: 'zeplin', category: 'Collaboration', name: 'Zeplin' },
-  { id: 'sketch', category: 'Collaboration', name: 'Sketch' },
   {
-    id: 'photoshop/illustrator',
-    category: 'Collaboration',
-    name: 'Photoshop / Illustrator',
+    title: '프론트엔드',
+    items: FRONTEND_TECH_STACKS,
+    categoryMap: {
+      framework: '프레임워크',
+      styling: '스타일링',
+      stateManagement: '상태 관리',
+      uiLibrary: 'UI 라이브러리',
+    },
   },
-  { id: 'slack', category: 'Collaboration', name: 'Slack' },
-  { id: 'discord', category: 'Collaboration', name: 'Discord' },
-  { id: 'notion', category: 'Collaboration', name: 'Notion' },
-  { id: 'jira', category: 'Collaboration', name: 'Jira' },
-  { id: 'trello', category: 'Collaboration', name: 'Trello' },
-  { id: 'linear', category: 'Collaboration', name: 'Linear' },
-  { id: 'asana', category: 'Collaboration', name: 'Asana' },
-  { id: 'confluence', category: 'Collaboration', name: 'Confluence' },
-  { id: 'git', category: 'Collaboration', name: 'Git' },
-  { id: 'github', category: 'Collaboration', name: 'GitHub' },
-  { id: 'gitlab', category: 'Collaboration', name: 'GitLab' },
-  { id: 'bitbucket', category: 'Collaboration', name: 'Bitbucket' },
+  {
+    title: '백엔드',
+    items: BACKEND_TECH_STACKS,
+    categoryMap: {
+      framework: '프레임워크',
+      apiArchitecture: 'API 아키텍처',
+      documentation: '문서화',
+    },
+  },
+  {
+    ai: 'AI',
+    title: '데이터베이스 및 스토리지',
+    items: DATABASE_TECH_STACKS,
+    categoryMap: {
+      mainDatabase: '메인 DB',
+      ormAndQueryBuilder: 'ORM & 쿼리 빌더',
+      cachingAndMessageQueue: '캐싱 & 메시지 큐',
+      fileStorage: '파일 스토리지',
+    },
+  },
+  {
+    title: '인프라 및 데브옵스',
+    items: INFRASTRUCTURE_TECH_STACKS,
+    categoryMap: {
+      deployment: '배포 환경',
+      'CI/CD': 'CI/CD',
+      monitoringAndLogging: '모니터링 & 로깅',
+    },
+  },
+];
+
+export const ALL_TECH_STACKS: TechStack[] = [
+  ...COMMON_TECH_STACKS,
+  ...FRONTEND_TECH_STACKS,
+  ...BACKEND_TECH_STACKS,
+  ...DATABASE_TECH_STACKS,
+  ...INFRASTRUCTURE_TECH_STACKS,
 ];
 
 // 예외 처리가 필요한 이름들을 매핑(Simple Icons 슬러그 기준)
