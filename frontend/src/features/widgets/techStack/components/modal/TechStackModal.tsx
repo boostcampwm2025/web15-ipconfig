@@ -67,7 +67,7 @@ function TechStackModal({
     <ReactPortal portalTargetId={modalRootId}>
       <dialog
         style={{ left: position.x, top: position.y }}
-        className="fixed flex h-150 w-160 flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
+        className="bg-background border-border fixed flex h-150 w-160 flex-col overflow-hidden rounded-xl border shadow-2xl"
       >
         {/* 헤더를 드래그 핸들로 사용 */}
         <ModalHeader
@@ -76,9 +76,9 @@ function TechStackModal({
           icon={HEADER_ICON}
           onClose={onModalClose}
         />
-        <div className="px-6.5 text-sm text-gray-400">
+        <div className="text-muted-foreground px-6.5 text-sm">
           기술 스택을&nbsp;
-          <span className="font-bold text-white">드래그 앤 드롭</span>
+          <span className="text-foreground font-bold">드래그 앤 드롭</span>
           으로 기술 스택 위젯 안에 넣어주세요!
         </div>
         <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-6.5 pt-2 pb-4">

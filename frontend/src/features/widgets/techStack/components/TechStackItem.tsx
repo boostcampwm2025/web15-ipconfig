@@ -42,7 +42,7 @@ export function TechStackItem({ name, slug, color }: TechStackItemProps) {
       className="hover:border-primary bg-card hover:bg-accent flex h-25.5 w-25.5 flex-col items-center justify-center gap-2 rounded-lg px-2 py-1 transition-colors select-none"
     >
       <TechIcon slug={slug} color={color} />
-      <div className="text-center text-xs font-medium text-wrap text-gray-300">
+      <div className="text-muted-foreground text-center text-xs font-medium text-wrap">
         {name}
       </div>
     </Badge>

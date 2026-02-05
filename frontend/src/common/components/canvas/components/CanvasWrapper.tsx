@@ -3,6 +3,7 @@ import { type PropsWithChildren } from 'react';
 import { cn } from '@/common/lib/utils';
 import useWheel from '../hooks/useWheel';
 import usePanning from '../hooks/usePanning';
+import { useTheme } from '@/common/contexts/ThemeProvider';
 
 export function CanvasWrapper({ children }: PropsWithChildren) {
   const { camera, frameRef, clickedFollow } = useCanvas();
@@ -19,13 +20,17 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
     handleMouseMove,
   } = usePanning();
 
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     // 뷰포트 레이어
     <div
       ref={frameRef}
       className={cn(
-        'bg-background relative h-full w-full touch-none overflow-hidden select-none',
+        'relative h-full w-full touch-none overflow-hidden select-none',
         isPanning && 'cursor-grabbing',
+        isDark ? 'bg-gray-900' : 'bg-background',
       )}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

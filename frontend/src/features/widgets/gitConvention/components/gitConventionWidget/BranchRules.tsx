@@ -105,7 +105,7 @@ export function BranchRules({ strategy, rules, onChange }: BranchRulesProps) {
               <Button
                 variant={'ghost'}
                 onClick={() => handleRemovePrefix(prefix)}
-                className="hover:text-destructive hover:bg-accent rounded-full p-0.5 transition-colors focus:outline-none"
+                className="hover:text-destructive hover:bg-accent h-4 w-4 rounded-full p-0 transition-colors focus:outline-none"
                 aria-label={`Remove ${prefix}`}
               >
                 <LuX size={14} />

@@ -59,11 +59,18 @@ export class NamingConventionBuilder implements ISectionBuilder {
       ];
 
       categories.forEach((category) => {
-        // 모든 아이템을 항상 표시
+        // 'none' 값이 아닌 아이템만 필터링
+        const validItems = category.items.filter(
+          (item) => item.value !== 'none',
+        );
+
+        // 유효한 아이템이 없으면 해당 카테고리 표시 안 함
+        if (validItems.length === 0) return;
+
         lines.push(`### ${category.title}`);
         lines.push('| 구분 | 컨벤션 |');
         lines.push('| :--- | :--- |');
-        category.items.forEach((item) => {
+        validItems.forEach((item) => {
           lines.push(createTableRow(item.label, item.value || '-'));
         });
         lines.push('');

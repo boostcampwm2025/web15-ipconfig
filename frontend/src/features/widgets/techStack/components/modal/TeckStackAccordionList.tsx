@@ -13,7 +13,7 @@ export function TechStackAccordionList() {
     <Accordion type="multiple" className="w-full">
       {TECH_STACK_GROUPS.map((group) => (
         <AccordionItem key={group.title} value={group.title}>
-          <AccordionTrigger className="text-xl font-bold text-white">
+          <AccordionTrigger className="text-foreground text-xl font-bold">
             {group.title}
           </AccordionTrigger>
           <AccordionContent>
@@ -31,7 +31,7 @@ export function TechStackAccordionList() {
                     value={catKey}
                     className="border-none"
                   >
-                    <AccordionTrigger className="py-2 text-lg text-sm font-semibold text-white">
+                    <AccordionTrigger className="text-foreground py-2 text-sm font-semibold">
                       {catName}
                     </AccordionTrigger>
                     <AccordionContent>
