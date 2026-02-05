@@ -1,4 +1,6 @@
-import { Module, Global, Logger } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import { CollaborationService } from './collaboration.service';
 import { YjsDocReaderService } from './yjs-doc-reader.service';
 import { StorageAdapter } from './storage/storage.interface';
@@ -17,19 +19,24 @@ import Redis from 'ioredis';
     },
     {
       provide: Redis,
-      useFactory: () => {
-        const logger = new Logger('RedisProvider');
+      inject: [WINSTON_MODULE_PROVIDER],
+      useFactory: (logger: Logger) => {
         const redis = new Redis({
           host: process.env.REDIS_HOST || 'localhost',
-          port: parseInt(process.env.REDIS_PORT || '6379', 10),
+          port: Number.parseInt(process.env.REDIS_PORT || '6379', 10),
         });
 
         redis.on('connect', () => {
-          logger.log('Redis connected for document storage');
+          logger.info('Redis connected for document storage', {
+            context: 'RedisProvider',
+          });
         });
 
         redis.on('error', (err) => {
-          logger.error('Redis connection error:', err.message);
+          logger.error('Redis connection error:', {
+            context: 'RedisProvider',
+            message: err.message,
+          });
         });
 
         return redis;

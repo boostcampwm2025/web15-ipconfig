@@ -1,6 +1,8 @@
 // TODO: Yjs(Y.Map, Y.Array) 등 외부 타입으로 인한 경고/에러 무시
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { CollaborationService } from './collaboration.service';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import * as Y from 'yjs';
 import type {
   YjsWidgetData,
@@ -10,9 +12,10 @@ import type {
 
 @Injectable()
 export class YjsDocReaderService {
-  private readonly logger = new Logger(YjsDocReaderService.name);
-
-  constructor(private readonly collaborationService: CollaborationService) {}
+  constructor(
+    private readonly collaborationService: CollaborationService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   /**
    * 워크스페이스의 모든 위젯 데이터를 가져옵니다.
@@ -34,10 +37,12 @@ export class YjsDocReaderService {
       (hocuspocusDoc as unknown as { document?: Y.Doc }).document ??
       (hocuspocusDoc as unknown as Y.Doc);
     const root = yjsDoc.getMap('root');
-    const widgets = root.get('widgets') as Y.Map<Y.Map<unknown>> | undefined;
+    const widgets = root.get('widgets') as Y.Map<Y.Map<unknown>>;
 
     if (!widgets) {
-      this.logger.warn(`Workspace ${workspaceId}: widgets map not found`);
+      this.logger.warn(`Workspace ${workspaceId}: widgets map not found`, {
+        context: YjsDocReaderService.name,
+      });
       return [];
     }
 
@@ -67,8 +72,8 @@ export class YjsDocReaderService {
     widgetId: string,
     widgetMap: Y.Map<unknown>,
   ): YjsWidgetData {
-    const layoutMap = widgetMap.get('layout') as Y.Map<number> | undefined;
-    const contentMap = widgetMap.get('content') as Y.Map<unknown> | undefined;
+    const layoutMap = widgetMap.get('layout') as Y.Map<number>;
+    const contentMap = widgetMap.get('content') as Y.Map<unknown>;
 
     const layout: YjsWidgetLayout = layoutMap
       ? {

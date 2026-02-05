@@ -41,7 +41,7 @@ function WorkSpacePage() {
   return (
     <CanvasProvider>
       <div
-        className="relative h-screen overflow-hidden bg-transparent text-gray-100"
+        className="text-foreground relative h-screen overflow-hidden bg-transparent"
         data-cursor-mode={myCursorType}
       >
         {/* 캔버스: 화면 전체 */}

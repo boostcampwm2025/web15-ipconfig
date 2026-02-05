@@ -2,13 +2,15 @@ import {
   Injectable,
   OnModuleInit,
   OnModuleDestroy,
-  Logger,
+  Inject,
 } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import { Hocuspocus, Extension } from '@hocuspocus/server';
 import { Redis as RedisExtension } from '@hocuspocus/extension-redis';
 import { Database } from '@hocuspocus/extension-database';
-import { IncomingMessage } from 'http';
-import { Duplex } from 'stream';
+import { IncomingMessage } from 'node:http';
+import { Duplex } from 'node:stream';
 import { WebSocketServer } from 'ws';
 import { StorageAdapter } from './storage/storage.interface';
 
@@ -16,9 +18,11 @@ import { StorageAdapter } from './storage/storage.interface';
 export class CollaborationService implements OnModuleInit, OnModuleDestroy {
   private hocuspocus: Hocuspocus;
   private wss: WebSocketServer;
-  private readonly logger = new Logger(CollaborationService.name);
 
-  constructor(private readonly storageAdapter: StorageAdapter) {}
+  constructor(
+    private readonly storageAdapter: StorageAdapter,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   onModuleInit() {
     // WebSocket 서버 생성 (noServer 모드)
@@ -26,7 +30,7 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
 
     // Redis 설정 (Extension용)
     const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
+    const redisPort = Number.parseInt(process.env.REDIS_PORT || '6379', 10);
     const redisPassword = process.env.REDIS_PASSWORD;
     const useRedisExtension = process.env.USE_REDIS_EXTENSION === 'true';
 
@@ -37,11 +41,15 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
     extensions.push(
       new Database({
         fetch: async ({ documentName }) => {
-          this.logger.debug(`Fetching document ${documentName} from storage`);
+          this.logger.debug(`Fetching document ${documentName} from storage`, {
+            context: CollaborationService.name,
+          });
           return this.storageAdapter.get(`yjs:doc:${documentName}`);
         },
         store: async ({ documentName, state }) => {
-          this.logger.debug(`Storing document ${documentName} to storage`);
+          this.logger.debug(`Storing document ${documentName} to storage`, {
+            context: CollaborationService.name,
+          });
           await this.storageAdapter.set(`yjs:doc:${documentName}`, state);
         },
       }),
@@ -49,7 +57,9 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
 
     // Redis Extension (Scale-out Pub/Sub)
     if (useRedisExtension) {
-      this.logger.log('Enabling Redis Extension for multi-server sync');
+      this.logger.info('Enabling Redis Extension for multi-server sync', {
+        context: CollaborationService.name,
+      });
       extensions.push(
         new RedisExtension({
           host: redisHost,
@@ -68,18 +78,23 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
       maxDebounce: 10000,
 
       onConnect: async (data) => {
-        this.logger.log(`User connected to Hocuspocus: ${data.documentName}`);
+        this.logger.info(`User connected to Hocuspocus: ${data.documentName}`, {
+          context: CollaborationService.name,
+        });
         await Promise.resolve();
       },
 
       onDisconnect: async ({ documentName }) => {
-        this.logger.log(`User disconnected from document: ${documentName}`);
+        this.logger.info(`User disconnected from document: ${documentName}`, {
+          context: CollaborationService.name,
+        });
         await Promise.resolve();
       },
     });
 
-    this.logger.log(
+    this.logger.info(
       `Hocuspocus collaboration server initialized with StorageAdapter and ${useRedisExtension ? 'Redis Extension' : 'no Redis Extension'}`,
+      { context: CollaborationService.name },
     );
   }
 
@@ -89,7 +104,9 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
     }
     if (this.hocuspocus) {
       this.hocuspocus.closeConnections();
-      this.logger.log('Hocuspocus collaboration server destroyed');
+      this.logger.info('Hocuspocus collaboration server destroyed', {
+        context: CollaborationService.name,
+      });
     }
   }
 

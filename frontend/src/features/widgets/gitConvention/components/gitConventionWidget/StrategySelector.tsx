@@ -13,7 +13,10 @@ interface StrategySelectorProps {
 export function StrategySelector({ value, onChange }: StrategySelectorProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-muted-foreground ml-1 text-xs font-semibold">
+      <label
+        htmlFor="git-strategy"
+        className="text-muted-foreground ml-1 text-xs font-semibold"
+      >
         Git 전략
       </label>
       <div className="flex flex-col gap-1.5">

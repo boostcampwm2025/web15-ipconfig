@@ -34,7 +34,7 @@ function CreateCard() {
           placeholder="코드 입력 (선택사항, 미입력 시 무작위 생성)"
           {...register('code')}
           maxLength={32}
-          className={`h-12 text-center text-base transition-all duration-300 focus-visible:border-green-500 focus-visible:ring-green-500/50 ${errors.code ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50' : ''}`}
+          className={`h-12 border-[rgba(255,255,255,0.15)] text-center text-base transition-all duration-300 focus-visible:border-green-500 focus-visible:ring-green-500/50 ${errors.code ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50' : ''}`}
         />
         {errors.code && (
           <p className="text-left font-mono text-sm text-red-400">

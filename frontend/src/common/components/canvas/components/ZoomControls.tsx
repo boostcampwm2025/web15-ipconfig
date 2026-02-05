@@ -2,7 +2,8 @@ import { ZOOM_CONFIG } from '@/common/components/canvas/constants/zoom';
 import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
 import { useCanvas } from '../context/CanvasProvider';
 import { zoomByDeltaAtPivot } from '../lib/positionTransform';
-import { Button } from '../../shadcn/button';
+
+import { Button } from '@/common/components/shadcn/button';
 
 function ZoomControls() {
   const { camera, setCamera, getFrameInfo } = useCanvas();
@@ -18,22 +19,24 @@ function ZoomControls() {
 
   return (
     <div className="absolute bottom-6 left-6 z-50 flex items-center gap-2">
-      <div className="flex items-center rounded-lg border border-gray-700 bg-gray-800 shadow-lg">
+      <div className="border-border bg-popover/80 flex items-center rounded-lg border p-0.5 shadow-lg backdrop-blur-xl">
         <Button
-          variant={'ghost'}
+          variant="ghost"
+          size="icon"
           disabled={isMinZoom}
-          className="h-8 w-8 border-gray-700 text-gray-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-gray-400"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-r-none disabled:opacity-50"
           onClick={() => handleZoomButton(-ZOOM_CONFIG.ZOOM_BUTTON_STEP)}
         >
           <LuZoomOut size={14} />
         </Button>
-        <span className="px-2 font-mono text-xs text-gray-300">
+        <span className="text-muted-foreground w-12 text-center font-mono text-xs">
           {Math.floor(camera.scale * 100)}%
         </span>
         <Button
-          variant={'ghost'}
+          variant="ghost"
+          size="icon"
           disabled={isMaxZoom}
-          className="h-8 w-8 border-gray-700 text-gray-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-gray-400"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-l-none disabled:opacity-50"
           onClick={() => handleZoomButton(ZOOM_CONFIG.ZOOM_BUTTON_STEP)}
         >
           <LuZoomIn size={14} />
