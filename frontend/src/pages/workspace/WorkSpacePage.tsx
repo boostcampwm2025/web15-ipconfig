@@ -9,6 +9,7 @@ import { useWorkspaceInfoStore } from '@/common/store/workspace';
 import { useCollaboration } from '@/common/hooks/useCollaboration';
 import { LoadingSpinner } from '@/common/components/LoadingSpinner';
 import { useWorkspaceGuard } from '@/common/hooks/useWorkspaceGuard';
+import WorkspaceTour from '@/features/tour/WorkspaceTour';
 import { useMyCursorType } from '@/common/store/user';
 
 function WorkSpacePage() {
@@ -40,6 +41,7 @@ function WorkSpacePage() {
 
   return (
     <CanvasProvider>
+      <WorkspaceTour />
       <div
         className="text-foreground relative h-screen overflow-hidden bg-transparent"
         data-cursor-mode={myCursorType}

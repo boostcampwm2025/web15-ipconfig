@@ -38,12 +38,16 @@ function WorkspaceHeader() {
 
       <RoundedContainer className="gap-2">
         <UserListCard />
-        <ExportGroupDropdownButton />
+        <div id="export-group-dropdown-button">
+          <ExportGroupDropdownButton />
+        </div>
         <Button size="sm" variant="secondary">
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
-        <InviteButton />
+        <div id="invite-button">
+          <InviteButton />
+        </div>
         <ThemeToggle />
       </RoundedContainer>
     </header>

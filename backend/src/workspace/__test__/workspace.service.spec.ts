@@ -1,5 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  WORKSPACE_ID_LENGTH,
+  WORKSPACE_TTL_MS,
+} from '../constants/workspace.constants';
+import {
+  DOCUMENT_NAME_PREFIX,
+  REDIS_KEY_PREFIX,
+} from '../../collaboration/constants/collaboration.constants';
 import { WorkspaceService } from '../workspace.service';
 import { JoinUserDTO } from '../dto/join-user.dto';
 import { StorageAdapter } from '../../collaboration/storage/storage.interface';
@@ -68,7 +76,7 @@ describe('WorkspaceService', () => {
 
       expect(result.workspaceId).toBeDefined();
       expect(typeof result.workspaceId).toBe('string');
-      expect(result.workspaceId.length).toBe(10);
+      expect(result.workspaceId.length).toBe(WORKSPACE_ID_LENGTH);
     });
 
     it('workspaceId를 지정하면 해당 ID로 생성한다', async () => {
@@ -334,7 +342,7 @@ describe('WorkspaceService', () => {
       expect(result).toBe(true);
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(storageAdapter.get).toHaveBeenCalledWith(
-        `yjs:doc:workspace:${workspaceId}`,
+        `${REDIS_KEY_PREFIX.YJS_DOC}${DOCUMENT_NAME_PREFIX.WORKSPACE}${workspaceId}`,
       );
 
       // 메모리에 복구되었는지 확인 (동기적으로 has 체크를 못하므로 다시 호출해서 storage 호출 안되는지 확인)
@@ -373,8 +381,8 @@ describe('WorkspaceService', () => {
 
       const expireTime = workspaceInfo.expirationTime.getTime();
 
-      const expectedTimeLower = before + 3 * 24 * 60 * 60 * 1000;
-      const expectedTimeUpper = after + 3 * 24 * 60 * 60 * 1000;
+      const expectedTimeLower = before + WORKSPACE_TTL_MS;
+      const expectedTimeUpper = after + WORKSPACE_TTL_MS;
 
       expect(expireTime).toBeGreaterThanOrEqual(expectedTimeLower);
       expect(expireTime).toBeLessThanOrEqual(expectedTimeUpper);

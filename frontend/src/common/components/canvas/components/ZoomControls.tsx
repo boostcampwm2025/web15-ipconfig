@@ -18,7 +18,10 @@ function ZoomControls() {
   };
 
   return (
-    <div className="absolute bottom-6 left-6 z-50 flex items-center gap-2">
+    <div
+      id="zoom-controls"
+      className="absolute bottom-6 left-6 z-50 flex items-center gap-2"
+    >
       <div className="border-border bg-popover/80 flex items-center rounded-lg border p-0.5 shadow-lg backdrop-blur-xl">
         <Button
           variant="ghost"
