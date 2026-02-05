@@ -10,13 +10,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, type UserSchema } from '@/common/schemas/userSchema';
 import { useUserInfoById } from '@/common/store/user';
+import { Button } from '@/common/components/shadcn/button';
 
 interface MyUserItemProps {
   userId: string;
 }
 
 function MyUserItem({ userId }: MyUserItemProps) {
+  const user = useUserInfoById(userId);
   const [isEditing, setIsEditing] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -27,7 +30,7 @@ function MyUserItem({ userId }: MyUserItemProps) {
     resolver: zodResolver(userSchema),
     mode: 'onChange',
     defaultValues: {
-      nickname: user.nickname,
+      nickname: user?.nickname ?? '',
     },
   });
 
@@ -35,19 +38,16 @@ function MyUserItem({ userId }: MyUserItemProps) {
     if (isEditing) {
       setFocus('nickname');
     } else {
-      reset({ nickname: user.nickname });
+      reset({ nickname: user?.nickname ?? '' });
     }
-  }, [isEditing, user.nickname, setFocus, reset]);
+  }, [isEditing, user?.nickname, setFocus, reset]);
 
   const onSubmit = (data: UserSchema) => {
-    if (data.nickname !== user.nickname) {
+    if (data.nickname !== user?.nickname) {
       updateUserNickname(data.nickname);
     }
     setIsEditing(false);
   };
-
-  const user = useUserInfoById(userId);
-  if (!user) return null;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -56,9 +56,11 @@ function MyUserItem({ userId }: MyUserItemProps) {
       }
     } else if (e.key === 'Escape') {
       setIsEditing(false);
-      reset({ nickname: user.nickname });
+      reset({ nickname: user?.nickname ?? '' });
     }
   };
+
+  if (!user) return null;
 
   return (
     <>
