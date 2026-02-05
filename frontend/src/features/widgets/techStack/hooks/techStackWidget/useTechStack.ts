@@ -15,13 +15,14 @@ import { INITIAL_TECH_STACK_DATA } from '../../constant/initial';
 
 export function useTechStack() {
   const { widgetId, type } = useWidgetIdAndType();
-  const content = useWorkspaceWidgetStore(
-    useShallow(
-      (state) =>
-        state.widgetList.find((widget) => widget.widgetId === widgetId)
-          ?.content,
+  const widgetData = useWorkspaceWidgetStore(
+    useShallow((state) =>
+      state.widgetList.find((widget) => widget.widgetId === widgetId),
     ),
   );
+
+  const content = widgetData?.content;
+  const layout = widgetData?.layout;
 
   const techStackData = content as TechStackWidgetData;
 
@@ -66,8 +67,13 @@ export function useTechStack() {
   const isModalOpen = activeWidgetId === widgetId;
 
   const handleOpenModal = useCallback(() => {
+    // 다른 모달이 열려있으면 동작하지 않음 (Blocking)
+    if (activeWidgetId && activeWidgetId !== widgetId) {
+      return;
+    }
+
     openModal(widgetId);
-  }, [widgetId, openModal]);
+  }, [widgetId, openModal, activeWidgetId]);
 
   const handleCloseModal = useCallback(() => {
     closeModal();
