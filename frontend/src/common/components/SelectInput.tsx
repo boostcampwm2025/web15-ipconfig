@@ -56,7 +56,6 @@ function SelectInput({
       setSearchText(value);
       setValue('search', value, { shouldValidate: true });
 
-      // requestAnimationFrame을 써서 다음 프레임에 포커스를 확실하게 복구
       requestAnimationFrame(() => {
         inputRef.current?.focus();
       });
@@ -125,23 +124,13 @@ function SelectInput({
         <div className="max-h-[300px] overflow-y-auto">
           {filteredOptions.length > 0
             ? filteredOptions.map((group) => (
-                <div key={group.category}>
-                  <div className="text-muted-foreground px-2 py-1.5 text-[10px] font-semibold">
-                    {group.category}
-                  </div>
-                  {group.options.map((option) => {
-                    const fullValue = `[${group.category}] ${option}`;
-                    return (
-                      <SelectItem
-                        key={fullValue}
-                        value={fullValue}
-                        className="cursor-pointer pl-8 text-sm"
-                      >
-                        <span className="block truncate">{option}</span>
-                      </SelectItem>
-                    );
-                  })}
-                </div>
+                <SelectItem
+                  key={group.category}
+                  value={group.category}
+                  className="cursor-pointer pl-8 text-sm"
+                >
+                  <span className="block truncate">{group.category}</span>
+                </SelectItem>
               ))
             : !searchText && (
                 <div className="text-muted-foreground py-6 text-center text-sm">

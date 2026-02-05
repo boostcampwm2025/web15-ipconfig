@@ -1,38 +1,29 @@
 import { useMemo } from 'react';
 import { SUBJECT_GROUPS } from '@/features/widgets/techStack/mocks/techStacks';
-
-interface GroupShape {
-  category: string;
-  options: string[];
-}
+import type { SelectInputOption } from '../types/selectInput';
 
 export function useSelectOptions(
   searchText: string,
   customOptions: string[],
-  defaultGroups: GroupShape[] = SUBJECT_GROUPS,
+  defaultGroups: SelectInputOption[] = SUBJECT_GROUPS,
 ) {
-  // 1. 기본 + 커스텀 옵션 병합
   const allGroupedOptions = useMemo(() => {
-    // 깊은 복사로 안전하게 병합 시작
     const mergedGroups = defaultGroups.map((group) => ({
       ...group,
-      options: [...group.options],
     }));
 
     customOptions.forEach((fullValue) => {
       const match = fullValue.match(/^\[(.*?)\] (.*)$/);
       if (match) {
-        const [, category, optionName] = match;
+        const [, category] = match;
         const groupIndex = mergedGroups.findIndex(
           (g) => g.category === category,
         );
 
         if (groupIndex > -1) {
-          if (!mergedGroups[groupIndex].options.includes(optionName)) {
-            mergedGroups[groupIndex].options.push(optionName);
-          }
+          mergedGroups[groupIndex].category = fullValue;
         } else {
-          mergedGroups.push({ category, options: [optionName] });
+          mergedGroups.push({ category: fullValue });
         }
       }
     });
@@ -43,24 +34,15 @@ export function useSelectOptions(
   const filteredOptions = useMemo(() => {
     if (!searchText) return allGroupedOptions;
 
-    return allGroupedOptions
-      .map((group) => ({
-        ...group,
-        options: group.options.filter((opt) =>
-          opt.toLowerCase().includes(searchText.toLowerCase()),
-        ),
-      }))
-      .filter((group) => group.options.length > 0);
+    return allGroupedOptions.filter((group) =>
+      group.category.toLowerCase().includes(searchText.toLowerCase()),
+    );
   }, [searchText, allGroupedOptions]);
 
   // 3. 중복 여부 확인
   const isExisting = useMemo(() => {
     return allGroupedOptions.some((group) =>
-      group.options.some(
-        (option) =>
-          `[${group.category}] ${option}`.toLowerCase() ===
-          searchText.toLowerCase(),
-      ),
+      group.category.toLowerCase().includes(searchText.toLowerCase()),
     );
   }, [allGroupedOptions, searchText]);
 

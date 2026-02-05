@@ -10,7 +10,6 @@ import {
   updateSelectorPickAction,
   upsertOptionAction,
 } from '@/common/api/yjs/actions/widgetContent';
-import { parseSubject } from '../../utils/parsing';
 import { INITIAL_TECH_STACK_DATA } from '../../constant/initial';
 
 export function useTechStack() {
@@ -96,14 +95,8 @@ export function useTechStack() {
     },
   });
 
-  const parsedSubject = useMemo(
-    () => parseSubject(subject.selectedId),
-    [subject.selectedId],
-  );
-
   return {
     subject,
-    parsedSubject,
     techItems,
     isModalOpen,
     customOptions,

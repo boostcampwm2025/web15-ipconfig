@@ -15,6 +15,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     category: '프론트엔드',
-    option: '프레임워크',
   },
 };

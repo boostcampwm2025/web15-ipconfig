@@ -181,28 +181,12 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
     color: '4E9BCD',
     slug: 'sonar',
   },
-
-  // Messenger
   {
-    id: 'slack',
-    category: 'messenger',
-    name: 'Slack',
-    color: '4A154B',
-    slug: 'slack',
-  },
-  {
-    id: 'discord',
-    category: 'messenger',
-    name: 'Discord',
-    color: '5865F2',
-    slug: 'discord',
-  },
-  {
-    id: 'msteams',
-    category: 'messenger',
-    name: 'Microsoft Teams',
-    color: '6264A7',
-    slug: 'microsoftteams',
+    id: 'husky',
+    category: 'codeQuality',
+    name: 'Husky',
+    color: '000000',
+    slug: 'husky',
   },
 
   // IDE
@@ -575,6 +559,13 @@ export const BACKEND_TECH_STACKS: BackendTechStack[] = [
 
   // API Architecture
   {
+    id: 'restapi',
+    category: 'apiArchitecture',
+    name: 'REST API',
+    color: '0052FF',
+    slug: 'resend',
+  },
+  {
     id: 'graphql',
     category: 'apiArchitecture',
     name: 'GraphQL',
@@ -624,6 +615,27 @@ export const BACKEND_TECH_STACKS: BackendTechStack[] = [
     name: 'Postman',
     color: 'FF6C37',
     slug: 'postman',
+  },
+  {
+    id: 'redoc',
+    category: 'documentation',
+    name: 'Redoc',
+    color: '8BB131',
+    slug: 'redoc',
+  },
+  {
+    id: 'gitbook',
+    category: 'documentation',
+    name: 'GitBook',
+    color: '3884FF',
+    slug: 'gitbook',
+  },
+  {
+    id: 'googledocs',
+    category: 'documentation',
+    name: 'Google Docs',
+    color: '4285F4',
+    slug: 'googledocs',
   },
 ];
 
@@ -769,6 +781,34 @@ export const DATABASE_TECH_STACKS: DatabaseTechStack[] = [
     slug: 'amazons3',
   },
   {
+    id: 'gcs',
+    category: 'fileStorage',
+    name: 'GCS',
+    color: '4285F4',
+    slug: 'googlecloud',
+  }, // Google Cloud Storage
+  {
+    id: 'cloudinary',
+    category: 'fileStorage',
+    name: 'Cloudinary',
+    color: '3448C5',
+    slug: 'cloudinary',
+  }, // 미디어 최적화 특화
+  {
+    id: 'supabase-storage',
+    category: 'fileStorage',
+    name: 'Supabase Storage',
+    color: '3ECF8E',
+    slug: 'supabase',
+  },
+  {
+    id: 'firebase-storage',
+    category: 'fileStorage',
+    name: 'Firebase Storage',
+    color: 'FFCA28',
+    slug: 'firebase',
+  },
+  {
     id: 'minio',
     category: 'fileStorage',
     name: 'MinIO',
@@ -841,6 +881,13 @@ export const INFRASTRUCTURE_TECH_STACKS: InfrastructureTechStack[] = [
     name: 'Cloudflare',
     color: 'F38020',
     slug: 'cloudflare',
+  },
+  {
+    id: 'NCP',
+    category: 'deployment',
+    name: 'NCP',
+    color: '03C75A',
+    slug: 'naver',
   },
 
   // CI/CD

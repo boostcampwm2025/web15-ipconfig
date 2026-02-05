@@ -11,7 +11,6 @@ import { LuLayers } from 'react-icons/lu';
 function TechStackWidget() {
   const {
     subject,
-    parsedSubject,
     techItems,
     isModalOpen,
     customOptions,
@@ -38,11 +37,10 @@ function TechStackWidget() {
           </div>
         </div>
 
-        {parsedSubject && (
+        {subject.selectedId && (
           <SubjectGuideline
-            key={`${parsedSubject.category}-${parsedSubject.option}`}
-            category={parsedSubject.category}
-            option={parsedSubject.option}
+            key={subject.selectedId}
+            category={subject.selectedId}
           />
         )}
 
