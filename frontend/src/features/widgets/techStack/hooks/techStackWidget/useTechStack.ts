@@ -5,6 +5,7 @@ import type { TechStackWidgetData } from '@/common/types/widgetData';
 import { useWidgetIdAndType } from '@/common/components/widgetFrame/context/WidgetContext';
 import { useWorkspaceWidgetStore } from '@/common/store/workspace';
 import { useShallow } from 'zustand/react/shallow';
+import { useTechStackModalStore } from '../../store/techStackModalStore';
 import {
   updateArrayContentAction,
   updateSelectorPickAction,
@@ -55,7 +56,27 @@ export function useTechStack() {
     [widgetId, type],
   );
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const activeWidgetId = useTechStackModalStore(
+    (state) => state.activeWidgetId,
+  );
+  const openModal = useTechStackModalStore((state) => state.openModal);
+  const closeModal = useTechStackModalStore((state) => state.closeModal);
+
+  // 이 모달이 열려있는지 확인
+  const isModalOpen = activeWidgetId === widgetId;
+
+  const handleOpenModal = useCallback(() => {
+    // 다른 모달이 열려있으면 동작하지 않음 (Blocking)
+    if (activeWidgetId && activeWidgetId !== widgetId) {
+      return;
+    }
+
+    openModal(widgetId);
+  }, [widgetId, openModal, activeWidgetId]);
+
+  const handleCloseModal = useCallback(() => {
+    closeModal();
+  }, [closeModal]);
 
   const setSelectedTechStacks = (value: React.SetStateAction<TechStack[]>) => {
     let newItems: TechStack[];
@@ -104,8 +125,8 @@ export function useTechStack() {
     handleCreateSubject,
     actions: {
       setSelectedTechStacks,
-      openModal: () => setIsModalOpen(true),
-      closeModal: () => setIsModalOpen(false),
+      openModal: handleOpenModal,
+      closeModal: handleCloseModal,
     },
   };
 }

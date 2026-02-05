@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Joyride, { type CallBackProps, STATUS } from 'react-joyride';
 import { TOOL_BAR_STEPS } from './constant/ToolBarSteps';
 import { HEADER_STEPS } from './constant/HeaderSteps';
-import { ZOOM_STEPS } from './constant/ZoomSteps';
+import { FINISH_STEPS } from './constant/FinishSteps';
 
 const TOUR_STORAGE_KEY = 'has-visited-workspace';
 
@@ -18,7 +18,7 @@ const WorkspaceTour = () => {
     }
   }, []);
 
-  const ALL_STEPS = [...TOOL_BAR_STEPS, ...ZOOM_STEPS, ...HEADER_STEPS];
+  const ALL_STEPS = [...TOOL_BAR_STEPS, ...HEADER_STEPS, ...FINISH_STEPS];
 
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data as {
@@ -57,7 +57,7 @@ const WorkspaceTour = () => {
           arrowColor: '#EEEEEE',
           backgroundColor: '#EEEEEE',
           overlayColor: 'rgba(0, 0, 0, 0.5)',
-          primaryColor: '#393E46',
+          primaryColor: '#00ADB5',
           textColor: '#222831',
           zIndex: 1000,
         },

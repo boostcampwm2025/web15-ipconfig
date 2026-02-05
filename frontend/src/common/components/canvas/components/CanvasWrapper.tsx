@@ -27,6 +27,7 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
     // 뷰포트 레이어
     <div
       ref={frameRef}
+      id="canvas-wrapper"
       className={cn(
         'relative h-full w-full touch-none overflow-hidden select-none',
         isPanning && 'cursor-grabbing',
