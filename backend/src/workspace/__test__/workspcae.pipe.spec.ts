@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { WorkspaceIdPipe } from '../workspcae.pipe';
+import { WorkspaceIdPipe } from '../workspace.pipe';
 
 describe('WorkspaceIdPipe', () => {
   let pipe: WorkspaceIdPipe;

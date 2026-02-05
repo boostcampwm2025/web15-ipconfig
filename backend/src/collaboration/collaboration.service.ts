@@ -7,8 +7,8 @@ import {
 import { Hocuspocus, Extension } from '@hocuspocus/server';
 import { Redis as RedisExtension } from '@hocuspocus/extension-redis';
 import { Database } from '@hocuspocus/extension-database';
-import { IncomingMessage } from 'http';
-import { Duplex } from 'stream';
+import { IncomingMessage } from 'node:http';
+import { Duplex } from 'node:stream';
 import { WebSocketServer } from 'ws';
 import { StorageAdapter } from './storage/storage.interface';
 
@@ -26,7 +26,7 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
 
     // Redis 설정 (Extension용)
     const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
+    const redisPort = Number.parseInt(process.env.REDIS_PORT || '6379', 10);
     const redisPassword = process.env.REDIS_PASSWORD;
     const useRedisExtension = process.env.USE_REDIS_EXTENSION === 'true';
 

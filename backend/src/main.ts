@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { CollaborationService } from './collaboration/collaboration.service';
-import { Server, IncomingMessage } from 'http';
-import { Duplex } from 'stream';
+import { Server, IncomingMessage } from 'node:http';
+import { Duplex } from 'node:stream';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

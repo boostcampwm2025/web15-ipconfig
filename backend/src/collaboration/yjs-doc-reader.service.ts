@@ -34,7 +34,7 @@ export class YjsDocReaderService {
       (hocuspocusDoc as unknown as { document?: Y.Doc }).document ??
       (hocuspocusDoc as unknown as Y.Doc);
     const root = yjsDoc.getMap('root');
-    const widgets = root.get('widgets') as Y.Map<Y.Map<unknown>> | undefined;
+    const widgets = root.get('widgets') as Y.Map<Y.Map<unknown>>;
 
     if (!widgets) {
       this.logger.warn(`Workspace ${workspaceId}: widgets map not found`);
@@ -67,8 +67,8 @@ export class YjsDocReaderService {
     widgetId: string,
     widgetMap: Y.Map<unknown>,
   ): YjsWidgetData {
-    const layoutMap = widgetMap.get('layout') as Y.Map<number> | undefined;
-    const contentMap = widgetMap.get('content') as Y.Map<unknown> | undefined;
+    const layoutMap = widgetMap.get('layout') as Y.Map<number>;
+    const contentMap = widgetMap.get('content') as Y.Map<unknown>;
 
     const layout: YjsWidgetLayout = layoutMap
       ? {

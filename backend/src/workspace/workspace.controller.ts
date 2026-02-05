@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { JoinWorkspaceResponse } from './dto/join-workspace-response.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { WorkspaceIdPipe } from './workspcae.pipe';
+import { WorkspaceIdPipe } from './workspace.pipe';
 import { CreateWorkspaceRequest } from './dto/create-workspace-request.dto';
 import { CreateWorkspaceResponse } from './dto/create-workspace-response.dto';
 import { JoinWorkspaceRequest } from './dto/join-workspace-request.dto';
