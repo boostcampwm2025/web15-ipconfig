@@ -17,6 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get Short SHA
+        id: sha
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -42,19 +46,25 @@ jobs:
         run: |
           docker tag ${{ env.BACKEND_IMAGE }} \
             ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
+          docker tag ${{ env.BACKEND_IMAGE }} \
+            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
 
       - name: Tag Frontend Image
         run: |
           docker tag ${{ env.FRONTEND_IMAGE }} \
             ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+          docker tag ${{ env.FRONTEND_IMAGE }} \
+            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
 
       - name: Push Backend Image
         run: |
           docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
+          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
 
       - name: Push Frontend Image
         run: |
           docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
 
   deploy_to_server:
     needs: build_and_push
@@ -87,6 +97,7 @@ jobs:
             # Redis 및 기타 환경변수를 포함하여 .env 파일을 새로 작성합니다.
             cat <<EOF > .env
             NODE_ENV=production
+            PORT=${{ secrets.BACKEND_PORT }}
             HOST_URL=${{ secrets.HOST_URL }}
 
             # Docker 이미지 정보 (docker-compose 변수 치환용)
@@ -112,15 +123,30 @@ jobs:
             docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
             docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
 
-            # 컨테이너 재시작
-            # .env 파일이 존재하므로 docker-compose가 자동으로 환경변수를 로드합니다.
-            docker-compose -f docker-compose.prod.yml down || true
-
-            # 새 컨테이너 시작
-            docker-compose -f docker-compose.prod.yml up -d
+            # 새 컨테이너 시작 (변경된 이미지만 교체, 다운타임 최소화)
+            # -d: 백그라운드 실행
+            docker compose -f docker-compose.prod.yml up -d
 
             # 컨테이너 상태 확인
-            docker-compose -f docker-compose.prod.yml ps
+            docker compose -f docker-compose.prod.yml ps
 
-            # 사용하지 않는 예전 이미지 삭제
-            docker image prune -a -f
+            # 사용하지 않는 예전 이미지 삭제 (Dangling 이미지)
+            docker image prune -f
+
+            # Health Check
+            echo "Waiting for service to be ready..."
+            sleep 10
+            for i in {1..10}; do
+              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/api/health || true)
+              if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+                echo "Health Check Passed! (HTTP $HTTP_CODE)"
+                exit 0
+              fi
+              echo "Waiting for service... ($i/10)"
+              sleep 3
+            done
+            echo "Health Check Failed!"
+            echo "Last HTTP Code: $HTTP_CODE"
+            # 실패 시 로그 출력
+            docker compose -f docker-compose.prod.yml logs --tail=50 backend
+            exit 1

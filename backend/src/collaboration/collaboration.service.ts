@@ -4,6 +4,7 @@ import {
   OnModuleDestroy,
   Inject,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { Hocuspocus, Extension } from '@hocuspocus/server';
@@ -20,7 +21,6 @@ import {
   WEBSOCKET_PATHS,
   REDIS_KEY_PREFIX,
 } from './constants/collaboration.constants';
-import { DEFAULT_REDIS_PORT } from '../common/constants/shared.constants';
 
 @Injectable()
 export class CollaborationService implements OnModuleInit, OnModuleDestroy {
@@ -30,6 +30,7 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly storageAdapter: StorageAdapter,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    private readonly configService: ConfigService,
   ) {}
 
   onModuleInit() {
@@ -37,13 +38,11 @@ export class CollaborationService implements OnModuleInit, OnModuleDestroy {
     this.wss = new WebSocketServer({ noServer: true });
 
     // Redis 설정 (Extension용)
-    const redisHost = process.env.REDIS_HOST || 'localhost';
-    const redisPort = parseInt(
-      process.env.REDIS_PORT || DEFAULT_REDIS_PORT.toString(),
-      10,
-    );
-    const redisPassword = process.env.REDIS_PASSWORD;
-    const useRedisExtension = process.env.USE_REDIS_EXTENSION === 'true';
+    const redisHost = this.configService.get<string>('redis.host');
+    const redisPort = this.configService.get<number>('redis.port');
+    const redisPassword = this.configService.get<string>('redis.password');
+    const useRedisExtension =
+      this.configService.get<boolean>('redis.useExtension');
 
     // RedisExtension은 Scale-out 시에만 사용
     const extensions: Extension[] = [];
