@@ -59,6 +59,7 @@ export function WidgetPreview({
         </div>
         <div className="max-h-[600px] overflow-x-auto">
           <SyntaxHighlighter
+            key={isDark ? 'dark' : 'light'}
             language={language}
             style={isDark ? vscDarkPlus : vs}
             customStyle={{
