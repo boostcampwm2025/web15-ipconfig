@@ -3,6 +3,7 @@ import { DEFAULT_COMMIT_TYPES } from '@/features/widgets/gitConvention/constants
 import { cn } from '@/common/lib/utils';
 import { LuCheck } from 'react-icons/lu';
 import { Button } from '@/common/components/shadcn/button';
+import LabelButton from '@/common/components/LabelButton';
 
 interface CommitStyleProps {
   convention: CommitConventionState;
@@ -37,29 +38,12 @@ export function CommitStyle({ convention, onChange }: CommitStyleProps) {
         {DEFAULT_COMMIT_TYPES.map((type) => {
           const isChecked = convention.commitTypes?.selectedIds.includes(type);
           return (
-            <Button
+            <LabelButton
               key={type}
+              label={type}
+              isSelected={isChecked}
               onClick={() => toggleType(type)}
-              className={cn(
-                'flex justify-start gap-2 border p-2 text-left text-sm transition-all',
-                'hover:bg-accent hover:text-accent-foreground',
-                isChecked
-                  ? 'border-primary bg-primary/5 text-primary ring-primary/20 ring-1'
-                  : 'border-muted bg-card text-muted-foreground',
-              )}
-            >
-              <div
-                className={cn(
-                  'flex h-4 w-4 items-center justify-center rounded border transition-colors',
-                  isChecked
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-muted-foreground/30',
-                )}
-              >
-                {isChecked && <LuCheck size={10} />}
-              </div>
-              <span>{type}</span>
-            </Button>
+            />
           );
         })}
       </div>

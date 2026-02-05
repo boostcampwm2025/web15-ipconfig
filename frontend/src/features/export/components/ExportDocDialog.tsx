@@ -6,14 +6,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/common/components/shadcn/dialog';
-import { Button } from '@/common/components/shadcn/button';
-import { LuFileText, LuCheck, LuCopy, LuCircleX } from 'react-icons/lu';
+import { LuFileText, LuCircleX } from 'react-icons/lu';
 import { SpinnerCustom } from '@/common/components/SpinnerCustom';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import 'github-markdown-css/github-markdown-light.css';
+import { CopyButton } from './CopyButton';
 
 export function ExportDocDialog({
   markdown,
@@ -24,8 +24,6 @@ export function ExportDocDialog({
   isLoading: boolean;
   error: string | null;
 }) {
-  const { isCopied, handleCopyToClipboard } = useClipboard();
-
   return (
     <DialogContent className="z-999 sm:max-w-2xl">
       <DialogHeader>
@@ -62,18 +60,7 @@ export function ExportDocDialog({
         )}
       </div>
       <DialogFooter>
-        <Button
-          variant="secondary"
-          onClick={() => handleCopyToClipboard(markdown)}
-          className="gap-2"
-        >
-          {isCopied ? (
-            <LuCheck size={16} className="text-green-500" />
-          ) : (
-            <LuCopy size={16} />
-          )}
-          {isCopied ? '복사 완료!' : '복사 하기'}
-        </Button>
+        <CopyButton content={markdown} />
       </DialogFooter>
     </DialogContent>
   );

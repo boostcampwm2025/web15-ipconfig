@@ -7,6 +7,7 @@ import {
 } from '../constants/options';
 import type { CollaborationData } from '../types/CollaborationData';
 import { Button } from '@/common/components/shadcn/button';
+import LabelButton from '@/common/components/LabelButton';
 
 interface PRRulesProps {
   data: CollaborationData['prRules'];
@@ -68,18 +69,13 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
         <p className="text-foreground mb-2 text-sm">PR 라벨 선택</p>
         <div className="flex flex-wrap gap-2">
           {labelCandidates.map((label) => (
-            <Button
-              variant={'ghost'}
+            <LabelButton
               key={label}
+              label={label}
+              isSelected={(data?.labelRules?.selectedIds || []).includes(label)}
               onClick={() => toggleLabel(label)}
-              className={`text-s border px-3 py-1 ${
-                (data?.labelRules?.selectedIds || []).includes(label)
-                  ? 'border-primary text-primary bg-primary/10'
-                  : 'border-border text-muted-foreground'
-              }`}
-            >
-              {label}
-            </Button>
+              className="px-3 py-1"
+            />
           ))}
         </div>
       </div>

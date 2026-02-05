@@ -8,6 +8,7 @@ import { UserListCard } from '@/features/userListCard';
 import InviteButton from './InviteButton';
 import { WorkspaceTitleInput } from './WorkspaceTitleInput';
 import { ThemeToggle } from '@/common/components/ThemeToggle';
+import { toast } from 'sonner';
 
 function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
@@ -41,7 +42,11 @@ function WorkspaceHeader() {
         <div id="export-group-dropdown-button">
           <ExportGroupDropdownButton />
         </div>
-        <Button size="sm" variant="secondary">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => toast.info('Coming soon...')}
+        >
           <LuGithub size={16} />
           초기 세팅하기
         </Button>
