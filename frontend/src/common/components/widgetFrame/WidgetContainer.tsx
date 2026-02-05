@@ -6,6 +6,7 @@ import { useCanvas } from '../canvas/context/CanvasProvider';
 import {
   updateUserManipulationState,
   clearUserManipulationState,
+  clearUserChatMessage,
 } from '@/common/api/yjs/awareness';
 import {
   updateWidgetLayoutAction,
@@ -69,6 +70,7 @@ function WidgetContainer({ children }: PropsWithChildren) {
   const lastEmitRef = useRef<number>(0);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    clearUserChatMessage();
     // 위젯 클릭 시 최상단으로 이동 (z-index)
     bringToFrontAction(widgetId);
 
@@ -76,10 +78,6 @@ function WidgetContainer({ children }: PropsWithChildren) {
     const target = e.target as HTMLElement;
     const isHeader = target.closest('[data-widget-header="true"]');
     if (!isHeader) return;
-
-    // // 캔버스 패닝으로 이벤트가 전파되지 않도록 중단
-    // e.stopPropagation();
-    // e.preventDefault();
 
     setIsDragging(true);
 
@@ -114,7 +112,6 @@ function WidgetContainer({ children }: PropsWithChildren) {
       // awareness 업데이트 (위젯 이동)
       updateUserManipulationState({
         widgetId,
-        type: 'move',
         layout: {
           x: actualX,
           y: actualY,

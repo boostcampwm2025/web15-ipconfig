@@ -3,11 +3,22 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { CollaborationService } from './collaboration/collaboration.service';
-import { Server, IncomingMessage } from 'node:http';
-import { Duplex } from 'node:stream';
+import { Server, IncomingMessage } from 'http';
+import { Duplex } from 'stream';
+import {
+  WINSTON_MODULE_NEST_PROVIDER,
+  WINSTON_MODULE_PROVIDER,
+} from 'nest-winston';
+import { Logger } from 'winston';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+
+  // Winston 로거를 NestJS 기본 로거로 사용
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   const isProduction = process.env.NODE_ENV === 'production';
   const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
@@ -30,6 +41,10 @@ async function bootstrap() {
       },
     }),
   );
+
+  // Global Exception Filter 등록
+  const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
+  app.useGlobalFilters(new GlobalExceptionFilter(logger));
 
   // Swagger 설정
   const configSwagger = new DocumentBuilder()

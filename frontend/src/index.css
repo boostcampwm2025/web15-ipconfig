@@ -167,6 +167,12 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* 채팅 모드일 때 모든 커서 숨기기 */
+  [data-cursor-mode='chat'],
+  [data-cursor-mode='chat'] * {
+    cursor: none !important;
+  }
 }
 
 @layer base {
