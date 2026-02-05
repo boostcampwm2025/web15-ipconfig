@@ -73,10 +73,9 @@ export class GitConventionBuilder implements ISectionBuilder {
       );
 
       if (commitTypes.length > 0) {
-        lines.push('<details open>');
-        lines.push(
-          '<summary><b>허용된 커밋 타입(Commit Types) 보기</b></summary>',
-        );
+        lines.push('<details>');
+        lines.push('<summary>허용된 커밋 타입(Commit Types) 보기</summary>');
+        lines.push('<div markdown=”1”>');
         lines.push('');
 
         commitTypes.forEach((type) => {
@@ -84,6 +83,7 @@ export class GitConventionBuilder implements ISectionBuilder {
         });
 
         lines.push('');
+        lines.push('</div>');
         lines.push('</details>');
       }
       lines.push('');
