@@ -2,8 +2,13 @@ import { WinstonModuleOptions, utilities } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 
-export const createWinstonConfig = (): WinstonModuleOptions => {
-  const isProduction = process.env.NODE_ENV === 'production';
+import { ConfigService } from '@nestjs/config';
+
+export const createWinstonConfig = (
+  configService: ConfigService,
+): WinstonModuleOptions => {
+  const isProduction = configService.get<string>('nodeEnv') === 'production';
+  const logDir = configService.get<string>('logDir');
 
   const transports: winston.transport[] = [
     // 콘솔 트랜스포트 (항상)
@@ -27,7 +32,7 @@ export const createWinstonConfig = (): WinstonModuleOptions => {
     // 일반 로그 (7일 보관)
     transports.push(
       new winston.transports.DailyRotateFile({
-        dirname: process.env.LOG_DIR || 'logs',
+        dirname: logDir,
         filename: 'app-%DATE%.log',
         datePattern: 'YYYY-MM-DD',
         maxSize: '20m',
@@ -43,7 +48,7 @@ export const createWinstonConfig = (): WinstonModuleOptions => {
     // 에러 로그 (14일 보관)
     transports.push(
       new winston.transports.DailyRotateFile({
-        dirname: process.env.LOG_DIR || 'logs',
+        dirname: logDir,
         filename: 'error-%DATE%.log',
         datePattern: 'YYYY-MM-DD',
         maxSize: '20m',

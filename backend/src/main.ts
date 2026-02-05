@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CollaborationService } from './collaboration/collaboration.service';
 import { DEFAULT_SERVER_PORT } from './common/constants/shared.constants';
 import { Server, IncomingMessage } from 'http';
@@ -21,8 +22,11 @@ async function bootstrap() {
   // Winston 로거를 NestJS 기본 로거로 사용
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
-  const isProduction = process.env.NODE_ENV === 'production';
-  const allowedOrigins = isProduction ? process.env.HOST_URL : '*';
+  const configService = app.get(ConfigService);
+  const isProduction = configService.get<string>('nodeEnv') === 'production';
+  const allowedOrigins = isProduction
+    ? configService.get<string>('hostUrl')
+    : '*';
 
   app.enableCors({
     origin: allowedOrigins,
@@ -56,15 +60,15 @@ async function bootstrap() {
     .build();
 
   const documentFactory = SwaggerModule.createDocument(app, configSwagger);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('api-docs', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? DEFAULT_SERVER_PORT);
+  await app.listen(configService.get<number>('port') || DEFAULT_SERVER_PORT);
 
   // CollaborationService를 통해 Hocuspocus WebSocket 연결 처리
   const collaborationService = app.get(CollaborationService);
   const httpServer = app.getHttpServer() as Server;
 
-  // Upgrade 요청 처리 (Socket.IO와 Hocuspocus 공존)
+  // Upgrade 요청 처리 (Hocuspocus WebSocket)
   httpServer.on(
     'upgrade',
     (request: IncomingMessage, socket: Duplex, head: Buffer) => {

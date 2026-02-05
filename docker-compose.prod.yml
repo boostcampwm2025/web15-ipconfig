@@ -4,8 +4,7 @@ services:
     env_file:
       - .env
     container_name: web15-ipconfig-backend
-    ports:
-      - '3000:3000'
+
     networks:
       - app-network
     environment:
