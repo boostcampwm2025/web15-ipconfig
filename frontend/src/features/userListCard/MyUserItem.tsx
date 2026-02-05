@@ -95,7 +95,7 @@ function MyUserItem({ user }: MyUserItemProps) {
                 )}
               />
               {errors.nickname && (
-                <span className="absolute top-full left-0 z-50 min-w-max rounded bg-gray-800 px-2 py-1 text-[10px] text-red-500 shadow-md">
+                <span className="bg-background absolute top-full left-0 z-50 min-w-max rounded px-2 py-1 text-[10px] text-red-500 shadow-md">
                   {errors.nickname.message}
                 </span>
               )}

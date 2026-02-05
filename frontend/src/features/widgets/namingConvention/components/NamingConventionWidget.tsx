@@ -34,7 +34,7 @@ export default function NamingConventionWidget() {
   return (
     <WidgetFrame
       title="네이밍 컨벤션"
-      icon={<RiFontSizeAi className="text-white-500" />}
+      icon={<RiFontSizeAi className="text-primary" />}
     >
       <div className="flex h-full w-[500px] flex-col overflow-y-auto p-4">
         {/* Category Buttons */}
@@ -56,7 +56,7 @@ export default function NamingConventionWidget() {
                 className={`relative flex items-center gap-2 border transition-all ${
                   isActive
                     ? 'border-indigo-600 bg-indigo-600 text-white shadow-md hover:border-indigo-700 hover:bg-indigo-700'
-                    : 'border-gray-700 bg-gray-800/50 text-gray-300 hover:border-gray-600 hover:bg-gray-700/50'
+                    : 'border-border bg-muted/50 text-muted-foreground hover:border-border hover:bg-muted'
                 }`}
               >
                 {category.icon}

@@ -37,7 +37,7 @@ function WorkSpacePage() {
 
   return (
     <CanvasProvider>
-      <div className="relative h-screen overflow-hidden bg-transparent text-gray-100">
+      <div className="text-foreground relative h-screen overflow-hidden bg-transparent">
         {/* 캔버스: 화면 전체 */}
         <WorkspaceHeader />
         <main className="absolute inset-0">

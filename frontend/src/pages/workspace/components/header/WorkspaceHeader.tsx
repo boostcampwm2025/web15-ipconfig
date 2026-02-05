@@ -7,12 +7,13 @@ import { ExportGroupDropdownButton } from '@/features/export/components/ExportGr
 import { UserListCard } from '@/features/userListCard';
 import InviteButton from './InviteButton';
 import { WorkspaceTitleInput } from './WorkspaceTitleInput';
+import { ThemeToggle } from '@/common/components/ThemeToggle';
 
 function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
     <div
       className={cn(
-        'pointer-events-auto flex h-full items-center rounded-xl border border-gray-700 bg-gray-800 px-2 py-1 shadow-2xl backdrop-blur-xl',
+        'border-border bg-popover/80 pointer-events-auto flex h-full items-center rounded-xl border px-2 py-1 shadow-2xl backdrop-blur-xl',
         className,
       )}
     >
@@ -43,6 +44,7 @@ function WorkspaceHeader() {
           초기 세팅하기
         </Button>
         <InviteButton />
+        <ThemeToggle />
       </RoundedContainer>
     </header>
   );

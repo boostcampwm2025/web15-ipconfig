@@ -23,7 +23,7 @@ export default function TaskWorkflow({ data, onUpdate }: TaskWorkflowProps) {
   const [editCycleValue, setEditCycleValue] = useState<boolean>(false);
 
   return (
-    <div className="max-w-[400px] rounded-2xl border border-gray-700 p-6 text-gray-200">
+    <div className="border-border text-foreground max-w-[400px] rounded-2xl border p-6">
       <h2 className="flex items-center gap-2 text-xl font-semibold">
         작업 관리
       </h2>

@@ -24,7 +24,7 @@ export function CanvasWrapper({ children }: PropsWithChildren) {
     <div
       ref={frameRef}
       className={cn(
-        'relative h-full w-full touch-none overflow-hidden bg-gray-900 select-none',
+        'bg-background relative h-full w-full touch-none overflow-hidden select-none',
         isPanning && 'cursor-grabbing',
       )}
       onPointerMove={handlePointerMove}
