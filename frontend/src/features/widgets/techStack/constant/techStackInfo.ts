@@ -182,29 +182,6 @@ export const COMMON_TECH_STACKS: CommonTechStack[] = [
     slug: 'sonar',
   },
 
-  // Messenger
-  {
-    id: 'slack',
-    category: 'messenger',
-    name: 'Slack',
-    color: '4A154B',
-    slug: 'slack',
-  },
-  {
-    id: 'discord',
-    category: 'messenger',
-    name: 'Discord',
-    color: '5865F2',
-    slug: 'discord',
-  },
-  {
-    id: 'msteams',
-    category: 'messenger',
-    name: 'Microsoft Teams',
-    color: '6264A7',
-    slug: 'microsoftteams',
-  },
-
   // IDE
   {
     id: 'vscode',
