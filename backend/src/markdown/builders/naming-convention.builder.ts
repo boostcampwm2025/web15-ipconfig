@@ -19,49 +19,55 @@ export class NamingConventionBuilder implements ISectionBuilder {
     widgets.forEach((widget) => {
       const content = widget.content as unknown as YjsNamingConventionContent;
 
-      // Frontend
-      lines.push('### Frontend');
-      lines.push('| 구분 | 컨벤션 |');
-      lines.push('| :--- | :--- |');
-      lines.push(createTableRow('변수', content.frontend?.variable || '-'));
-      lines.push(createTableRow('함수', content.frontend?.function || '-'));
-      lines.push(
-        createTableRow('컴포넌트', content.frontend?.component || '-'),
-      );
-      lines.push(createTableRow('상수', content.frontend?.constant || '-'));
-      lines.push('');
+      const categories = [
+        {
+          title: 'Frontend',
+          items: [
+            { label: '변수', value: content.frontend?.variable },
+            { label: '함수', value: content.frontend?.function },
+            { label: '컴포넌트', value: content.frontend?.component },
+            { label: '상수', value: content.frontend?.constant },
+          ],
+        },
+        {
+          title: 'Backend',
+          items: [
+            { label: '변수', value: content.backend?.variable },
+            { label: '함수', value: content.backend?.function },
+            { label: '클래스', value: content.backend?.class },
+            { label: '상수', value: content.backend?.constant },
+          ],
+        },
+        {
+          title: 'Database',
+          items: [
+            { label: '테이블', value: content.database?.table },
+            { label: '컬럼', value: content.database?.column },
+            { label: '인덱스', value: content.database?.index },
+            { label: '제약조건', value: content.database?.constraint },
+          ],
+        },
+        {
+          title: 'Common',
+          items: [
+            { label: '유틸리티', value: content.common?.utility },
+            { label: '상수', value: content.common?.constant },
+            { label: '타입', value: content.common?.type },
+            { label: '열거형', value: content.common?.enum },
+          ],
+        },
+      ];
 
-      // Backend
-      lines.push('### Backend');
-      lines.push('| 구분 | 컨벤션 |');
-      lines.push('| :--- | :--- |');
-      lines.push(createTableRow('변수', content.backend?.variable || '-'));
-      lines.push(createTableRow('함수', content.backend?.function || '-'));
-      lines.push(createTableRow('클래스', content.backend?.class || '-'));
-      lines.push(createTableRow('상수', content.backend?.constant || '-'));
-      lines.push('');
-
-      // Database
-      lines.push('### Database');
-      lines.push('| 구분 | 컨벤션 |');
-      lines.push('| :--- | :--- |');
-      lines.push(createTableRow('테이블', content.database?.table || '-'));
-      lines.push(createTableRow('컬럼', content.database?.column || '-'));
-      lines.push(createTableRow('인덱스', content.database?.index || '-'));
-      lines.push(
-        createTableRow('제약조건', content.database?.constraint || '-'),
-      );
-      lines.push('');
-
-      // Common
-      lines.push('### Common');
-      lines.push('| 구분 | 컨벤션 |');
-      lines.push('| :--- | :--- |');
-      lines.push(createTableRow('유틸리티', content.common?.utility || '-'));
-      lines.push(createTableRow('상수', content.common?.constant || '-'));
-      lines.push(createTableRow('타입', content.common?.type || '-'));
-      lines.push(createTableRow('열거형', content.common?.enum || '-'));
-      lines.push('');
+      categories.forEach((category) => {
+        // 모든 아이템을 항상 표시
+        lines.push(`### ${category.title}`);
+        lines.push('| 구분 | 컨벤션 |');
+        lines.push('| :--- | :--- |');
+        category.items.forEach((item) => {
+          lines.push(createTableRow(item.label, item.value || '-'));
+        });
+        lines.push('');
+      });
     });
 
     addSeparator(lines);

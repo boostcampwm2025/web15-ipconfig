@@ -2,27 +2,27 @@ import type { NamingConventionContent } from '@/common/types/yjsWidgetContent';
 
 export const NAMING_CONVENTION_INITIAL_CONTENT: NamingConventionContent = {
   frontend: {
-    variable: 'camelCase',
-    function: 'camelCase',
-    component: 'PascalCase',
-    constant: 'UPPER_SNAKE_CASE',
+    variable: 'none',
+    function: 'none',
+    component: 'none',
+    constant: 'none',
   },
   backend: {
-    variable: 'camelCase',
-    function: 'camelCase',
-    class: 'PascalCase',
-    constant: 'UPPER_SNAKE_CASE',
+    variable: 'none',
+    function: 'none',
+    class: 'none',
+    constant: 'none',
   },
   database: {
-    table: 'snake_case',
-    column: 'snake_case',
-    index: 'snake_case',
-    constraint: 'snake_case',
+    table: 'none',
+    column: 'none',
+    index: 'none',
+    constraint: 'none',
   },
   common: {
-    utility: 'camelCase',
-    constant: 'UPPER_SNAKE_CASE',
-    type: 'PascalCase',
-    enum: 'PascalCase',
+    utility: 'none',
+    constant: 'none',
+    type: 'none',
+    enum: 'none',
   },
 };

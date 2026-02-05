@@ -7,6 +7,7 @@ import {
 } from '../constants/options';
 import type { CollaborationData } from '../types/CollaborationData';
 import { Button } from '@/common/components/shadcn/button';
+import LabelButton from '@/common/components/LabelButton';
 
 interface PRRulesProps {
   data: CollaborationData['prRules'];
@@ -30,11 +31,11 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
   };
 
   return (
-    <div className="max-w-[400px] space-y-6 rounded-2xl border border-gray-700 p-6 text-gray-200">
+    <div className="border-border text-foreground max-w-[400px] space-y-6 rounded-2xl border p-6">
       <h2 className="flex items-center gap-2 text-xl font-semibold">PR 규칙</h2>
 
       <div>
-        <p className="mb-2 text-sm text-gray-300">버전 관리 방식</p>
+        <p className="text-foreground mb-2 text-sm">버전 관리 방식</p>
 
         <div className="grid grid-cols-4 gap-2">
           {versionTypes.map((v) => (
@@ -46,8 +47,8 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
                 onClick={() => onUpdate('activeVersion', v.key)}
                 className={`flex h-20 w-20 flex-col gap-1 border text-sm font-medium transition ${
                   data.activeVersion?.selectedId === v.key
-                    ? 'border-primary text-primary bg-green-900/40'
-                    : 'border-gray-700 text-gray-300'
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'border-border text-muted-foreground'
                 }`}
               >
                 {v.icon}
@@ -56,7 +57,7 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
 
               {/* Tooltip 부분 */}
               {hoverVersion === v.key && (
-                <div className="absolute bottom-full left-1/2 z-10 mb-1 w-max max-w-[160px] -translate-x-1/2 rounded border border-gray-600 bg-black/80 px-3 py-2 text-[10px] text-gray-200 shadow-lg">
+                <div className="border-border bg-popover text-popover-foreground absolute bottom-full left-1/2 z-10 mb-1 w-max max-w-[160px] -translate-x-1/2 rounded border px-3 py-2 text-[10px] shadow-lg">
                   {v.desc}
                 </div>
               )}
@@ -65,27 +66,22 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
         </div>
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-300">PR 라벨 선택</p>
+        <p className="text-foreground mb-2 text-sm">PR 라벨 선택</p>
         <div className="flex flex-wrap gap-2">
           {labelCandidates.map((label) => (
-            <Button
-              variant={'ghost'}
+            <LabelButton
               key={label}
+              label={label}
+              isSelected={(data?.labelRules?.selectedIds || []).includes(label)}
               onClick={() => toggleLabel(label)}
-              className={`text-s border px-3 py-1 ${
-                (data?.labelRules?.selectedIds || []).includes(label)
-                  ? 'border-primary text-primary bg-green-900/40'
-                  : 'border-gray-700 text-gray-300'
-              }`}
-            >
-              {label}
-            </Button>
+              className="px-3 py-1"
+            />
           ))}
         </div>
       </div>
 
       <div>
-        <p className="mb-2 text-sm text-gray-300">병합 전략</p>
+        <p className="text-foreground mb-2 text-sm">병합 전략</p>
 
         <div className="grid grid-cols-3 gap-2">
           {strategies.map((s) => (
@@ -97,8 +93,8 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
                 onClick={() => onUpdate('activeStrategy', s.key)}
                 className={`flex h-24 w-24 flex-col gap-1 border text-xs font-medium transition ${
                   data.activeStrategy?.selectedId === s.key
-                    ? 'border-primary text-primary bg-green-900/30'
-                    : 'border-gray-700 text-gray-300'
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'border-border text-muted-foreground'
                 }`}
               >
                 {s.icon}
@@ -107,7 +103,7 @@ export default function PRRules({ data, onUpdate }: PRRulesProps) {
 
               {/* Tooltip 부분*/}
               {hoverStrategy === s.key && (
-                <div className="absolute bottom-full left-1/2 z-10 mb-1 w-max max-w-[160px] -translate-x-1/2 rounded border border-gray-600 bg-black/80 px-3 py-2 text-[12px] text-gray-200 shadow-lg">
+                <div className="border-border bg-popover text-popover-foreground absolute bottom-full left-1/2 z-10 mb-1 w-max max-w-[160px] -translate-x-1/2 rounded border px-3 py-2 text-[12px] shadow-lg">
                   {s.desc}
                 </div>
               )}

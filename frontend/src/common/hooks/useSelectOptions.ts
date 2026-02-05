@@ -1,10 +1,20 @@
 import { useMemo } from 'react';
 import { SUBJECT_GROUPS } from '@/features/widgets/techStack/mocks/techStacks';
 
-export function useSelectOptions(searchText: string, customOptions: string[]) {
+interface GroupShape {
+  category: string;
+  options: string[];
+}
+
+export function useSelectOptions(
+  searchText: string,
+  customOptions: string[],
+  defaultGroups: GroupShape[] = SUBJECT_GROUPS,
+) {
   // 1. 기본 + 커스텀 옵션 병합
   const allGroupedOptions = useMemo(() => {
-    const mergedGroups = SUBJECT_GROUPS.map((group) => ({
+    // 깊은 복사로 안전하게 병합 시작
+    const mergedGroups = defaultGroups.map((group) => ({
       ...group,
       options: [...group.options],
     }));
@@ -27,7 +37,7 @@ export function useSelectOptions(searchText: string, customOptions: string[]) {
       }
     });
     return mergedGroups;
-  }, [customOptions]);
+  }, [customOptions, defaultGroups]);
 
   // 2. 검색어 필터링
   const filteredOptions = useMemo(() => {

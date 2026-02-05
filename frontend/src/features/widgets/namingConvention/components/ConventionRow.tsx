@@ -31,16 +31,16 @@ export function ConventionRow({
   onHover,
 }: ConventionRowProps) {
   return (
-    <div className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 transition-colors hover:bg-gray-800/50">
+    <div className="hover:bg-muted flex cursor-pointer items-center justify-between rounded-md px-3 py-2 transition-colors">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-gray-300">{label}</span>
+        <span className="text-foreground text-sm font-medium">{label}</span>
         <LuCircleHelp
           className="hover:text-primary transition-colors"
           onMouseEnter={onHover}
         />
       </div>
       <Select value={value} onValueChange={(v) => onChange(v as NamingCase)}>
-        <SelectTrigger className="h-8 w-[180px] border-gray-700 bg-gray-900 text-xs">
+        <SelectTrigger className="border-border bg-background h-8 w-[180px] text-xs">
           <SelectValue placeholder="Select case" />
         </SelectTrigger>
         <SelectContent>

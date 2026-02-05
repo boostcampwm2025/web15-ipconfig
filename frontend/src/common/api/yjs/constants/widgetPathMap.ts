@@ -29,10 +29,10 @@ export const WIDGET_PATH_MAP: Record<string, Record<string, string[]>> = {
     techItems: ['techItems'], // 배열이지만 여기선 경로만 정의
   },
   COMMUNICATION: {
-    urgent: ['communication', 'urgent'],
-    sync: ['communication', 'sync'],
-    async: ['communication', 'async'],
-    official: ['communication', 'official'],
+    meeting: ['communication', 'meeting'],
+    chat: ['communication', 'chat'],
+    doc: ['communication', 'doc'],
+    announce: ['communication', 'announce'],
     responseTime: ['sla', 'responseTime'],
     coreTimeStart: ['timeManagement', 'coreTimeStart'],
     coreTimeEnd: ['timeManagement', 'coreTimeEnd'],

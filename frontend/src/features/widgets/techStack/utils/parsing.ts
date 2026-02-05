@@ -1,10 +1,12 @@
 export const parseSubject = (subject: string) => {
-  const regex = /\[(?<category>[^\]]+)\]\s*(?<option>.+)/;
+  const regex = /^\[(?<category>[^\]]+)\]\s*(?<option>\S.*)$/;
+
   const match = subject.match(regex);
-  if (!match || !match.groups || !match.groups.category || !match.groups.option)
-    return null;
+
+  if (!match || !match.groups) return null;
+
   return {
-    category: match.groups?.category,
-    option: match.groups?.option,
+    category: match.groups.category,
+    option: match.groups.option,
   };
 };

@@ -91,7 +91,7 @@ export default function EditableSortList() {
             value={newColumnName}
             onChange={(e) => setNewColumnName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addColumn()}
-            className="focus:ring-primary flex-1 rounded-md border border-gray-700 p-2 focus:ring-1 focus:outline-none"
+            className="focus:ring-primary border-border bg-background text-foreground flex-1 rounded-md border p-2 focus:ring-1 focus:outline-none"
             placeholder="이름 입력"
           />
           <Button onClick={addColumn}>생성</Button>
@@ -100,7 +100,7 @@ export default function EditableSortList() {
               setNewColumnName('');
               setIsAdding(false);
             }}
-            className="bg-gray-700 text-gray-300"
+            className="bg-muted text-muted-foreground hover:bg-muted/80"
           >
             취소
           </Button>

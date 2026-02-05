@@ -10,7 +10,17 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = sessionStorage.getItem('ui-theme') as Theme;
+      if (savedTheme) return savedTheme;
+
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    }
+    return 'light';
+  });
 
   useEffect(() => {
     const root = document.documentElement;
@@ -20,10 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     // 새 테마 클래스 추가
     root.classList.add(theme);
-
-    return () => {
-      root.classList.remove(theme);
-    };
+    sessionStorage.setItem('ui-theme', theme);
   }, [theme]);
 
   return (

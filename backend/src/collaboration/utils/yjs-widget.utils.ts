@@ -8,7 +8,7 @@ import type { YjsSelector, YjsMultiSelector } from '../types/yjs-widget.types';
 export function getSelectedValue(
   selector: YjsSelector | undefined | null,
 ): string | undefined {
-  if (!selector || !selector.selectedId) {
+  if (!selector?.selectedId) {
     return undefined;
   }
   return selector.options?.[selector.selectedId]?.value ?? selector.selectedId;
@@ -22,7 +22,7 @@ export function getSelectedValue(
 export function getSelectedValues(
   multiSelector: YjsMultiSelector | undefined | null,
 ): string[] {
-  if (!multiSelector || !multiSelector.selectedIds) {
+  if (!multiSelector?.selectedIds) {
     return [];
   }
   return multiSelector.selectedIds.map((id) => {

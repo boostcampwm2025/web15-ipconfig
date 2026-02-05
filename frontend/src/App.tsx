@@ -1,17 +1,23 @@
-import { Routes, Route } from 'react-router';
-import WorkSpacePage from '@/pages/workspace/WorkSpacePage';
-import LandingPage from '@/pages/landing/LandingPage';
-import ErrorPage from '@/pages/error/ErrorPage';
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import WorkSpacePage from './pages/workspace/WorkSpacePage';
+import ErrorPage from './pages/error/ErrorPage';
+import LandingPage from './pages/landing/LandingPage';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <LandingPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/workspace/:workspaceId',
+    element: <WorkSpacePage />,
+    errorElement: <ErrorPage />,
+  },
+]);
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/workspace/:workspaceId" element={<WorkSpacePage />} />
-      <Route path="/error" element={<ErrorPage />} />
-      <Route path="*" element={<ErrorPage />} />
-    </Routes>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

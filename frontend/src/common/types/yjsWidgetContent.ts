@@ -42,10 +42,10 @@ export interface GitConventionContent {
 // 3. COMMUNICATION
 export interface CommunicationContent {
   communication: {
-    urgent: Selector;
-    sync: Selector;
-    async: Selector;
-    official: Selector;
+    meeting: Selector;
+    chat: Selector;
+    doc: Selector;
+    announce: Selector;
   };
   sla: {
     responseTime: number;

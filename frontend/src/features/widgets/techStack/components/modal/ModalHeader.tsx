@@ -19,13 +19,13 @@ export default function ModalHeader({
       className="flex cursor-move items-center justify-between px-6 pt-3 pb-1 select-none"
       {...props}
     >
-      <div className="flex items-center gap-3 text-[17px] font-bold text-white">
+      <div className="text-foreground flex items-center gap-3 text-[17px] font-bold">
         {icon} {title}
       </div>
       <Button
         variant="ghost"
         onClick={onClose}
-        className="cursor-pointer !p-0 text-gray-500"
+        className="text-muted-foreground hover:text-foreground cursor-pointer !p-0"
       >
         <LuX className="size-5" />
       </Button>
