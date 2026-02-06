@@ -28,7 +28,7 @@ function ToolBar() {
   return (
     <div
       id="tool-bar"
-      className="border-border bg-popover/80 fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
+      className="border-border bg-popover/80 fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-2 rounded-2xl border p-1.5 shadow-2xl backdrop-blur-xl transition-all hover:scale-105 dark:bg-gray-800"
     >
       <div className="flex items-center justify-center gap-2">
         <ToolButton
