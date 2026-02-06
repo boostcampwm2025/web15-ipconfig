@@ -14,7 +14,7 @@ function RoundedContainer({ children, className }: ComponentProps<'div'>) {
   return (
     <div
       className={cn(
-        'border-border bg-popover/80 pointer-events-auto flex h-full items-center rounded-xl border px-2 py-1 shadow-2xl backdrop-blur-xl',
+        'border-border bg-popover/80 pointer-events-auto flex h-full items-center rounded-xl border px-2 py-1 shadow-2xl backdrop-blur-xl dark:bg-gray-800',
         className,
       )}
     >
@@ -46,6 +46,7 @@ function WorkspaceHeader() {
         <Button
           size="sm"
           variant="secondary"
+          className="dark:hover:bg-secondary/50 border-1 border-gray-200 hover:bg-gray-200 dark:border-transparent"
           onClick={() => toast.info('Coming soon...')}
         >
           <LuGithub size={16} />

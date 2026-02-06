@@ -13,6 +13,8 @@ interface MyCursorProps extends CursorProps {
   scale?: number;
 }
 
+const CURSOR_CHAT_TIMEOUT = 4500;
+
 function MyCursor({ color, type, message, scale = 1 }: MyCursorProps) {
   const autoCloseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -39,7 +41,7 @@ function MyCursor({ color, type, message, scale = 1 }: MyCursorProps) {
     if (type === 'chat') {
       autoCloseTimerRef.current = setTimeout(() => {
         clearUserChatMessage();
-      }, 2000);
+      }, CURSOR_CHAT_TIMEOUT);
     }
 
     return () => {

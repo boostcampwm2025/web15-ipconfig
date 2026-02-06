@@ -23,14 +23,14 @@ function ToolButton({
         disabled={disabled}
         className={`h-9 w-9 transition-all [&_svg]:size-5 ${
           active
-            ? 'bg-accent text-accent-foreground'
-            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            ? 'dark:bg-accent text-accent-foreground bg-gray-200'
+            : 'text-muted-foreground dark:hover:bg-accent hover:text-accent-foreground hover:bg-gray-200'
         } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {icon}
       </Button>
       {label && (
-        <span className="border-border bg-popover text-popover-foreground pointer-events-none absolute left-14 z-50 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+        <span className="border-border bg-popover text-popover-foreground pointer-events-none absolute -top-10 z-50 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
           {label}
         </span>
       )}

@@ -22,7 +22,7 @@ function ZoomControls() {
       id="zoom-controls"
       className="absolute bottom-6 left-6 z-50 flex items-center gap-2"
     >
-      <div className="border-border bg-popover/80 flex items-center rounded-lg border p-0.5 shadow-lg backdrop-blur-xl">
+      <div className="border-border bg-popover/80 flex items-center rounded-lg border p-0.5 shadow-lg backdrop-blur-xl dark:bg-gray-800">
         <Button
           variant="ghost"
           size="icon"
@@ -32,7 +32,7 @@ function ZoomControls() {
         >
           <LuZoomOut size={14} />
         </Button>
-        <span className="text-muted-foreground w-12 text-center font-mono text-xs">
+        <span className="text-muted-foreground w-12 text-center text-xs">
           {Math.floor(camera.scale * 100)}%
         </span>
         <Button

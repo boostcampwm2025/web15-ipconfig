@@ -61,7 +61,7 @@ function UserAvatarItem({ userId }: { userId: string }) {
   if (!user) return null;
 
   return (
-    <Avatar size="sm" className="!ring-gray-800">
+    <Avatar size="sm" className="!ring-color-popover dark:!ring-gray-800">
       <AvatarFallback
         className={cn(getContrastClass(user.color), 'text-xs font-semibold')}
         style={{ backgroundColor: user.color }}
