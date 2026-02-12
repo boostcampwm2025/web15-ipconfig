@@ -18,5 +18,7 @@
     "lib": "@/common/lib",
     "hooks": "@/common/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}"
+  }
 }
