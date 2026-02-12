@@ -1,10 +1,17 @@
 function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-950 py-8 text-center text-sm text-slate-500">
+    <footer className="py-8 text-center text-sm font-medium">
       <p>
-        © 2025 TeamConfig. All systems operational.
+        Copyright ⓒ {new Date().getFullYear()} team.config. All rights reserved.
         <br />
-        No more awkward silence during kickoff meetings.
+        Made by{' '}
+        <a
+          href="https://github.com/boostcampwm2025/web15-ipconfig"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          IPConfig 팀
+        </a>
       </p>
     </footer>
   );
