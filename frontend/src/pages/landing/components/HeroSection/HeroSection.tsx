@@ -1,16 +1,12 @@
-import HeroHeader from './HeroHeader';
-import JoinCard from './JoinCard';
-import CreateCard from './CreateCard';
+import HeroContent from './HeroContent';
+import CreateButton from '../CreateButton';
 
 function HeroSection() {
   return (
-    <section className="relative px-6 pt-32 pb-20">
+    <section className="relative px-6 pt-32 pb-10">
       <div className="container mx-auto max-w-5xl text-center">
-        <HeroHeader />
-        <div className="mx-auto mt-10 grid w-full max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
-          <JoinCard />
-          <CreateCard />
-        </div>
+        <HeroContent />
+        <CreateButton />
       </div>
     </section>
   );
