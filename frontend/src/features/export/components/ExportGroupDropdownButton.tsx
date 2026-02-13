@@ -44,7 +44,7 @@ export function ExportGroupDropdownButton() {
           <Button
             variant="secondary"
             size="sm"
-            className="dark:hover:bg-secondary/50 border-1 border-gray-200 hover:bg-gray-200 dark:border-transparent"
+            className="border-1 border-gray-200 hover:bg-gray-200 dark:border-transparent"
           >
             <LuExport />
             결과 내보내기

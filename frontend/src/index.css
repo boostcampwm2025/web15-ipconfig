@@ -46,7 +46,7 @@
   /* Slate-100 */
   --popover-foreground: oklch(0.13 0.028 261.692);
   /* --primary: oklch(0.21 0.034 264.665); */
-  --primary: var(--color-primary-600);
+  --primary: var(--color-primary-700);
   --primary-foreground: oklch(1 0 0);
   /* White text on primary */
   --secondary: #f1f5f9;
@@ -56,7 +56,7 @@
   /* Slate-100 */
   --muted-foreground: #64748b;
   /* Slate-500 */
-  --accent: #f1f5f9;
+  --accent: var(--color-gray-200);
   /* Slate-100 */
   --accent-foreground: oklch(0.21 0.034 264.665);
   --destructive: oklch(0.577 0.245 27.325);
@@ -123,7 +123,7 @@
 }
 
 .dark {
-  --background: oklch(0.13 0.028 261.692);
+  --background: var(--color-gray-900);
   --foreground: oklch(0.985 0.002 247.839);
   --card: var(--color-gray-800);
   --card-foreground: oklch(0.985 0.002 247.839);
@@ -165,7 +165,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300 ease-in-out;
   }
 
   /* 채팅 모드일 때 모든 커서 숨기기 */
@@ -224,4 +224,13 @@ body {
 .dark .markdown-body table th,
 .dark .markdown-body table td {
   border-color: var(--border) !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
