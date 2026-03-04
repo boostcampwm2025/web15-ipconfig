@@ -1,0 +1,13 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: web15-ipconfig-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --bind 0.0.0.0 --protected-mode no
+    restart: unless-stopped
+
+volumes:
+  redis-data:
