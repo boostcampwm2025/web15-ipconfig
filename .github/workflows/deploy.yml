@@ -1,4 +1,4 @@
-name: Deploy with Docker Compose
+name: Deploy to AWS
 
 on:
   push:
@@ -6,13 +6,14 @@ on:
       - main
 
 env:
-  NODE_VERSION: '24.12.0'
-  FRONTEND_IMAGE: web15-ipconfig-frontend:latest
-  BACKEND_IMAGE: web15-ipconfig-backend:latest
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/web15-ipconfig
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,47 +25,28 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend Image
+      - name: Log in to GHCR
         run: |
-          docker build -t ${{ env.BACKEND_IMAGE }} \
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+            -u ${{ github.actor }} --password-stdin
+
+      - name: Build & Push Backend Image
+        run: |
+          docker buildx build \
+            -t ${{ env.IMAGE_PREFIX }}/backend:latest \
+            -t ${{ env.IMAGE_PREFIX }}/backend:${{ steps.sha.outputs.SHORT_SHA }} \
             --target backend-prod \
-            -f dockerfile.prod .
+            -f dockerfile.prod \
+            --push .
 
-      - name: Build Frontend Image
+      - name: Build & Push Frontend Image
         run: |
-          docker build -t ${{ env.FRONTEND_IMAGE }} \
+          docker buildx build \
+            -t ${{ env.IMAGE_PREFIX }}/frontend:latest \
+            -t ${{ env.IMAGE_PREFIX }}/frontend:${{ steps.sha.outputs.SHORT_SHA }} \
             --target frontend-prod \
-            -f dockerfile.prod .
-
-      - name: Log in to NCP Container Registry
-        run: |
-          echo "${{ secrets.NCP_SECRET_KEY }}" | docker login \
-            -u "${{ secrets.NCP_ACCESS_KEY }}" \
-            --password-stdin ${{ secrets.NCP_REGISTRY_ENDPOINT }}
-
-      - name: Tag Backend Image
-        run: |
-          docker tag ${{ env.BACKEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
-          docker tag ${{ env.BACKEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Tag Frontend Image
-        run: |
-          docker tag ${{ env.FRONTEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
-          docker tag ${{ env.FRONTEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Push Backend Image
-        run: |
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Push Frontend Image
-        run: |
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
+            -f dockerfile.prod \
+            --push .
 
   deploy_to_server:
     needs: build_and_push
