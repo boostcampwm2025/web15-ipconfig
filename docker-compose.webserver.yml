@@ -1,0 +1,11 @@
+services:
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/boostcampwm2025/web15-ipconfig/frontend:latest}
+    container_name: web15-ipconfig-frontend
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    restart: unless-stopped
