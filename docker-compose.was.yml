@@ -1,0 +1,11 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/boostcampwm2025/web15-ipconfig/backend:latest}
+    container_name: web15-ipconfig-backend
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    volumes:
+      - /var/log/web15-ipconfig:/app/logs
+    restart: unless-stopped
