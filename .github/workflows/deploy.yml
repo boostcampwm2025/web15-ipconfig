@@ -138,7 +138,7 @@ jobs:
             # .env 파일 생성 (NestJS 환경변수 + Redis 접속 정보)
             cat <<EOF > .env
             NODE_ENV=production
-            PORT=3000
+            PORT=${{ secrets.BACKEND_PORT }}
             HOST_URL=${{ secrets.HOST_URL }}
             BACKEND_IMAGE=${{ env.IMAGE_PREFIX }}/backend:latest
             REDIS_HOST=${{ secrets.AWS_DB_PRIVATE_IP }}
