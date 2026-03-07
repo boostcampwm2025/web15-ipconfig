@@ -1,4 +1,4 @@
-name: Deploy with Docker Compose
+name: Deploy to AWS
 
 on:
   push:
@@ -6,13 +6,14 @@ on:
       - main
 
 env:
-  NODE_VERSION: '24.12.0'
-  FRONTEND_IMAGE: web15-ipconfig-frontend:latest
-  BACKEND_IMAGE: web15-ipconfig-backend:latest
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/web15-ipconfig
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,129 +25,158 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend Image
+      - name: Log in to GHCR
         run: |
-          docker build -t ${{ env.BACKEND_IMAGE }} \
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+            -u ${{ github.actor }} --password-stdin
+
+      - name: Build & Push Backend Image
+        run: |
+          docker buildx build \
+            -t ${{ env.IMAGE_PREFIX }}/backend:latest \
+            -t ${{ env.IMAGE_PREFIX }}/backend:${{ steps.sha.outputs.SHORT_SHA }} \
             --target backend-prod \
-            -f dockerfile.prod .
+            -f dockerfile.prod \
+            --push .
 
-      - name: Build Frontend Image
+      - name: Build & Push Frontend Image
         run: |
-          docker build -t ${{ env.FRONTEND_IMAGE }} \
+          docker buildx build \
+            -t ${{ env.IMAGE_PREFIX }}/frontend:latest \
+            -t ${{ env.IMAGE_PREFIX }}/frontend:${{ steps.sha.outputs.SHORT_SHA }} \
             --target frontend-prod \
-            -f dockerfile.prod .
+            -f dockerfile.prod \
+            --push .
 
-      - name: Log in to NCP Container Registry
-        run: |
-          echo "${{ secrets.NCP_SECRET_KEY }}" | docker login \
-            -u "${{ secrets.NCP_ACCESS_KEY }}" \
-            --password-stdin ${{ secrets.NCP_REGISTRY_ENDPOINT }}
-
-      - name: Tag Backend Image
-        run: |
-          docker tag ${{ env.BACKEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
-          docker tag ${{ env.BACKEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Tag Frontend Image
-        run: |
-          docker tag ${{ env.FRONTEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
-          docker tag ${{ env.FRONTEND_IMAGE }} \
-            ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Push Backend Image
-        run: |
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-backend:${{ steps.sha.outputs.SHORT_SHA }}
-
-      - name: Push Frontend Image
-        run: |
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
-          docker push ${{ secrets.NCP_REGISTRY_ENDPOINT }}/web15-ipconfig-frontend:${{ steps.sha.outputs.SHORT_SHA }}
-
-  deploy_to_server:
+  deploy_frontend:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy docker-compose.prod.yml to server
+      - name: Copy compose file to WebServer
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.NCLOUD_HOST }}
-          username: ${{ secrets.NCLOUD_USER }}
-          key: ${{ secrets.NCLOUD_SSH_KEY }}
-          source: 'docker-compose.prod.yml'
+          host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          source: 'docker-compose.webserver.yml'
           target: '~/app/'
 
-      - name: SSH & Deploy
+      - name: Deploy Frontend to WebServer
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.NCLOUD_HOST }}
-          username: ${{ secrets.NCLOUD_USER }}
-          key: ${{ secrets.NCLOUD_SSH_KEY }}
+          host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             set -e
             mkdir -p ~/app
             cd ~/app
 
-            # .env 파일 생성 (Secrets 조합)
-            # Redis 및 기타 환경변수를 포함하여 .env 파일을 새로 작성합니다.
+            # .env 파일 생성 (docker-compose 변수 치환용)
+            cat <<EOF > .env
+            FRONTEND_IMAGE=${{ env.IMAGE_PREFIX }}/frontend:latest
+            WAS_HOST=${{ secrets.AWS_WAS_PRIVATE_IP }}
+            EOF
+
+            # GHCR 로그인
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io \
+              -u ${{ github.actor }} --password-stdin
+
+            # 이미지 pull & 배포
+            docker compose -f docker-compose.webserver.yml pull
+            docker compose -f docker-compose.webserver.yml up -d
+
+            # 사용하지 않는 이미지 삭제
+            docker image prune -f
+
+            # Health Check
+            echo "Waiting for WebServer..."
+            sleep 5
+            for i in {1..10}; do
+              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1 || true)
+              if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ]; then
+                echo "WebServer Health Check Passed! (HTTP $HTTP_CODE)"
+                exit 0
+              fi
+              echo "Waiting... ($i/10)"
+              sleep 3
+            done
+            echo "WebServer Health Check Failed!"
+            docker compose -f docker-compose.webserver.yml logs --tail=30
+            exit 1
+
+  deploy_backend:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose file to WAS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_WAS_PRIVATE_IP }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          proxy_host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          proxy_username: ${{ secrets.AWS_SSH_USER }}
+          proxy_key: ${{ secrets.AWS_SSH_KEY }}
+          source: 'docker-compose.was.yml'
+          target: '~/app/'
+
+      - name: Deploy Backend to WAS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AWS_WAS_PRIVATE_IP }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          proxy_host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          proxy_username: ${{ secrets.AWS_SSH_USER }}
+          proxy_key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            set -e
+            mkdir -p ~/app
+            cd ~/app
+
+            # .env 파일 생성 (NestJS 환경변수 + Redis 접속 정보)
             cat <<EOF > .env
             NODE_ENV=production
             PORT=${{ secrets.BACKEND_PORT }}
             HOST_URL=${{ secrets.HOST_URL }}
-
-            # Docker 이미지 정보 (docker-compose 변수 치환용)
-            NCP_REGISTRY_ENDPOINT=${{ secrets.NCP_REGISTRY_ENDPOINT }}
-            BACKEND_IMAGE=${{ env.BACKEND_IMAGE }}
-            FRONTEND_IMAGE=${{ env.FRONTEND_IMAGE }}
-
-            # Redis 접속 정보 (NCP Cloud DB for Redis)
-            REDIS_HOST=${{ secrets.PROD_REDIS_HOST }}
+            BACKEND_IMAGE=${{ env.IMAGE_PREFIX }}/backend:latest
+            REDIS_HOST=${{ secrets.AWS_REDIS_PRIVATE_IP }}
             REDIS_PORT=${{ secrets.PROD_REDIS_PORT }}
             REDIS_PASSWORD=${{ secrets.PROD_REDIS_PASSWORD }}
             USE_REDIS_EXTENSION=${{ secrets.USE_REDIS_EXTENSION }}
-            REDIS_TLS=false
-            LOG_DIR=${{ secrets.LOG_DIR }}
+            LOG_DIR=/app/logs
             EOF
 
-            # NCP Container Registry 로그인
-            echo "${{ secrets.NCP_SECRET_KEY }}" | docker login \
-              -u "${{ secrets.NCP_ACCESS_KEY }}" \
-              --password-stdin ${{ secrets.NCP_REGISTRY_ENDPOINT }}
+            # GHCR 로그인
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io \
+              -u ${{ github.actor }} --password-stdin
 
-            # 이미지 pull
-            docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.BACKEND_IMAGE }}
-            docker pull ${{ secrets.NCP_REGISTRY_ENDPOINT }}/${{ env.FRONTEND_IMAGE }}
+            # 이미지 pull & 배포
+            docker compose -f docker-compose.was.yml pull
+            docker compose -f docker-compose.was.yml up -d
 
-            # 새 컨테이너 시작 (변경된 이미지만 교체, 다운타임 최소화)
-            # -d: 백그라운드 실행
-            docker compose -f docker-compose.prod.yml up -d
-
-            # 컨테이너 상태 확인
-            docker compose -f docker-compose.prod.yml ps
-
-            # 사용하지 않는 예전 이미지 삭제 (Dangling 이미지)
+            # 사용하지 않는 이미지 삭제
             docker image prune -f
 
             # Health Check
-            echo "Waiting for service to be ready..."
+            echo "Waiting for WAS..."
             sleep 10
             for i in {1..10}; do
-              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/api/health || true)
-              if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
-                echo "Health Check Passed! (HTTP $HTTP_CODE)"
+              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:${{ secrets.BACKEND_PORT }}/api/health || true)
+              if [ "$HTTP_CODE" -eq 200 ]; then
+                echo "WAS Health Check Passed! (HTTP $HTTP_CODE)"
                 exit 0
               fi
-              echo "Waiting for service... ($i/10)"
+              echo "Waiting... ($i/10)"
               sleep 3
             done
-            echo "Health Check Failed!"
-            echo "Last HTTP Code: $HTTP_CODE"
-            # 실패 시 로그 출력
-            docker compose -f docker-compose.prod.yml logs --tail=50 backend
+            echo "WAS Health Check Failed!"
+            docker compose -f docker-compose.was.yml logs --tail=50
             exit 1
