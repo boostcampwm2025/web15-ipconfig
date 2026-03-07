@@ -2,6 +2,8 @@ services:
   frontend:
     image: ${FRONTEND_IMAGE:-ghcr.io/boostcampwm2025/web15-ipconfig/frontend:latest}
     container_name: web15-ipconfig-frontend
+    environment:
+      - WAS_HOST=${WAS_HOST:-backend}
     ports:
       - '80:80'
       - '443:443'
