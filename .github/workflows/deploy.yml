@@ -58,7 +58,7 @@ jobs:
       - name: Copy compose file to WebServer
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.AWS_WEBSERVER_HOST }}
+          host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
           username: ${{ secrets.AWS_SSH_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           source: 'docker-compose.webserver.yml'
@@ -67,7 +67,7 @@ jobs:
       - name: Deploy Frontend to WebServer
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.AWS_WEBSERVER_HOST }}
+          host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
           username: ${{ secrets.AWS_SSH_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
@@ -118,18 +118,24 @@ jobs:
       - name: Copy compose file to WAS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.AWS_WAS_HOST }}
+          host: ${{ secrets.AWS_WAS_PRIVATE_IP }}
           username: ${{ secrets.AWS_SSH_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
+          proxy_host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          proxy_username: ${{ secrets.AWS_SSH_USER }}
+          proxy_key: ${{ secrets.AWS_SSH_KEY }}
           source: 'docker-compose.was.yml'
           target: '~/app/'
 
       - name: Deploy Backend to WAS
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.AWS_WAS_HOST }}
+          host: ${{ secrets.AWS_WAS_PRIVATE_IP }}
           username: ${{ secrets.AWS_SSH_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
+          proxy_host: ${{ secrets.AWS_WEBSERVER_PUBLIC_IP }}
+          proxy_username: ${{ secrets.AWS_SSH_USER }}
+          proxy_key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             set -e
             mkdir -p ~/app
@@ -141,7 +147,7 @@ jobs:
             PORT=${{ secrets.BACKEND_PORT }}
             HOST_URL=${{ secrets.HOST_URL }}
             BACKEND_IMAGE=${{ env.IMAGE_PREFIX }}/backend:latest
-            REDIS_HOST=${{ secrets.AWS_DB_PRIVATE_IP }}
+            REDIS_HOST=${{ secrets.AWS_REDIS_PRIVATE_IP }}
             REDIS_PORT=${{ secrets.PROD_REDIS_PORT }}
             REDIS_PASSWORD=${{ secrets.PROD_REDIS_PASSWORD }}
             USE_REDIS_EXTENSION=${{ secrets.USE_REDIS_EXTENSION }}
