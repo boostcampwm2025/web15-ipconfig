@@ -36,6 +36,17 @@ export default defineConfig({
           globals: true,
         },
       },
+      // 컴포넌트 테스트 프로젝트 (React Testing Library + jsdom)
+      {
+        extends: true,
+        test: {
+          name: 'component',
+          include: ['src/**/*.test.tsx'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./src/test/setup.ts'],
+        },
+      },
       // Storybook 테스트 프로젝트
       {
         extends: true,
