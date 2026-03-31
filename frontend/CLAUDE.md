@@ -83,6 +83,42 @@ Zustand 스토어 두 개:
 
 `common/contexts/ThemeProvider.tsx` — sessionStorage 기반 라이트/다크 테마 Context.
 
+## 코딩 컨벤션
+
+### 네이밍 규칙
+
+| 대상 | 규칙 | 예시 |
+|------|------|------|
+| 변수/함수 | camelCase | `widgetList`, `handleClick` |
+| 클래스명 | PascalCase | `WorkspaceService` |
+| 폴더명 | camelCase | `userListCard/`, `initialSetup/` |
+| 컴포넌트 파일 | PascalCase | `WidgetFrame.tsx`, `LoadingSpinner.tsx` |
+| 함수/훅/타입 파일 | camelCase | `useFetch.ts`, `apiHandler.ts`, `widgetTypes.ts` |
+
+### TypeScript 타입
+
+- `interface` 우선 사용
+- 타입 합성이 필요한 경우에만 `type` 사용 (`&` 연산)
+
+```typescript
+// 기본: interface
+interface Widget { id: string; type: string; }
+
+// 합성이 필요한 경우: type
+type CollaborativeWidget = Widget & { yjsPath: string };
+```
+
+### 폴더 구조 원칙
+
+- **기능 기반(feature-based)** 폴더 구조: 관련 컴포넌트, 훅, 타입을 기능 단위로 묶음
+- **배럴 export 패턴**: 각 폴더에 `index.ts`를 두어 외부 노출 인터페이스를 명시적으로 관리
+
+```typescript
+// features/widgets/index.ts
+export { WidgetFrame } from './WidgetFrame';
+export { useWidget } from './useWidget';
+```
+
 ## 테스트
 
 Vitest 멀티 프로젝트 설정 (`vite.config.ts`):
